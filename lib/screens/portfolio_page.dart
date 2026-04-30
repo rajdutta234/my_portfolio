@@ -12,6 +12,8 @@ import '../widgets/sections/projects_section.dart';
 import '../widgets/sections/skills_section.dart';
 import '../widgets/common/animated_background.dart';
 import '../widgets/common/nav_bar.dart';
+import '../widgets/common/custom_cursor.dart';
+import '../widgets/common/noise_overlay.dart';
 
 class PortfolioPage extends StatefulWidget {
   const PortfolioPage({super.key, this.initialSectionIndex});
@@ -91,9 +93,11 @@ class _PortfolioPageState extends State<PortfolioPage> {
     final int activeIndex = context.watch<AppNotifier>().activeSectionIndex;
 
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          const Positioned.fill(child: AnimatedBackground()),
+      body: CustomCursor(
+        child: Stack(
+          children: <Widget>[
+            const Positioned.fill(child: AnimatedBackground()),
+            const Positioned.fill(child: NoiseOverlay()),
           Positioned(
             top: -130,
             right: -80,
@@ -163,6 +167,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }

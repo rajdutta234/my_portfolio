@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../models/experience.dart';
 import '../common/glass_container.dart';
-import '../common/hover_scale.dart';
 import '../common/section_title.dart';
 import '../common/reveal_on_scroll.dart';
 

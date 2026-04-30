@@ -5,6 +5,7 @@ class Project {
     required this.stack,
     required this.githubUrl,
     required this.demoUrl,
+    this.imageUrl,
   });
 
   final String title;
@@ -12,4 +13,5 @@ class Project {
   final List<String> stack;
   final String githubUrl;
   final String demoUrl;
+  final String? imageUrl;
 }

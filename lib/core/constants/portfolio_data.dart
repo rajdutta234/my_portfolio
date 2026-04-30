@@ -87,6 +87,17 @@ const List<Project> projects = <Project>[
     stack: <String>['Python', 'Django', 'AI Integration', 'MySQL'],
     githubUrl: '',
     demoUrl: 'https://rajdutta.pythonanywhere.com',
+    imageUrl: 'assets/images/blood_bank.png',
+  ),
+  Project(
+    title: 'AI Portfolio Platform',
+    description:
+        'A next-generation portfolio template with AI-driven content generation, '
+        'dynamic glassmorphism UI, and integrated analytics dashboard.',
+    stack: <String>['Flutter', 'Firebase', 'OpenAI API', 'Cloud Functions'],
+    githubUrl: 'https://github.com/rajdutta234/ai-portfolio',
+    demoUrl: 'https://raj-portfolio-demo.web.app',
+    imageUrl: 'assets/images/project_placeholder.png',
   ),
 ];
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../../models/project.dart';
 import '../common/glass_container.dart';
-import '../common/hover_scale.dart';
+import '../common/tilt_hover.dart';
 import '../common/link_utils.dart';
 import '../common/reveal_on_scroll.dart';
 import '../common/section_title.dart';
@@ -31,11 +31,29 @@ class ProjectsSection extends StatelessWidget {
               (Project project) => Padding(
                 padding: const EdgeInsets.only(bottom: 14),
                 child: RevealOnScroll(
-                  child: HoverScale(
+                  child: TiltHover(
                     child: GlassContainer(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+                          if (project.imageUrl != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: Image.asset(
+                                  project.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                    color: Colors.white10,
+                                    child: const Icon(Icons.broken_image,
+                                        color: Colors.white24),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (project.imageUrl != null) const SizedBox(height: 20),
                           Text(
                             project.title,
                             style: Theme.of(context)

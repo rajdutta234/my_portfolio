@@ -15,37 +15,55 @@ class SectionTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          title,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.6,
-            height: 1.2,
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [Colors.white, Colors.white70],
+          ).createShader(bounds),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.5,
+                  height: 1.1,
+                ),
           ),
         ),
-        const SizedBox(height: 12),
-        Container(
-          height: 3,
-          width: 50,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(2),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.4),
-                blurRadius: 8,
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Container(
+              height: 4,
+              width: 40,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.tertiary,
+                    Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.3),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(10),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              height: 4,
+              width: 8,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Text(
           subtitle,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Colors.white70,
-            fontWeight: FontWeight.w400,
-            height: 1.5,
-          ),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.white60,
+                fontWeight: FontWeight.w400,
+                height: 1.4,
+                letterSpacing: 0.1,
+              ),
         ),
       ],
     );
