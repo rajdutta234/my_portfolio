@@ -78,35 +78,55 @@ class _ContactSectionState extends State<ContactSection> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Flex(
-                  direction: mobile ? Axis.vertical : Axis.horizontal,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        children: <Widget>[
-                          _InputField(
-                            controller: _nameController,
-                            hint: 'Your name',
-                          ),
-                          const SizedBox(height: 12),
-                          _InputField(
-                            controller: _emailController,
-                            hint: 'Your email',
-                          ),
-                        ],
+                if (mobile)
+                  Column(
+                    children: <Widget>[
+                      _InputField(
+                        controller: _nameController,
+                        hint: 'Your name',
                       ),
-                    ),
-                    SizedBox(width: mobile ? 0 : 12, height: mobile ? 12 : 0),
-                    Expanded(
-                      child: _InputField(
+                      const SizedBox(height: 12),
+                      _InputField(
+                        controller: _emailController,
+                        hint: 'Your email',
+                      ),
+                      const SizedBox(height: 12),
+                      _InputField(
                         controller: _messageController,
                         hint: 'Message',
                         maxLines: 5,
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  )
+                else
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            _InputField(
+                              controller: _nameController,
+                              hint: 'Your name',
+                            ),
+                            const SizedBox(height: 12),
+                            _InputField(
+                              controller: _emailController,
+                              hint: 'Your email',
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _InputField(
+                          controller: _messageController,
+                          hint: 'Message',
+                          maxLines: 5,
+                        ),
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 18),
                 FilledButton(
                   onPressed: _submit,

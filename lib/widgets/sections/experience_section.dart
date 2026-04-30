@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/portfolio_data.dart';
-import '../../models/certificate.dart';
 import '../../models/experience.dart';
-import '../common/certificate_preview_dialog.dart';
 import '../common/glass_container.dart';
 import '../common/hover_scale.dart';
-import '../common/reveal_on_scroll.dart';
 import '../common/section_title.dart';
+import '../common/reveal_on_scroll.dart';
 
 class ExperienceSection extends StatelessWidget {
   const ExperienceSection({super.key});
@@ -103,60 +101,8 @@ class ExperienceSection extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: certificates.take(2).map((Certificate cert) {
-                return SizedBox(
-                  width: 280,
-                  child: RevealOnScroll(
-                    child: HoverScale(
-                      onTap: () => _openCertPreview(context, cert),
-                      child: GlassContainer(
-                        child: Row(
-                          children: <Widget>[
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                cert.imageUrl,
-                                width: 56,
-                                height: 56,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                cert.title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _openCertPreview(BuildContext context, Certificate cert) {
-    showDialog<void>(
-      context: context,
-      builder: (_) => CertificatePreviewDialog(
-        title: cert.title,
-        imageUrl: cert.imageUrl,
       ),
     );
   }

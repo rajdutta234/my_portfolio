@@ -85,8 +85,8 @@ const List<Project> projects = <Project>[
         'A complete blood inventory and donor management platform with secure '
         'records, request workflows, and role-based dashboard views.',
     stack: <String>['Python', 'Django', 'AI Integration', 'MySQL'],
-    githubUrl: 'https://github.com/rajdutta/blood-bank-management',
-    demoUrl: 'https://example.com/blood-bank-demo',
+    githubUrl: '',
+    demoUrl: 'https://rajdutta.pythonanywhere.com',
   ),
 ];
 

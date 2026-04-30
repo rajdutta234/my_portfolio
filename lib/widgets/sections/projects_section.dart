@@ -87,30 +87,31 @@ class ProjectsSection extends StatelessWidget {
                             spacing: 12,
                             runSpacing: 10,
                             children: <Widget>[
-                              OutlinedButton.icon(
-                                onPressed: () => openExternalLink(
-                                  context,
-                                  project.githubUrl,
-                                ),
-                                icon: const Icon(Icons.code, size: 18),
-                                label: const Text(
-                                  'GitHub',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.3,
+                              if (project.githubUrl.isNotEmpty)
+                                OutlinedButton.icon(
+                                  onPressed: () => openExternalLink(
+                                    context,
+                                    project.githubUrl,
+                                  ),
+                                  icon: const Icon(Icons.code, size: 18),
+                                  label: const Text(
+                                    'GitHub',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                      color: Colors.white.withValues(alpha: 0.4),
+                                      width: 1.5,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
                                   ),
                                 ),
-                                style: OutlinedButton.styleFrom(
-                                  side: BorderSide(
-                                    color: Colors.white.withValues(alpha: 0.4),
-                                    width: 1.5,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
-                                  ),
-                                ),
-                              ),
                               FilledButton.tonalIcon(
                                 onPressed: () => openExternalLink(
                                   context,
@@ -118,7 +119,7 @@ class ProjectsSection extends StatelessWidget {
                                 ),
                                 icon: const Icon(Icons.open_in_new, size: 18),
                                 label: const Text(
-                                  'Live Demo',
+                                  'Visit Site',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 0.3,
