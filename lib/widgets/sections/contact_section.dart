@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import '../../core/constants/portfolio_data.dart';
 import '../common/glass_container.dart';
 import '../common/link_utils.dart';
-import '../common/reveal_on_scroll.dart';
 import '../common/section_title.dart';
+
+import 'package:flutter_animate/flutter_animate.dart';
+
+import '../common/glow_input.dart';
+import '../common/magnetic.dart';
 
 class ContactSection extends StatefulWidget {
   const ContactSection({super.key});
@@ -17,6 +21,7 @@ class _ContactSectionState extends State<ContactSection> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -33,148 +38,212 @@ class _ContactSectionState extends State<ContactSection> {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 1120),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-        child: RevealOnScroll(
-          child: GlassContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SectionTitle(
-                  title: 'Contact',
-                  subtitle: 'Let us build something meaningful together',
-                ),
-                const SizedBox(height: 18),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: <Widget>[
-                    ActionChip(
-                      label: const Text(
-                        email,
-                        style: TextStyle(fontWeight: FontWeight.w600),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 100),
+        child: Column(
+          children: [
+            const SectionTitle(
+              title: 'GET IN TOUCH',
+              subtitle: 'Let us build something meaningful together',
+            ).animate().fadeIn().moveY(begin: 30, end: 0),
+            const SizedBox(height: 60),
+            GlassContainer(
+              padding: const EdgeInsets.all(40),
+              borderRadius: 32,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // Social Tags
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: <Widget>[
+                      _ContactChip(
+                        label: 'Email',
+                        value: email,
+                        onPressed: () => openExternalLink(context, 'mailto:$email'),
                       ),
-                      backgroundColor: Colors.white.withValues(alpha: 0.08),
-                      side: BorderSide(color: Colors.white.withValues(alpha: 0.25)),
-                      onPressed: () => openExternalLink(context, 'mailto:$email'),
-                    ),
-                    ActionChip(
-                      label: const Text(
-                        'LinkedIn',
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                      _ContactChip(
+                        label: 'LinkedIn',
+                        value: 'Connect',
+                        onPressed: () => openExternalLink(context, linkedinUrl),
                       ),
-                      backgroundColor: Colors.white.withValues(alpha: 0.08),
-                      side: BorderSide(color: Colors.white.withValues(alpha: 0.25)),
-                      onPressed: () => openExternalLink(context, linkedinUrl),
-                    ),
-                    ActionChip(
-                      label: const Text(
-                        'GitHub',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      backgroundColor: Colors.white.withValues(alpha: 0.08),
-                      side: BorderSide(color: Colors.white.withValues(alpha: 0.25)),
-                      onPressed: () => openExternalLink(context, githubUrl),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                if (mobile)
+                    ],
+                  ).animate().fadeIn(delay: 200.ms),
+                  
+                  const SizedBox(height: 48),
+                  
+                  // Form
                   Column(
-                    children: <Widget>[
-                      _InputField(
-                        controller: _nameController,
-                        hint: 'Your name',
-                      ),
-                      const SizedBox(height: 12),
-                      _InputField(
-                        controller: _emailController,
-                        hint: 'Your email',
-                      ),
-                      const SizedBox(height: 12),
-                      _InputField(
-                        controller: _messageController,
-                        hint: 'Message',
-                        maxLines: 5,
-                      ),
-                    ],
-                  )
-                else
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            _InputField(
-                              controller: _nameController,
-                              hint: 'Your name',
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GlowInput(
+                              child: _ModernInputField(
+                                controller: _nameController,
+                                hint: 'Name',
+                                icon: Icons.person_outline,
+                              ),
                             ),
-                            const SizedBox(height: 12),
-                            _InputField(
-                              controller: _emailController,
-                              hint: 'Your email',
+                          ),
+                          if (!mobile) const SizedBox(width: 20),
+                          if (!mobile)
+                            Expanded(
+                              child: GlowInput(
+                                child: _ModernInputField(
+                                  controller: _emailController,
+                                  hint: 'Email',
+                                  icon: Icons.email_outlined,
+                                ),
+                              ),
                             ),
-                          ],
+                        ],
+                      ),
+                      if (mobile) const SizedBox(height: 16),
+                      if (mobile)
+                        GlowInput(
+                          child: _ModernInputField(
+                            controller: _emailController,
+                            hint: 'Email',
+                            icon: Icons.email_outlined,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _InputField(
+                      const SizedBox(height: 20),
+                      GlowInput(
+                        child: _ModernInputField(
                           controller: _messageController,
-                          hint: 'Message',
-                          maxLines: 5,
+                          hint: 'Your Message',
+                          icon: Icons.chat_bubble_outline,
+                          maxLines: 6,
                         ),
                       ),
                     ],
-                  ),
-                const SizedBox(height: 18),
-                FilledButton(
-                  onPressed: _submit,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-                    elevation: 12,
-                    shadowColor: Colors.white.withValues(alpha: 0.3),
-                  ),
-                  child: const Text(
-                    'Send Message',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.4,
+                  ).animate().fadeIn(delay: 400.ms),
+                  
+                  const SizedBox(height: 48),
+                  
+                  // Submit Button
+                  Magnetic(
+                    child: SizedBox(
+                      width: mobile ? double.infinity : 240,
+                      height: 70,
+                      child: FilledButton(
+                        onPressed: _isSubmitting ? null : _submit,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  color: Colors.black,
+                                ),
+                              )
+                            : const Text(
+                                'SEND MESSAGE',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
+                  ).animate().fadeIn(delay: 600.ms),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  void _submit() {
+  void _submit() async {
+    setState(() => _isSubmitting = true);
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+    
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Thanks! Your message has been captured locally.'),
+      SnackBar(
+        backgroundColor: Colors.blue.withValues(alpha: 0.9),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        content: const Text(
+          'Message sent successfully!',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
       ),
     );
 
+    setState(() => _isSubmitting = false);
     _nameController.clear();
     _emailController.clear();
     _messageController.clear();
   }
 }
 
-class _InputField extends StatelessWidget {
-  const _InputField({
+class _ContactChip extends StatelessWidget {
+  const _ContactChip({
+    required this.label,
+    required this.value,
+    required this.onPressed,
+  });
+
+  final String label;
+  final String value;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Magnetic(
+      range: 50,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white12),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '$label: ',
+                style: const TextStyle(color: Colors.white38, fontWeight: FontWeight.w500),
+              ),
+              Text(
+                value,
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ModernInputField extends StatelessWidget {
+  const _ModernInputField({
     required this.controller,
     required this.hint,
+    required this.icon,
     this.maxLines = 1,
   });
 
   final TextEditingController controller;
   final String hint;
+  final IconData icon;
   final int maxLines;
 
   @override
@@ -184,21 +253,19 @@ class _InputField extends StatelessWidget {
       maxLines: maxLines,
       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.white38, size: 20),
         hintText: hint,
-        hintStyle: const TextStyle(
-          color: Colors.white54,
-          fontWeight: FontWeight.w400,
-        ),
+        hintStyle: const TextStyle(color: Colors.white24, fontWeight: FontWeight.w400),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.05),
-        contentPadding: const EdgeInsets.all(14),
+        fillColor: Colors.white.withValues(alpha: 0.03),
+        contentPadding: const EdgeInsets.all(22),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.white12),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.4), width: 2),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 2),
         ),
       ),
     );

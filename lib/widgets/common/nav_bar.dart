@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'glass_container.dart';
 
-class PortfolioNavBar extends StatelessWidget {
+class PortfolioNavBar extends StatefulWidget {
   const PortfolioNavBar({
     super.key,
     required this.items,
@@ -15,6 +14,21 @@ class PortfolioNavBar extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   @override
+  State<PortfolioNavBar> createState() => _PortfolioNavBarState();
+}
+
+class _PortfolioNavBarState extends State<PortfolioNavBar> {
+  final Map<int, GlobalKey> _itemKeys = {};
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < widget.items.length; i++) {
+      _itemKeys[i] = GlobalKey();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bool isCompact = MediaQuery.sizeOf(context).width < 880;
 
@@ -24,45 +38,90 @@ class PortfolioNavBar extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: GlassContainer(
           borderRadius: 999,
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-          child: isCompact
-              ? SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List<Widget>.generate(
-                      items.length,
-                      (int index) => _NavItem(
-                        title: items[index],
-                        selected: index == activeIndex,
-                        onTap: () => onTap(index),
-                      ),
-                    ),
-                  ),
-                )
-              : Row(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Stack(
+            children: [
+              // Sliding Indicator
+              _AnimatedIndicator(
+                activeIndex: widget.activeIndex,
+                itemKeys: _itemKeys,
+              ),
+              
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: isCompact ? null : const NeverScrollableScrollPhysics(),
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: List<Widget>.generate(
-                    items.length,
-                    (int index) => _NavItem(
-                      title: items[index],
-                      selected: index == activeIndex,
-                      onTap: () => onTap(index),
-                    ),
-                  ),
+                  children: _buildItems(),
                 ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return List<Widget>.generate(
+      widget.items.length,
+      (int index) => _NavItem(
+        key: _itemKeys[index],
+        title: widget.items[index],
+        selected: index == widget.activeIndex,
+        onTap: () => widget.onTap(index),
       ),
     );
   }
 }
 
-class _NavItem extends StatefulWidget {
-  const _NavItem({
-    required this.title,
-    required this.selected,
-    required this.onTap,
-  });
+class _AnimatedIndicator extends StatelessWidget {
+  const _AnimatedIndicator({required this.activeIndex, required this.itemKeys});
+  final int activeIndex;
+  final Map<int, GlobalKey> itemKeys;
 
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([]), // We'll rely on build triggers
+      builder: (context, child) {
+        final RenderBox? box = itemKeys[activeIndex]?.currentContext?.findRenderObject() as RenderBox?;
+        if (box == null) return const SizedBox.shrink();
+
+        final RenderBox? parent = box.parent as RenderBox?;
+        if (parent == null) return const SizedBox.shrink();
+
+        final Offset offset = box.localToGlobal(Offset.zero, ancestor: parent);
+        final Size size = box.size;
+
+        return AnimatedPositioned(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutBack,
+          left: offset.dx,
+          top: offset.dy,
+          width: size.width,
+          height: size.height,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(999),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  blurRadius: 15,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _NavItem extends StatefulWidget {
+  const _NavItem({super.key, required this.title, required this.selected, required this.onTap});
   final String title;
   final bool selected;
   final VoidCallback onTap;
@@ -72,60 +131,22 @@ class _NavItem extends StatefulWidget {
 }
 
 class _NavItemState extends State<_NavItem> {
-  bool _hovered = false;
-
   @override
   Widget build(BuildContext context) {
-    final Color fg = widget.selected ? Colors.black : Colors.white;
-
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 240),
-          curve: Curves.easeOutCubic,
-          decoration: BoxDecoration(
-            color: widget.selected
-                ? Colors.white
-                : (_hovered
-                    ? Colors.white.withValues(alpha: 0.15)
-                    : Colors.transparent),
-            borderRadius: BorderRadius.circular(999),
-            boxShadow: widget.selected
-                ? <BoxShadow>[
-                    BoxShadow(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      blurRadius: 16,
-                      spreadRadius: -2,
-                    ),
-                  ]
-                : (_hovered
-                    ? <BoxShadow>[
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          blurRadius: 12,
-                          spreadRadius: -2,
-                        ),
-                      ]
-                    : <BoxShadow>[]),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 200),
+          style: TextStyle(
+            color: widget.selected ? Colors.black : Colors.white70,
+            fontWeight: FontWeight.w800,
+            fontSize: 14,
+            letterSpacing: 0.5,
           ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(999),
-            onTap: widget.onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-              child: Text(
-                widget.title,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: fg,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            child: Text(widget.title.toUpperCase()),
           ),
         ),
       ),

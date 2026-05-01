@@ -11,13 +11,14 @@ class AnimatedBackground extends StatefulWidget {
 class _AnimatedBackgroundState extends State<AnimatedBackground>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  Offset _mousePosition = Offset.zero;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 18),
+      duration: const Duration(seconds: 10),
     )..repeat();
   }
 
@@ -29,85 +30,80 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (BuildContext context, Widget? child) {
-        return CustomPaint(
-          painter: _ParticlePainter(progress: _controller.value),
-          size: Size.infinite,
-        );
-      },
+    return MouseRegion(
+      onHover: (event) => setState(() => _mousePosition = event.position),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext context, Widget? child) {
+          return CustomPaint(
+            painter: _MeshPainter(
+              progress: _controller.value,
+              mousePosition: _mousePosition,
+            ),
+            size: Size.infinite,
+          );
+        },
+      ),
     );
   }
 }
 
-class _ParticlePainter extends CustomPainter {
-  _ParticlePainter({required this.progress});
+class _MeshPainter extends CustomPainter {
+  _MeshPainter({required this.progress, required this.mousePosition});
 
   final double progress;
+  final Offset mousePosition;
 
   @override
   void paint(Canvas canvas, Size size) {
     final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     
-    // Background gradient
-    final Paint bgPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: <Color>[
-          const Color(0xFF0A0A0A),
-          const Color(0xFF1A1A1A),
-          const Color(0xFF0F0F2A),
-        ],
-      ).createShader(rect);
-    canvas.drawRect(rect, bgPaint);
+    // Deep static background
+    canvas.drawRect(rect, Paint()..color = const Color(0xFF020205));
 
-    // Dynamic glow spots
-    final Paint glowPaint = Paint()
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 100);
-
-    final List<Offset> centers = [
-      Offset(size.width * 0.2, size.height * 0.3),
-      Offset(size.width * 0.8, size.height * 0.7),
-      Offset(size.width * 0.5, size.height * 0.5),
+    // Animated Blobs
+    final List<Map<String, dynamic>> blobs = [
+      {'color': const Color(0xFF1E3A8A), 'pos': Offset(0.2, 0.3), 'size': 300.0, 'speed': 1.0},
+      {'color': const Color(0xFF581C87), 'pos': Offset(0.8, 0.7), 'size': 400.0, 'speed': 0.8},
+      {'color': const Color(0xFF1E1B4B), 'pos': Offset(0.5, 0.5), 'size': 350.0, 'speed': 1.2},
+      {'color': const Color(0xFF0F172A), 'pos': Offset(0.1, 0.8), 'size': 250.0, 'speed': 0.5},
     ];
 
-    for (int i = 0; i < centers.length; i++) {
-      final double t = (progress + i * 0.33) % 1;
-      final double x = centers[i].dx + math.sin(t * math.pi * 2) * 50;
-      final double y = centers[i].dy + math.cos(t * math.pi * 2) * 50;
+    for (int i = 0; i < blobs.length; i++) {
+      final blob = blobs[i];
+      final double t = (progress * blob['speed'] + i * 0.2) % 1.0;
       
-      glowPaint.color = [
-        Colors.blue.withValues(alpha: 0.08),
-        Colors.purple.withValues(alpha: 0.08),
-        Colors.teal.withValues(alpha: 0.08),
-      ][i];
-      
-      canvas.drawCircle(Offset(x, y), 200 + math.sin(t * math.pi) * 50, glowPaint);
+      // Calculate base position with oscillation
+      double x = size.width * blob['pos'].dx + math.sin(t * math.pi * 2) * 100;
+      double y = size.height * blob['pos'].dy + math.cos(t * math.pi * 2) * 100;
+
+      // React to mouse
+      final Offset target = Offset(x, y);
+      final double dist = (mousePosition - target).distance;
+      if (dist < 500) {
+        final double factor = (1 - dist / 500).clamp(0, 1);
+        x += (mousePosition.dx - x) * 0.15 * factor;
+        y += (mousePosition.dy - y) * 0.15 * factor;
+      }
+
+      final Paint paint = Paint()
+        ..color = blob['color'].withValues(alpha: 0.12)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 120);
+
+      canvas.drawCircle(Offset(x, y), blob['size'] + math.sin(t * math.pi) * 40, paint);
     }
 
-    final Paint particlePaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.15)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-
-    for (int i = 0; i < 30; i++) {
-      final double t = (progress + i * 0.03) % 1;
-      final double x = size.width * (0.05 + 0.9 * ((i * 43) % 100) / 100);
-      final double y = size.height * (1 - t); // Floating upwards
-      final double wave = math.sin((progress * math.pi * 2) + i) * 30;
-      final double sizeMultiplier = 1 + math.sin(t * math.pi);
-      
-      canvas.drawCircle(
-        Offset(x + wave, y), 
-        (1.5 + (i % 4)) * sizeMultiplier, 
-        particlePaint..color = Colors.white.withValues(alpha: 0.1 * (1 - t))
-      );
+    // Static Noise Texture (simulated with random dots)
+    // To keep performance high, we draw fewer but larger blurred noise points
+    final math.Random random = math.Random(42);
+    final Paint noisePaint = Paint()..color = Colors.white.withValues(alpha: 0.02);
+    for (int i = 0; i < 40; i++) {
+      final double nx = random.nextDouble() * size.width;
+      final double ny = random.nextDouble() * size.height;
+      canvas.drawCircle(Offset(nx, ny), 1.5, noisePaint);
     }
   }
 
   @override
-  bool shouldRepaint(covariant _ParticlePainter oldDelegate) {
-    return oldDelegate.progress != progress;
-  }
+  bool shouldRepaint(covariant _MeshPainter oldDelegate) => true;
 }

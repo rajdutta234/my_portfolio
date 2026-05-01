@@ -19,10 +19,12 @@ class TiltHover extends StatefulWidget {
 class _TiltHoverState extends State<TiltHover> {
   Offset _mousePosition = Offset.zero;
   bool _isHovered = false;
+  final GlobalKey _key = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
+      key: _key,
       onEnter: (event) => setState(() {
         _isHovered = true;
         _mousePosition = event.localPosition;
@@ -37,20 +39,24 @@ class _TiltHoverState extends State<TiltHover> {
         curve: Curves.easeOut,
         tween: Tween<double>(begin: 0, end: _isHovered ? 1 : 0),
         builder: (context, value, child) {
-          final size = MediaQuery.sizeOf(context);
-          final centerX = size.width / 2;
-          final centerY = size.height / 2;
-          
-          // Calculate tilt based on mouse position relative to center
-          // Note: This is a simplified version, usually we'd use the widget's own size
-          // but for simplicity and better feel, we'll assume the widget is roughly where the mouse is.
-          
+          double dx = 0;
+          double dy = 0;
+
+          if (_isHovered) {
+            final RenderBox? box = _key.currentContext?.findRenderObject() as RenderBox?;
+            if (box != null) {
+              final size = box.size;
+              dx = (_mousePosition.dx - size.width / 2) / (size.width / 2);
+              dy = (_mousePosition.dy - size.height / 2) / (size.height / 2);
+            }
+          }
+
           return Transform(
             transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001) // perspective
-              ..scale(1 + (widget.scale - 1) * value)
-              ..rotateX(_isHovered ? -(_mousePosition.dy - centerY) * 0.0001 * value : 0)
-              ..rotateY(_isHovered ? (_mousePosition.dx - centerX) * 0.0001 * value : 0),
+              ..setEntry(3, 2, 0.0012) // perspective
+              ..rotateX(-dy * widget.maxTilt * value)
+              ..rotateY(dx * widget.maxTilt * value)
+              ..scale(1 + (widget.scale - 1) * value),
             alignment: FractionalOffset.center,
             child: child,
           );

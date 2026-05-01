@@ -32,26 +32,25 @@ class GlassContainer extends StatelessWidget {
                 Colors.white.withValues(alpha: 0.06),
               ],
             ),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.28),
-              width: 1.5,
-            ),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.45),
-                blurRadius: 40,
-                spreadRadius: 0,
-                offset: const Offset(0, 20),
+            border: Border.all(color: Colors.transparent), // Use decoration border instead
+          ),
+          child: Stack(
+            children: [
+              // Border Gradient Effect
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(borderRadius),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.1),
+                      width: 1,
+                    ),
+                  ),
+                ),
               ),
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 24,
-                spreadRadius: -4,
-                offset: const Offset(0, -4),
-              ),
+              child,
             ],
           ),
-          child: child,
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../core/constants/portfolio_data.dart';
 import '../notifier/app_notifier.dart';
@@ -30,6 +31,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
       List<GlobalKey>.generate(navItems.length, (_) => GlobalKey());
 
   bool _initialJumpHandled = false;
+  double _scrollProgress = 0;
 
   @override
   void initState() {
@@ -55,6 +57,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
   void _handleScroll() {
     final AppNotifier notifier = context.read<AppNotifier>();
+
+    if (_scrollController.hasClients) {
+      setState(() {
+        _scrollProgress = (_scrollController.offset / _scrollController.position.maxScrollExtent).clamp(0, 1);
+      });
+    }
 
     for (int i = 0; i < _sectionKeys.length; i++) {
       final BuildContext? context = _sectionKeys[i].currentContext;
@@ -98,76 +106,87 @@ class _PortfolioPageState extends State<PortfolioPage> {
           children: <Widget>[
             const Positioned.fill(child: AnimatedBackground()),
             const Positioned.fill(child: NoiseOverlay()),
-          Positioned(
-            top: -130,
-            right: -80,
-            child: IgnorePointer(
-              child: Container(
-                width: 380,
-                height: 380,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: <Color>[
-                      Colors.white.withValues(alpha: 0.22),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -170,
-            left: -120,
-            child: IgnorePointer(
-              child: Container(
-                width: 440,
-                height: 440,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: <Color>[
-                      Colors.white.withValues(alpha: 0.14),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    key: _sectionKeys[0],
-                    child: HeroSection(
-                      onViewProjects: () => _scrollToSection(4),
+            
+            // Decorative blobs
+            Positioned(
+              top: -130,
+              right: -80,
+              child: IgnorePointer(
+                child: Container(
+                  width: 380,
+                  height: 380,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: <Color>[
+                        Colors.blue.withValues(alpha: 0.15),
+                        Colors.transparent,
+                      ],
                     ),
                   ),
-                  Container(key: _sectionKeys[1], child: const AboutSection()),
-                  Container(key: _sectionKeys[2], child: const SkillsSection()),
-                  Container(
-                    key: _sectionKeys[3],
-                    child: const ExperienceSection(),
-                  ),
-                  Container(key: _sectionKeys[4], child: const ProjectsSection()),
-                  Container(key: _sectionKeys[5], child: const ContactSection()),
-                  const FooterSection(),
-                ],
+                ),
               ),
             ),
-          ),
-          PortfolioNavBar(
-            items: navItems,
-            activeIndex: activeIndex,
-            onTap: _scrollToSection,
-          ),
-        ],
+            
+            Positioned.fill(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: <Widget>[
+                    HeroSection(
+                      key: _sectionKeys[0],
+                      onViewProjects: () => _scrollToSection(4),
+                    ),
+                    _SectionWrapper(key: _sectionKeys[1], child: const AboutSection()),
+                    _SectionWrapper(key: _sectionKeys[2], child: const SkillsSection()),
+                    _SectionWrapper(key: _sectionKeys[3], child: const ExperienceSection()),
+                    _SectionWrapper(key: _sectionKeys[4], child: const ProjectsSection()),
+                    _SectionWrapper(key: _sectionKeys[5], child: const ContactSection()),
+                    const FooterSection(),
+                  ],
+                ),
+              ),
+            ),
+
+            // Scroll progress indicator
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 4,
+                alignment: Alignment.centerLeft,
+                child: FractionallySizedBox(
+                  widthFactor: _scrollProgress,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.blue, Colors.purple],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            PortfolioNavBar(
+              items: navItems,
+              activeIndex: activeIndex,
+              onTap: _scrollToSection,
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
+
+class _SectionWrapper extends StatelessWidget {
+  const _SectionWrapper({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return child.animate().fadeIn(duration: 800.ms).moveY(begin: 40, end: 0, curve: Curves.easeOutCubic);
+  }
 }
