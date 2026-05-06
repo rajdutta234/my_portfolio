@@ -8,7 +8,9 @@ class AppRoutes {
   static const String experience = '/experience';
   static const String projects = '/projects';
   static const String certificates = '/certificates';
+  static const String work = '/work';
   static const String contact = '/contact';
+
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     final String? name = settings.name;
@@ -19,33 +21,21 @@ class AppRoutes {
         settings: settings,
       );
     }
-    if (name == skills) {
+    if (name == experience) {
       return MaterialPageRoute<void>(
         builder: (_) => const PortfolioPage(initialSectionIndex: 2),
         settings: settings,
       );
     }
-    if (name == experience) {
+    if (name == work || name == projects || name == skills || name == certificates) {
       return MaterialPageRoute<void>(
         builder: (_) => const PortfolioPage(initialSectionIndex: 3),
         settings: settings,
       );
     }
-    if (name == projects) {
-      return MaterialPageRoute<void>(
-        builder: (_) => const PortfolioPage(initialSectionIndex: 4),
-        settings: settings,
-      );
-    }
-    if (name == certificates) {
-      return MaterialPageRoute<void>(
-        builder: (_) => const PortfolioPage(initialSectionIndex: 5),
-        settings: settings,
-      );
-    }
     if (name == contact) {
       return MaterialPageRoute<void>(
-        builder: (_) => const PortfolioPage(initialSectionIndex: 6),
+        builder: (_) => const PortfolioPage(initialSectionIndex: 4),
         settings: settings,
       );
     }
@@ -55,4 +45,5 @@ class AppRoutes {
       settings: settings,
     );
   }
-}
+}
+

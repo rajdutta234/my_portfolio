@@ -6,6 +6,8 @@ class Project {
     required this.githubUrl,
     required this.demoUrl,
     this.imageUrl,
+    this.contributions = const [],
+    this.impact = const [],
   });
 
   final String title;
@@ -14,4 +16,7 @@ class Project {
   final String githubUrl;
   final String demoUrl;
   final String? imageUrl;
+  final List<String> contributions;
+  final List<String> impact;
 }
+

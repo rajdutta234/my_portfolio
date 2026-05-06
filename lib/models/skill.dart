@@ -16,8 +16,11 @@ class SkillCategory {
   const SkillCategory({
     required this.title,
     required this.skills,
+    required this.icon,
   });
 
   final String title;
   final List<SkillItem> skills;
+  final IconData icon;
 }
+

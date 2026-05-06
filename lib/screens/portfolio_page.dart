@@ -9,8 +9,7 @@ import '../widgets/sections/contact_section.dart';
 import '../widgets/sections/experience_section.dart';
 import '../widgets/sections/footer_section.dart';
 import '../widgets/sections/hero_section.dart';
-import '../widgets/sections/projects_section.dart';
-import '../widgets/sections/skills_section.dart';
+import '../widgets/sections/work_section.dart';
 import '../widgets/common/animated_background.dart';
 import '../widgets/common/nav_bar.dart';
 import '../widgets/common/custom_cursor.dart';
@@ -135,13 +134,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
                   children: <Widget>[
                     HeroSection(
                       key: _sectionKeys[0],
-                      onViewProjects: () => _scrollToSection(4),
+                      onViewProjects: () => _scrollToSection(3),
                     ),
                     _SectionWrapper(key: _sectionKeys[1], child: const AboutSection()),
-                    _SectionWrapper(key: _sectionKeys[2], child: const SkillsSection()),
-                    _SectionWrapper(key: _sectionKeys[3], child: const ExperienceSection()),
-                    _SectionWrapper(key: _sectionKeys[4], child: const ProjectsSection()),
-                    _SectionWrapper(key: _sectionKeys[5], child: const ContactSection()),
+                    _SectionWrapper(key: _sectionKeys[2], child: const ExperienceSection()),
+                    _SectionWrapper(key: _sectionKeys[3], child: const WorkSection()),
+                    _SectionWrapper(key: _sectionKeys[4], child: const ContactSection()),
                     const FooterSection(),
                   ],
                 ),

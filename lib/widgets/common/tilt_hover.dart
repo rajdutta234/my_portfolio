@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart' as v;
+
 
 class TiltHover extends StatefulWidget {
+
   const TiltHover({
     super.key,
     required this.child,
@@ -56,7 +59,10 @@ class _TiltHoverState extends State<TiltHover> {
               ..setEntry(3, 2, 0.0012) // perspective
               ..rotateX(-dy * widget.maxTilt * value)
               ..rotateY(dx * widget.maxTilt * value)
-              ..scale(1 + (widget.scale - 1) * value),
+              ..scaleByVector3(v.Vector3(1 + (widget.scale - 1) * value, 1 + (widget.scale - 1) * value, 1.0)),
+
+
+
             alignment: FractionalOffset.center,
             child: child,
           );
