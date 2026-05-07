@@ -113,19 +113,25 @@ class _ProjectsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: projects.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: mobile ? 1 : 2,
-        crossAxisSpacing: 28,
-        mainAxisSpacing: 32,
-        childAspectRatio: mobile ? 1.0 : 0.95,
-      ),
-      itemBuilder: (context, index) {
-        final Project project = projects[index];
-        return _ProjectCard(project: project, index: index, mobile: mobile);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = constraints.maxWidth;
+        final double itemWidth = mobile ? width : (width - 28) / 2;
+
+        return Wrap(
+          spacing: 28,
+          runSpacing: 32,
+          children: projects.asMap().entries.map((entry) {
+            return SizedBox(
+              width: itemWidth,
+              child: _ProjectCard(
+                project: entry.value,
+                index: entry.key,
+                mobile: mobile,
+              ),
+            );
+          }).toList(),
+        );
       },
     );
   }
@@ -137,22 +143,27 @@ class _CertificatesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: certificates.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: mobile ? 1 : 2,
-        crossAxisSpacing: 24,
-        mainAxisSpacing: 24,
-        childAspectRatio: mobile ? 1.25 : 1.4,
-      ),
-      itemBuilder: (context, index) {
-        final certificate = certificates[index];
-        return _CertificateCard(certificate: certificate)
-            .animate()
-            .fadeIn(delay: (index * 100).ms)
-            .scale(begin: const Offset(0.95, 0.95));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = constraints.maxWidth;
+        final double itemWidth = mobile ? width : (width - 24) / 2;
+
+        return Wrap(
+          spacing: 24,
+          runSpacing: 24,
+          children: certificates.asMap().entries.map((entry) {
+            final index = entry.key;
+            final certificate = entry.value;
+            return SizedBox(
+              width: itemWidth,
+              height: itemWidth / (mobile ? 1.25 : 1.4),
+              child: _CertificateCard(certificate: certificate)
+                  .animate()
+                  .fadeIn(delay: (index * 100).ms)
+                  .scale(begin: const Offset(0.95, 0.95)),
+            );
+          }).toList(),
+        );
       },
     );
   }
@@ -164,22 +175,26 @@ class _TechStackTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: skills.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: mobile ? 1 : 2,
-        crossAxisSpacing: 24,
-        mainAxisSpacing: 24,
-        childAspectRatio: mobile ? 1.2 : 0.9,
-      ),
-      itemBuilder: (context, index) {
-        final category = skills[index];
-        return _SkillCategoryCard(
-          category: category,
-          index: index,
-        ).animate().fadeIn(delay: (index * 100).ms).moveY(begin: 20, end: 0);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = constraints.maxWidth;
+        final double itemWidth = mobile ? width : (width - 24) / 2;
+
+        return Wrap(
+          spacing: 24,
+          runSpacing: 24,
+          children: skills.asMap().entries.map((entry) {
+            final index = entry.key;
+            final category = entry.value;
+            return SizedBox(
+              width: itemWidth,
+              child: _SkillCategoryCard(
+                category: category,
+                index: index,
+              ).animate().fadeIn(delay: (index * 100).ms).moveY(begin: 20, end: 0),
+            );
+          }).toList(),
+        );
       },
     );
   }
