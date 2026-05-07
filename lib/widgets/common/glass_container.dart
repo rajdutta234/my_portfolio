@@ -19,7 +19,7 @@ class GlassContainer extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
@@ -28,23 +28,29 @@ class GlassContainer extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: <Color>[
-                Colors.white.withValues(alpha: 0.18),
-                Colors.white.withValues(alpha: 0.06),
+                const Color(0xFF1E2A3E).withValues(alpha: 0.42),
+                const Color(0xFF101B2D).withValues(alpha: 0.22),
               ],
             ),
-            border: Border.all(color: Colors.transparent), // Use decoration border instead
+            border: Border.all(color: Colors.transparent),
           ),
           child: Stack(
             children: [
-              // Border Gradient Effect
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(borderRadius),
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.1),
+                      color: Colors.white.withValues(alpha: 0.16),
                       width: 1,
                     ),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: const Color(0xFF00C2FF).withValues(alpha: 0.08),
+                        blurRadius: 30,
+                        spreadRadius: 2,
+                      ),
+                    ],
                   ),
                 ),
               ),

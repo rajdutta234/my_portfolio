@@ -60,22 +60,23 @@ class _TimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool mobile = MediaQuery.sizeOf(context).width < 760;
+
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Timeline indicator
           Column(
             children: [
               Container(
-                width: 16,
-                height: 16,
+                width: mobile ? 14 : 16,
+                height: mobile ? 14 : 16,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white,
-                  boxShadow: [
+                  color: const Color(0xFF56F3D6),
+                  boxShadow: <BoxShadow>[
                     BoxShadow(
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: const Color(0xFF56F3D6).withValues(alpha: 0.35),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),
@@ -90,101 +91,127 @@ class _TimelineItem extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white,
+                        colors: <Color>[
+                          const Color(0xFF56F3D6),
                           Colors.white.withValues(alpha: 0.05),
                         ],
                       ),
                     ),
                   ),
-                ).animate().scaleY(delay: (index * 200 + 400).ms, duration: 600.ms, alignment: Alignment.topCenter),
+                ).animate().scaleY(
+                  delay: (index * 200 + 400).ms,
+                  duration: 600.ms,
+                  alignment: Alignment.topCenter,
+                ),
             ],
           ),
-          const SizedBox(width: 24),
-          // Content
+          SizedBox(width: mobile ? 16 : 24),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 40),
-              child: GlassContainer(
-                padding: const EdgeInsets.all(28),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            experience.organization,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: -0.5,
+              padding: EdgeInsets.only(bottom: mobile ? 26 : 40),
+              child:
+                  GlassContainer(
+                        padding: EdgeInsets.all(mobile ? 18 : 28),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 10,
+                              alignment: WrapAlignment.spaceBetween,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: mobile ? 240 : 500,
+                                  ),
+                                  child: Text(
+                                    experience.organization,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: -0.5,
+                                          fontSize: mobile ? 18 : null,
+                                        ),
+                                  ),
                                 ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.05),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white12),
-                          ),
-                          child: Text(
-                            experience.duration,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white70,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(
+                                      0xFF0D1829,
+                                    ).withValues(alpha: 0.6),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.white24),
+                                  ),
+                                  child: Text(
+                                    experience.duration,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                            const SizedBox(height: 8),
+                            Text(
+                              experience.role,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.8),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            ...experience.description.map(
+                              (line) => Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white38,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Text(
+                                        line,
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.7,
+                                          ),
+                                          height: 1.6,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      experience.role,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ...experience.description.map((line) => Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 6),
-                                child: Container(
-                                  width: 6,
-                                  height: 6,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white38,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Text(
-                                  line,
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.7),
-                                    height: 1.6,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
-                  ],
-                ),
-              ).animate().fadeIn(delay: (index * 200 + 100).ms).moveX(begin: 30, end: 0),
+                      )
+                      .animate()
+                      .fadeIn(delay: (index * 200 + 100).ms)
+                      .moveX(begin: 30, end: 0),
             ),
           ),
         ],

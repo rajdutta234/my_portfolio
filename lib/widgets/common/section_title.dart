@@ -1,11 +1,7 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 
 class SectionTitle extends StatelessWidget {
-  const SectionTitle({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
+  const SectionTitle({super.key, required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -17,15 +13,15 @@ class SectionTitle extends StatelessWidget {
       children: <Widget>[
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
-            colors: [Colors.white, Colors.white70],
+            colors: [Color(0xFFCBFDF5), Color(0xFF9CD4EA)],
           ).createShader(bounds),
           child: Text(
             title,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.5,
-                  height: 1.1,
-                ),
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.5,
+              height: 1.1,
+            ),
           ),
         ),
         const SizedBox(height: 10),
@@ -38,7 +34,9 @@ class SectionTitle extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).colorScheme.tertiary,
-                    Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.3),
+                    Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.4),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(10),
@@ -59,11 +57,11 @@ class SectionTitle extends StatelessWidget {
         Text(
           subtitle,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white60,
-                fontWeight: FontWeight.w400,
-                height: 1.4,
-                letterSpacing: 0.1,
-              ),
+            color: Colors.white60,
+            fontWeight: FontWeight.w400,
+            height: 1.4,
+            letterSpacing: 0.1,
+          ),
         ),
       ],
     );

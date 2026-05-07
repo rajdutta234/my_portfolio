@@ -26,8 +26,10 @@ class PortfolioPage extends StatefulWidget {
 
 class _PortfolioPageState extends State<PortfolioPage> {
   final ScrollController _scrollController = ScrollController();
-  final List<GlobalKey> _sectionKeys =
-      List<GlobalKey>.generate(navItems.length, (_) => GlobalKey());
+  final List<GlobalKey> _sectionKeys = List<GlobalKey>.generate(
+    navItems.length,
+    (_) => GlobalKey(),
+  );
 
   bool _initialJumpHandled = false;
   double _scrollProgress = 0;
@@ -37,11 +39,14 @@ class _PortfolioPageState extends State<PortfolioPage> {
     super.initState();
     _scrollController.addListener(_handleScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || _initialJumpHandled || widget.initialSectionIndex == null) {
+      if (!mounted ||
+          _initialJumpHandled ||
+          widget.initialSectionIndex == null) {
         return;
       }
       _initialJumpHandled = true;
-      context.read<AppNotifier>().activeSectionIndex = widget.initialSectionIndex!;
+      context.read<AppNotifier>().activeSectionIndex =
+          widget.initialSectionIndex!;
       _scrollToSection(widget.initialSectionIndex!);
     });
   }
@@ -59,7 +64,10 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
     if (_scrollController.hasClients) {
       setState(() {
-        _scrollProgress = (_scrollController.offset / _scrollController.position.maxScrollExtent).clamp(0, 1);
+        _scrollProgress =
+            (_scrollController.offset /
+                    _scrollController.position.maxScrollExtent)
+                .clamp(0, 1);
       });
     }
 
@@ -98,6 +106,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
   @override
   Widget build(BuildContext context) {
     final int activeIndex = context.watch<AppNotifier>().activeSectionIndex;
+    final bool mobile = MediaQuery.sizeOf(context).width < 760;
 
     return Scaffold(
       body: CustomCursor(
@@ -105,8 +114,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
           children: <Widget>[
             const Positioned.fill(child: AnimatedBackground()),
             const Positioned.fill(child: NoiseOverlay()),
-            
-            // Decorative blobs
+
             Positioned(
               top: -130,
               right: -80,
@@ -118,7 +126,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: <Color>[
-                        Colors.blue.withValues(alpha: 0.15),
+                        const Color(0xFF00C2FF).withValues(alpha: 0.14),
                         Colors.transparent,
                       ],
                     ),
@@ -126,7 +134,45 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 ),
               ),
             ),
-            
+            Positioned(
+              bottom: 200,
+              left: -100,
+              child: IgnorePointer(
+                child: Container(
+                  width: 450,
+                  height: 450,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: <Color>[
+                        const Color(0xFF56F3D6).withValues(alpha: 0.09),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 800,
+              right: -150,
+              child: IgnorePointer(
+                child: Container(
+                  width: 400,
+                  height: 400,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: <Color>[
+                        const Color(0xFF2F5B82).withValues(alpha: 0.08),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
             Positioned.fill(
               child: SingleChildScrollView(
                 controller: _scrollController,
@@ -136,31 +182,54 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       key: _sectionKeys[0],
                       onViewProjects: () => _scrollToSection(3),
                     ),
-                    _SectionWrapper(key: _sectionKeys[1], child: const AboutSection()),
-                    _SectionWrapper(key: _sectionKeys[2], child: const ExperienceSection()),
-                    _SectionWrapper(key: _sectionKeys[3], child: const WorkSection()),
-                    _SectionWrapper(key: _sectionKeys[4], child: const ContactSection()),
+                    _SectionWrapper(
+                      key: _sectionKeys[1],
+                      child: const AboutSection(),
+                    ),
+                    _SectionWrapper(
+                      key: _sectionKeys[2],
+                      child: const ExperienceSection(),
+                    ),
+                    _SectionWrapper(
+                      key: _sectionKeys[3],
+                      child: const WorkSection(),
+                    ),
+                    _SectionWrapper(
+                      key: _sectionKeys[4],
+                      child: const ContactSection(),
+                    ),
                     const FooterSection(),
                   ],
                 ),
               ),
             ),
 
-            // Scroll progress indicator
             Positioned(
               top: 0,
               left: 0,
               right: 0,
               child: Container(
-                height: 4,
+                height: mobile ? 3 : 4,
                 alignment: Alignment.centerLeft,
                 child: FractionallySizedBox(
                   widthFactor: _scrollProgress,
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.blue, Colors.purple],
+                        colors: <Color>[
+                          const Color(0xFF56F3D6).withValues(alpha: 0.95),
+                          const Color(0xFF00C2FF).withValues(alpha: 0.95),
+                        ],
                       ),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: const Color(
+                            0xFF00C2FF,
+                          ).withValues(alpha: 0.45),
+                          blurRadius: 12,
+                          spreadRadius: 1,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -185,6 +254,9 @@ class _SectionWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return child.animate().fadeIn(duration: 800.ms).moveY(begin: 40, end: 0, curve: Curves.easeOutCubic);
+    return child
+        .animate()
+        .fadeIn(duration: 800.ms)
+        .moveY(begin: 40, end: 0, curve: Curves.easeOutCubic);
   }
 }

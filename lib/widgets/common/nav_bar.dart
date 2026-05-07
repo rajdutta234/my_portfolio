@@ -30,7 +30,9 @@ class _PortfolioNavBarState extends State<PortfolioNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isCompact = MediaQuery.sizeOf(context).width < 880;
+    final Size size = MediaQuery.sizeOf(context);
+    final bool mobile = size.width < 760;
+    final bool isCompact = size.width < 980;
 
     return Align(
       alignment: Alignment.topCenter,
@@ -38,25 +40,34 @@ class _PortfolioNavBarState extends State<PortfolioNavBar> {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: GlassContainer(
           borderRadius: 999,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Stack(
-            children: [
-              // Sliding Indicator
-              _AnimatedIndicator(
-                activeIndex: widget.activeIndex,
-                itemKeys: _itemKeys,
-              ),
-              
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: isCompact ? null : const NeverScrollableScrollPhysics(),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: _buildItems(),
-                ),
-              ),
-            ],
+          padding: EdgeInsets.symmetric(
+            horizontal: mobile ? 12 : 10,
+            vertical: mobile ? 10 : 8,
           ),
+          child: mobile
+              ? _MobileNav(
+                  items: widget.items,
+                  activeIndex: widget.activeIndex,
+                  onTap: widget.onTap,
+                )
+              : Stack(
+                  children: <Widget>[
+                    _AnimatedIndicator(
+                      activeIndex: widget.activeIndex,
+                      itemKeys: _itemKeys,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: isCompact
+                          ? null
+                          : const NeverScrollableScrollPhysics(),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: _buildItems(),
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
@@ -85,7 +96,9 @@ class _AnimatedIndicator extends StatelessWidget {
     return AnimatedBuilder(
       animation: Listenable.merge([]), // We'll rely on build triggers
       builder: (context, child) {
-        final RenderBox? box = itemKeys[activeIndex]?.currentContext?.findRenderObject() as RenderBox?;
+        final RenderBox? box =
+            itemKeys[activeIndex]?.currentContext?.findRenderObject()
+                as RenderBox?;
         if (box == null) return const SizedBox.shrink();
 
         final RenderBox? parent = box.parent as RenderBox?;
@@ -121,7 +134,12 @@ class _AnimatedIndicator extends StatelessWidget {
 }
 
 class _NavItem extends StatefulWidget {
-  const _NavItem({super.key, required this.title, required this.selected, required this.onTap});
+  const _NavItem({
+    super.key,
+    required this.title,
+    required this.selected,
+    required this.onTap,
+  });
   final String title;
   final bool selected;
   final VoidCallback onTap;
@@ -141,15 +159,78 @@ class _NavItemState extends State<_NavItem> {
           style: TextStyle(
             color: widget.selected ? Colors.black : Colors.white70,
             fontWeight: FontWeight.w800,
-            fontSize: 14,
-            letterSpacing: 0.5,
+            fontSize: 13,
+            letterSpacing: 0.8,
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             child: Text(widget.title.toUpperCase()),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _MobileNav extends StatelessWidget {
+  const _MobileNav({
+    required this.items,
+    required this.activeIndex,
+    required this.onTap,
+  });
+
+  final List<String> items;
+  final int activeIndex;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Container(
+          width: 10,
+          height: 10,
+          decoration: const BoxDecoration(
+            color: Color(0xFF56F3D6),
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          items[activeIndex].toUpperCase(),
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.0,
+            fontSize: 13,
+          ),
+        ),
+        const Spacer(),
+        PopupMenuButton<int>(
+          tooltip: 'Navigate sections',
+          icon: const Icon(Icons.grid_view_rounded, size: 20),
+          color: const Color(0xFF101B2D),
+          onSelected: onTap,
+          itemBuilder: (BuildContext context) {
+            return List<PopupMenuEntry<int>>.generate(
+              items.length,
+              (int index) => PopupMenuItem<int>(
+                value: index,
+                child: Text(
+                  items[index],
+                  style: TextStyle(
+                    color: index == activeIndex
+                        ? const Color(0xFF56F3D6)
+                        : Colors.white,
+                    fontWeight: index == activeIndex
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

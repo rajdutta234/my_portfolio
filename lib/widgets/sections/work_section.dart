@@ -8,8 +8,6 @@ import '../../models/skill.dart';
 import '../common/glass_container.dart';
 import '../common/link_utils.dart';
 import '../common/section_title.dart';
-import '../common/perspective_scroll.dart';
-
 
 class WorkSection extends StatefulWidget {
   const WorkSection({super.key});
@@ -18,7 +16,8 @@ class WorkSection extends StatefulWidget {
   State<WorkSection> createState() => _WorkSectionState();
 }
 
-class _WorkSectionState extends State<WorkSection> with TickerProviderStateMixin {
+class _WorkSectionState extends State<WorkSection>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   int _activeIndex = 0;
 
@@ -41,7 +40,7 @@ class _WorkSectionState extends State<WorkSection> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 700;
+    final bool mobile = MediaQuery.sizeOf(context).width < 760;
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 1200),
@@ -52,29 +51,35 @@ class _WorkSectionState extends State<WorkSection> with TickerProviderStateMixin
           children: <Widget>[
             const SectionTitle(
               title: 'EXPERTISE & ACHIEVEMENTS',
-              subtitle: 'A showcase of my projects, certifications, and technical skills',
+              subtitle:
+                  'A showcase of my projects, certifications, and technical skills',
             ).animate().fadeIn().moveX(begin: -30, end: 0),
             const SizedBox(height: 48),
-            
+
             // Tab Bar
             Container(
-              height: 60,
+              height: mobile ? 56 : 60,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.05),
+                color: const Color(0xFF0D1829).withValues(alpha: 0.52),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white12),
+                border: Border.all(color: Colors.white24),
               ),
               child: TabBar(
                 controller: _tabController,
+                isScrollable: mobile,
                 indicator: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF56F3D6),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
-                labelColor: Colors.black,
+                labelColor: const Color(0xFF021414),
                 unselectedLabelColor: Colors.white60,
-                labelStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14, letterSpacing: 1),
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                  letterSpacing: 1,
+                ),
                 padding: const EdgeInsets.all(4),
                 tabs: const [
                   Tab(text: 'PROJECTS'),
@@ -108,19 +113,20 @@ class _ProjectsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: projects.asMap().entries.map(
-        (entry) {
-          final int index = entry.key;
-          final Project project = entry.value;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 60),
-            child: PerspectiveScroll(
-              child: _ProjectCard(project: project, index: index, mobile: mobile),
-            ),
-          );
-        },
-      ).toList(),
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: projects.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: mobile ? 1 : 2,
+        crossAxisSpacing: 28,
+        mainAxisSpacing: 32,
+        childAspectRatio: mobile ? 1.0 : 0.95,
+      ),
+      itemBuilder: (context, index) {
+        final Project project = projects[index];
+        return _ProjectCard(project: project, index: index, mobile: mobile);
+      },
     );
   }
 }
@@ -139,11 +145,14 @@ class _CertificatesTab extends StatelessWidget {
         crossAxisCount: mobile ? 1 : 2,
         crossAxisSpacing: 24,
         mainAxisSpacing: 24,
-        childAspectRatio: 1.4,
+        childAspectRatio: mobile ? 1.25 : 1.4,
       ),
       itemBuilder: (context, index) {
         final certificate = certificates[index];
-        return _CertificateCard(certificate: certificate).animate().fadeIn(delay: (index * 100).ms).scale(begin: const Offset(0.95, 0.95));
+        return _CertificateCard(certificate: certificate)
+            .animate()
+            .fadeIn(delay: (index * 100).ms)
+            .scale(begin: const Offset(0.95, 0.95));
       },
     );
   }
@@ -167,17 +176,21 @@ class _TechStackTab extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         final category = skills[index];
-        return _SkillCategoryCard(category: category, index: index)
-            .animate()
-            .fadeIn(delay: (index * 100).ms)
-            .moveY(begin: 20, end: 0);
+        return _SkillCategoryCard(
+          category: category,
+          index: index,
+        ).animate().fadeIn(delay: (index * 100).ms).moveY(begin: 20, end: 0);
       },
     );
   }
 }
 
 class _ProjectCard extends StatefulWidget {
-  const _ProjectCard({required this.project, required this.index, required this.mobile});
+  const _ProjectCard({
+    required this.project,
+    required this.index,
+    required this.mobile,
+  });
   final Project project;
   final int index;
   final bool mobile;
@@ -200,7 +213,9 @@ class _ProjectCardState extends State<_ProjectCard> {
         child: Column(
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(32),
+              ),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Stack(
@@ -242,25 +257,33 @@ class _ProjectCardState extends State<_ProjectCard> {
                       Expanded(
                         child: Text(
                           widget.project.title,
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: -0.5,
                               ),
                         ),
                       ),
-                      if (widget.project.githubUrl.isNotEmpty || widget.project.demoUrl.isNotEmpty)
+                      if (widget.project.githubUrl.isNotEmpty ||
+                          widget.project.demoUrl.isNotEmpty)
                         Row(
                           children: [
                             if (widget.project.githubUrl.isNotEmpty)
                               IconButton(
                                 icon: const Icon(Icons.code),
-                                onPressed: () => openExternalLink(context, widget.project.githubUrl),
+                                onPressed: () => openExternalLink(
+                                  context,
+                                  widget.project.githubUrl,
+                                ),
                                 tooltip: 'Source Code',
                               ),
                             if (widget.project.demoUrl.isNotEmpty)
                               IconButton(
                                 icon: const Icon(Icons.launch),
-                                onPressed: () => openExternalLink(context, widget.project.demoUrl),
+                                onPressed: () => openExternalLink(
+                                  context,
+                                  widget.project.demoUrl,
+                                ),
                                 tooltip: 'Live Demo',
                               ),
                           ],
@@ -271,48 +294,93 @@ class _ProjectCardState extends State<_ProjectCard> {
                   Text(
                     widget.project.description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white70,
-                          height: 1.5,
-                        ),
+                      color: Colors.white70,
+                      height: 1.5,
+                    ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   if (widget.project.contributions.isNotEmpty) ...[
-                    const Text('KEY CONTRIBUTIONS', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: Colors.white, letterSpacing: 1.5)),
+                    const Text(
+                      'KEY CONTRIBUTIONS',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 12,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
                     const SizedBox(height: 12),
-                    ...widget.project.contributions.map((c) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 6),
-                                width: 5,
-                                height: 5,
-                                decoration: const BoxDecoration(color: Colors.white38, shape: BoxShape.circle),
+                    ...widget.project.contributions.map(
+                      (c) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 6),
+                              width: 5,
+                              height: 5,
+                              decoration: const BoxDecoration(
+                                color: Colors.white38,
+                                shape: BoxShape.circle,
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(child: Text(c, style: const TextStyle(fontSize: 13, color: Colors.white70, height: 1.5))),
-                            ],
-                          ),
-                        )),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                c,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white70,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 24),
                   ],
 
                   if (widget.project.impact.isNotEmpty) ...[
-                    const Text('IMPACT', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: Colors.white, letterSpacing: 1.5)),
+                    const Text(
+                      'IMPACT',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 12,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
                     const SizedBox(height: 12),
-                    ...widget.project.impact.map((i) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(Icons.bolt, size: 14, color: Colors.amber),
-                              const SizedBox(width: 10),
-                              Expanded(child: Text(i, style: const TextStyle(fontSize: 13, color: Colors.white70, height: 1.5))),
-                            ],
-                          ),
-                        )),
+                    ...widget.project.impact.map(
+                      (i) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.bolt,
+                              size: 14,
+                              color: Colors.amber,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                i,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white70,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 24),
                   ],
 
@@ -320,15 +388,29 @@ class _ProjectCardState extends State<_ProjectCard> {
                     spacing: 8,
                     runSpacing: 8,
                     children: widget.project.stack
-                        .map((s) => Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white10),
+                        .map(
+                          (s) => Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(
+                                0xFF0D1829,
+                              ).withValues(alpha: 0.62),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.white24),
+                            ),
+                            child: Text(
+                              s,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
                               ),
-                              child: Text(s, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
-                            ))
+                            ),
+                          ),
+                        )
                         .toList(),
                   ),
                 ],
@@ -340,7 +422,6 @@ class _ProjectCardState extends State<_ProjectCard> {
     );
   }
 }
-
 
 class _CertificateCard extends StatefulWidget {
   const _CertificateCard({required this.certificate});
@@ -387,16 +468,26 @@ class _CertificateCardState extends State<_CertificateCard> {
                     Text(
                       widget.certificate.title,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       widget.certificate.issuer,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                      ),
                     ),
                     const SizedBox(height: 16),
-                    const Icon(Icons.workspace_premium, color: Colors.amber, size: 32),
+                    const Icon(
+                      Icons.workspace_premium,
+                      color: Colors.amber,
+                      size: 32,
+                    ),
                   ],
                 ),
               ),
@@ -426,37 +517,55 @@ class _SkillCategoryCard extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 category.title,
-                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: -0.5),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                  letterSpacing: -0.5,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 20),
 
-          ...category.skills.map((s) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(s.name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                        Text('${(s.proficiency * 100).toInt()}%', style: const TextStyle(color: Colors.white54, fontSize: 12)),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: s.proficiency,
-                        backgroundColor: Colors.white.withValues(alpha: 0.05),
-                        valueColor: const AlwaysStoppedAnimation(Colors.white),
-                        minHeight: 4,
+          ...category.skills.map(
+            (s) => Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        s.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
                       ),
+                      Text(
+                        '${(s.proficiency * 100).toInt()}%',
+                        style: const TextStyle(
+                          color: Colors.white54,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: s.proficiency,
+                      backgroundColor: Colors.white.withValues(alpha: 0.05),
+                      valueColor: const AlwaysStoppedAnimation(Colors.white),
+                      minHeight: 4,
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
