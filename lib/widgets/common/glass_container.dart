@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class GlassContainer extends StatelessWidget {
@@ -16,46 +15,39 @@ class GlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(borderRadius),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                const Color(0xFF1E2A3E).withValues(alpha: 0.42),
-                const Color(0xFF101B2D).withValues(alpha: 0.22),
-              ],
-            ),
-            border: Border.all(color: Colors.transparent),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 40,
+            offset: const Offset(0, 10),
           ),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.16),
-                      width: 1,
-                    ),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        color: const Color(0xFF00C2FF).withValues(alpha: 0.08),
-                        blurRadius: 30,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.12),
+                width: 1.5,
               ),
-              child,
-            ],
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  const Color(0xFFFFFFFF).withValues(alpha: 0.06),
+                  const Color(0xFFFFFFFF).withValues(alpha: 0.02),
+                ],
+              ),
+            ),
+            child: child,
           ),
         ),
       ),
