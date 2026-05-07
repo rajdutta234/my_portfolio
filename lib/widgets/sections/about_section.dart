@@ -79,46 +79,48 @@ class AboutSection extends StatelessWidget {
               
               // Personal & Hobbies Cards
               RevealOnScroll(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: GlassContainer(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-                        borderRadius: 24,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const _InfoSubTitle(title: 'PERSONAL DETAILS'),
-                            const SizedBox(height: 28),
-                            const _InfoRow(label: 'Born', value: '02 November 2005'),
-                            const _InfoRow(label: 'Nationality', value: 'Indian'),
-                            const _InfoRow(label: 'Languages', value: 'English, Hindi, Bengali'),
-                            const _InfoRow(label: 'Location', value: 'Kolkata, India'),
-                          ],
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: GlassContainer(
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+                          borderRadius: 24,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _InfoSubTitle(title: 'PERSONAL DETAILS'),
+                              const SizedBox(height: 28),
+                              const _InfoRow(label: 'Born', value: '02 November 2005'),
+                              const _InfoRow(label: 'Nationality', value: 'Indian'),
+                              const _InfoRow(label: 'Languages', value: 'English, Hindi, Bengali'),
+                              const _InfoRow(label: 'Location', value: 'Kolkata, India'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 32),
-                    Expanded(
-                      flex: 2,
-                      child: GlassContainer(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-                        borderRadius: 24,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const _InfoSubTitle(title: 'BEYOND CODE'),
-                            const SizedBox(height: 28),
-                            const _HobbyItem(icon: Icons.videocam_rounded, label: 'Content Creator'),
-                            const _HobbyItem(icon: Icons.sports_soccer_rounded, label: 'Football & Badminton'),
-                            const _HobbyItem(icon: Icons.flight_rounded, label: 'Travel Lifestyle'),
-                          ],
+                      const SizedBox(width: 32),
+                      Expanded(
+                        flex: 2,
+                        child: GlassContainer(
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+                          borderRadius: 24,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _InfoSubTitle(title: 'BEYOND CODE'),
+                              const SizedBox(height: 28),
+                              const _HobbyItem(icon: Icons.videocam_rounded, label: 'Content Creator'),
+                              const _HobbyItem(icon: Icons.sports_soccer_rounded, label: 'Football & Badminton'),
+                              const _HobbyItem(icon: Icons.flight_rounded, label: 'Travel Lifestyle'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

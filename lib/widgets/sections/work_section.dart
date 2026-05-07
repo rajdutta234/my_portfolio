@@ -43,65 +43,74 @@ class _WorkSectionState extends State<WorkSection>
   Widget build(BuildContext context) {
     final bool mobile = MediaQuery.sizeOf(context).width < 760;
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 1300),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 100),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const SectionTitle(
-              title: 'EXPERTISE & ACHIEVEMENTS',
-              subtitle:
-                  'A showcase of my projects, certifications, and technical skills',
-            ).animate().fadeIn().moveX(begin: -30, end: 0),
-            const SizedBox(height: 48),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1300),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SectionTitle(
+                title: 'Expertise & Work',
+                subtitle:
+                    'A professional showcase of my projects, certifications, and technical proficiencies',
+              ).animate().fadeIn().moveX(begin: -30, end: 0),
+              const SizedBox(height: 60),
 
-            // Tab Bar
-            Container(
-              height: mobile ? 56 : 60,
-              decoration: BoxDecoration(
-                color: const Color(0xFF0D1829).withValues(alpha: 0.52),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white24),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: mobile,
-                indicator: BoxDecoration(
-                  color: const Color(0xFF56F3D6),
-                  borderRadius: BorderRadius.circular(16),
+              // Premium Tab Bar
+              Container(
+                height: mobile ? 56 : 64,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0D1829).withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white12),
                 ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerColor: Colors.transparent,
-                labelColor: const Color(0xFF021414),
-                unselectedLabelColor: Colors.white60,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 14,
-                  letterSpacing: 1,
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: mobile,
+                  indicator: BoxDecoration(
+                    color: const Color(0xFF56F3D6),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                        blurRadius: 15,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  labelColor: const Color(0xFF021414),
+                  unselectedLabelColor: Colors.white60,
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 13,
+                    letterSpacing: 1.5,
+                  ),
+                  padding: const EdgeInsets.all(6),
+                  tabs: const [
+                    Tab(text: 'PROJECTS'),
+                    Tab(text: 'CERTIFICATES'),
+                    Tab(text: 'SKILLS'),
+                  ],
                 ),
-                padding: const EdgeInsets.all(4),
-                tabs: const [
-                  Tab(text: 'PROJECTS'),
-                  Tab(text: 'CERTIFICATES'),
-                  Tab(text: 'TECH STACK'),
-                ],
               ),
-            ),
-            const SizedBox(height: 60),
+              const SizedBox(height: 60),
 
-            // Tab Content
-            AnimatedSize(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-              child: [
-                _ProjectsTab(mobile: mobile),
-                _CertificatesTab(mobile: mobile),
-                _TechStackTab(mobile: mobile),
-              ][_activeIndex],
-            ),
-          ],
+              // Animated Content
+              AnimatedSize(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+                child: [
+                  _ProjectsTab(mobile: mobile),
+                  _CertificatesTab(mobile: mobile),
+                  _TechStackTab(mobile: mobile),
+                ][_activeIndex],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -117,9 +126,8 @@ class _ProjectsTab extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double width = constraints.maxWidth;
-        // 3 columns on desktop for "slightly smaller" cards
         final int crossAxisCount = mobile ? 1 : 3;
-        final double spacing = mobile ? 24.0 : 32.0;
+        final double spacing = 32.0;
         final double itemWidth =
             (width - (spacing * (crossAxisCount - 1))) / crossAxisCount;
 
@@ -157,7 +165,7 @@ class _ProjectCard extends StatelessWidget {
   void _showProjectDetails(BuildContext context) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.85),
+      barrierColor: Colors.black.withValues(alpha: 0.9),
       builder: (context) => _ProjectDetailDialog(project: project),
     );
   }
@@ -165,12 +173,12 @@ class _ProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PerspectiveCard(
-      maxTilt: 0.1,
+      maxTilt: 0.08,
       child: InkWell(
         onTap: () => _showProjectDetails(context),
         borderRadius: BorderRadius.circular(28),
         child: GlassContainer(
-          padding: const EdgeInsets.all(0),
+          padding: EdgeInsets.zero,
           borderRadius: 28,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +194,7 @@ class _ProjectCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -200,13 +208,13 @@ class _ProjectCard extends StatelessWidget {
                         letterSpacing: -0.2,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Text(
                       project.stack.take(3).join(' • '),
                       style: const TextStyle(
                         color: Color(0xFF56F3D6),
                         fontSize: 11,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w800,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -238,7 +246,7 @@ class _ProjectDetailDialog extends StatelessWidget {
           child: PerspectiveCard(
             maxTilt: 0.04,
             child: GlassContainer(
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               borderRadius: 32,
               child: SingleChildScrollView(
                 child: Column(
@@ -256,12 +264,12 @@ class _ProjectDetailDialog extends StatelessWidget {
                           ),
                         ),
                         Positioned(
-                          top: 16,
-                          right: 16,
+                          top: 20,
+                          right: 20,
                           child: CircleAvatar(
                             backgroundColor: Colors.black54,
                             child: IconButton(
-                              icon: const Icon(Icons.close, color: Colors.white),
+                              icon: const Icon(Icons.close, color: Colors.white, size: 20),
                               onPressed: () => Navigator.pop(context),
                             ),
                           ),
@@ -269,7 +277,7 @@ class _ProjectDetailDialog extends StatelessWidget {
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.all(mobile ? 24 : 40),
+                      padding: EdgeInsets.all(mobile ? 24 : 48),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -305,37 +313,42 @@ class _ProjectDetailDialog extends StatelessWidget {
                             style: TextStyle(
                               fontSize: mobile ? 14 : 16,
                               color: Colors.white70,
-                              height: 1.6,
+                              height: 1.7,
+                              letterSpacing: 0.2,
                             ),
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 40),
                           if (project.contributions.isNotEmpty) ...[
                             const Text(
-                              'KEY CONTRIBUTIONS',
+                              'PROJECT CONTRIBUTIONS',
                               style: TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 13,
-                                letterSpacing: 2,
+                                letterSpacing: 2.5,
                                 color: Color(0xFF56F3D6),
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 20),
                             ...project.contributions.map(
                               (c) => Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.only(bottom: 16),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Padding(
-                                      padding: EdgeInsets.only(top: 6),
-                                      child: Icon(Icons.check_circle,
-                                          size: 16, color: Color(0xFF56F3D6)),
+                                      padding: EdgeInsets.only(top: 4),
+                                      child: Icon(Icons.bolt_rounded,
+                                          size: 18, color: Color(0xFF56F3D6)),
                                     ),
-                                    const SizedBox(width: 14),
+                                    const SizedBox(width: 16),
                                     Expanded(
                                       child: Text(
                                         c,
-                                        style: const TextStyle(color: Colors.white70, height: 1.4),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          height: 1.5,
+                                          fontSize: 14.5,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -343,7 +356,7 @@ class _ProjectDetailDialog extends StatelessWidget {
                               ),
                             ),
                           ],
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 40),
                           Wrap(
                             spacing: 12,
                             runSpacing: 12,
@@ -351,17 +364,18 @@ class _ProjectDetailDialog extends StatelessWidget {
                                 .map(
                                   (s) => Container(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     decoration: BoxDecoration(
                                       color: Colors.white.withValues(alpha: 0.05),
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white12),
+                                      border: Border.all(color: Colors.white10),
                                     ),
                                     child: Text(
                                       s,
                                       style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.5,
                                       ),
                                     ),
                                   ),
@@ -413,7 +427,7 @@ class _CertificatesTab extends StatelessWidget {
       builder: (context, constraints) {
         final double width = constraints.maxWidth;
         final int crossAxisCount = mobile ? 2 : 4;
-        final double spacing = 20.0;
+        final double spacing = 24.0;
         final double itemWidth = (width - (spacing * (crossAxisCount - 1))) / crossAxisCount;
 
         return Wrap(
@@ -424,9 +438,9 @@ class _CertificatesTab extends StatelessWidget {
             final certificate = entry.value;
             return SizedBox(
               width: itemWidth,
-              height: itemWidth * 0.8,
+              height: itemWidth * 0.85,
               child: PerspectiveCard(
-                maxTilt: 0.1,
+                maxTilt: 0.12,
                 child: _CertificateCard(certificate: certificate),
               )
                   .animate()
@@ -449,11 +463,11 @@ class _TechStackTab extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double width = constraints.maxWidth;
-        final double itemWidth = mobile ? width : (width - 24) / 2;
+        final double itemWidth = mobile ? width : (width - 32) / 2;
 
         return Wrap(
-          spacing: 24,
-          runSpacing: 24,
+          spacing: 32,
+          runSpacing: 32,
           children: skills.asMap().entries.map((entry) {
             final index = entry.key;
             final category = entry.value;
@@ -491,7 +505,7 @@ class _CertificateCardState extends State<_CertificateCard> {
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: GlassContainer(
-        padding: const EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         borderRadius: 24,
         child: Stack(
           children: [
@@ -505,14 +519,14 @@ class _CertificateCardState extends State<_CertificateCard> {
               ),
             ),
             AnimatedOpacity(
-              opacity: _hovered ? 0.9 : 0.0,
+              opacity: _hovered ? 0.95 : 0.0,
               duration: const Duration(milliseconds: 300),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black87,
+                  color: const Color(0xFF0D1829).withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(24),
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -521,22 +535,24 @@ class _CertificateCardState extends State<_CertificateCard> {
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
-                        fontSize: 16,
+                        fontSize: 15,
+                        height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Text(
                       widget.certificate.issuer,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 12,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     const Icon(
-                      Icons.workspace_premium,
-                      color: Colors.amber,
+                      Icons.verified_user_rounded,
+                      color: Color(0xFF56F3D6),
                       size: 32,
                     ),
                   ],
@@ -558,14 +574,22 @@ class _SkillCategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassContainer(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(32),
+      borderRadius: 24,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(category.icon, color: Colors.white, size: 20),
-              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(category.icon, color: const Color(0xFF56F3D6), size: 22),
+              ),
+              const SizedBox(width: 16),
               Text(
                 category.title,
                 style: const TextStyle(
@@ -576,11 +600,11 @@ class _SkillCategoryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 32),
 
           ...category.skills.map(
             (s) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -590,28 +614,51 @@ class _SkillCategoryCard extends StatelessWidget {
                       Text(
                         s.name,
                         style: const TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                           fontSize: 14,
                         ),
                       ),
                       Text(
                         '${(s.proficiency * 100).toInt()}%',
-                        style: const TextStyle(
-                          color: Colors.white54,
+                        style: TextStyle(
+                          color: const Color(0xFF56F3D6).withValues(alpha: 0.7),
                           fontSize: 12,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: s.proficiency,
-                      backgroundColor: Colors.white.withValues(alpha: 0.05),
-                      valueColor: const AlwaysStoppedAnimation(Colors.white),
-                      minHeight: 4,
-                    ),
+                  const SizedBox(height: 12),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 6,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: s.proficiency,
+                        child: Container(
+                          height: 6,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

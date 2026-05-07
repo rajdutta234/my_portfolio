@@ -15,6 +15,8 @@ const String resumeUrl = 'https://example.com/raj-dutta-resume.pdf';
 const String email = 'rajdutta372@gmail.com';
 const String linkedinUrl = 'https://www.facebook.com/share/1BXp5zTrpN/';
 const String githubUrl = 'https://github.com/rajdutta234';
+const String facebookUrl = 'https://www.facebook.com/share/1L4awnkpvY/?mibextid=wwXIfr';
+const String instagramUrl = 'https://www.instagram.com/_raj_dutta_?igsh=MTN1NGR6MDYweTZvcA%3D%3D&utm_source=qr';
 
 const List<String> navItems = <String>[
   'Home',
