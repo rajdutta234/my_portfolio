@@ -76,9 +76,14 @@ class _HeroSectionState extends State<HeroSection> {
             // Hero Content Area
             Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1200),
+                constraints: BoxConstraints(maxWidth: 1200, minHeight: heroHeight),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: mobile ? 20 : 40),
+                  padding: EdgeInsets.only(
+                    left: mobile ? 20 : 40,
+                    right: mobile ? 20 : 40,
+                    top: mobile ? 120 : 250,
+                    bottom: 80,
+                  ),
                   child: mobile 
                     ? _buildMobileLayout(context)
                     : _buildDesktopLayout(context, size),
@@ -93,12 +98,14 @@ class _HeroSectionState extends State<HeroSection> {
 
   Widget _buildDesktopLayout(BuildContext context, Size size) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Left Column: Identity & Terminal
         Expanded(
           flex: 5,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildIdentity(context),
@@ -253,9 +260,9 @@ class _HeroSectionState extends State<HeroSection> {
   List<Widget> _buildFloatingCodeSnippets() {
     return [
       _FloatingSnippet(text: 'flutter_animate', offset: const Offset(-120, -100), delay: 0),
-      _FloatingSnippet(text: 'MVVM', offset: const Offset(140, -60), delay: 500),
+      _FloatingSnippet(text: 'Flask', offset: const Offset(140, -60), delay: 500),
       _FloatingSnippet(text: 'Riverpod', offset: const Offset(-130, 80), delay: 1000),
-      _FloatingSnippet(text: 'Django API', offset: const Offset(110, 110), delay: 1500),
+      _FloatingSnippet(text: 'FastAPI', offset: const Offset(110, 110), delay: 1500),
     ];
   }
 

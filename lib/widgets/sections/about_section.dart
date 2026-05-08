@@ -23,10 +23,11 @@ class AboutSection extends StatelessWidget {
             children: [
               const SectionTitle(
                 title: 'Professional Profile',
-                subtitle: 'A brief overview of my technical journey and engineering philosophy.',
+                subtitle:
+                    'A brief overview of my technical journey and engineering philosophy.',
               ),
               const SizedBox(height: 80),
-              
+
               // Main Bio Card
               RevealOnScroll(
                 child: GlassmorphicContainer(
@@ -43,7 +44,10 @@ class AboutSection extends StatelessWidget {
                     ],
                   ),
                   borderGradient: LinearGradient(
-                    colors: [const Color(0xFF56F3D6).withValues(alpha: 0.3), Colors.transparent],
+                    colors: [
+                      const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                      Colors.transparent,
+                    ],
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(mobile ? 24 : 48),
@@ -86,34 +90,32 @@ class AboutSection extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 40),
 
               // Stats Dashboard
-              RevealOnScroll(
-                child: _StatsDashboard(mobile: mobile),
-              ),
+              RevealOnScroll(child: _StatsDashboard(mobile: mobile)),
 
               const SizedBox(height: 40),
-              
+
               // Personal & Hobbies Cards
               RevealOnScroll(
-                child: mobile 
-                  ? Column(
-                      children: [
-                        _PersonalInfoCard(),
-                        const SizedBox(height: 24),
-                        _HobbiesCard(),
-                      ],
-                    )
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: _PersonalInfoCard()),
-                        const SizedBox(width: 40),
-                        Expanded(child: _HobbiesCard()),
-                      ],
-                    ),
+                child: mobile
+                    ? Column(
+                        children: [
+                          _PersonalInfoCard(),
+                          const SizedBox(height: 24),
+                          _HobbiesCard(),
+                        ],
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: _PersonalInfoCard()),
+                          const SizedBox(width: 40),
+                          Expanded(child: _HobbiesCard()),
+                        ],
+                      ),
               ),
             ],
           ),
@@ -124,18 +126,30 @@ class AboutSection extends StatelessWidget {
 
   Widget _buildProfileIcon() {
     return Container(
-      width: 180,
-      height: 180,
-      decoration: BoxDecoration(
-        color: const Color(0xFF56F3D6).withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(40),
-        border: Border.all(color: const Color(0xFF56F3D6).withValues(alpha: 0.2)),
-      ),
-      child: const Center(
-        child: Icon(Icons.person_outline_rounded, color: Color(0xFF56F3D6), size: 80),
-      ),
-    ).animate(onPlay: (c) => c.repeat(reverse: true))
-    .moveY(begin: -10, end: 10, duration: 3.seconds, curve: Curves.easeInOut);
+          width: 180,
+          height: 180,
+          decoration: BoxDecoration(
+            color: const Color(0xFF56F3D6).withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(40),
+            border: Border.all(
+              color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: Image.asset(
+              'assets/images/profile_picture_photo.jpeg',
+              fit: BoxFit.cover,
+            ),
+          ),
+        )
+        .animate(onPlay: (c) => c.repeat(reverse: true))
+        .moveY(
+          begin: -10,
+          end: 10,
+          duration: 3.seconds,
+          curve: Curves.easeInOut,
+        );
   }
 }
 
@@ -149,7 +163,7 @@ class _StatsDashboard extends StatelessWidget {
       spacing: 24,
       runSpacing: 24,
       children: [
-        _buildStatItem('3+', 'YEARS EXP', Icons.bolt_rounded),
+        _buildStatItem('1+', 'YEARS EXP', Icons.bolt_rounded),
         _buildStatItem('12+', 'PROJECTS', Icons.rocket_launch_rounded),
         _buildStatItem('5+', 'CERTIFICATES', Icons.verified_rounded),
         _buildStatItem('100%', 'COMMITMENT', Icons.favorite_rounded),
@@ -168,9 +182,14 @@ class _StatsDashboard extends StatelessWidget {
         alignment: Alignment.center,
         border: 1,
         linearGradient: LinearGradient(
-          colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.02)],
+          colors: [
+            Colors.white.withValues(alpha: 0.05),
+            Colors.white.withValues(alpha: 0.02),
+          ],
         ),
-        borderGradient: const LinearGradient(colors: [Colors.white24, Colors.transparent]),
+        borderGradient: const LinearGradient(
+          colors: [Colors.white24, Colors.transparent],
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -182,11 +201,20 @@ class _StatsDashboard extends StatelessWidget {
               children: [
                 Text(
                   value,
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white),
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
                   label,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white.withValues(alpha: 0.5), letterSpacing: 2),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white.withValues(alpha: 0.5),
+                    letterSpacing: 2,
+                  ),
                 ),
               ],
             ),
@@ -208,9 +236,14 @@ class _PersonalInfoCard extends StatelessWidget {
       alignment: Alignment.center,
       border: 1.5,
       linearGradient: LinearGradient(
-        colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.02)],
+        colors: [
+          Colors.white.withValues(alpha: 0.05),
+          Colors.white.withValues(alpha: 0.02),
+        ],
       ),
-      borderGradient: const LinearGradient(colors: [Colors.white10, Colors.transparent]),
+      borderGradient: const LinearGradient(
+        colors: [Colors.white10, Colors.transparent],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
@@ -231,7 +264,12 @@ class _PersonalInfoCard extends StatelessWidget {
   Widget _buildHeader(String title) {
     return Text(
       title,
-      style: const TextStyle(color: Color(0xFF56F3D6), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 3),
+      style: const TextStyle(
+        color: Color(0xFF56F3D6),
+        fontSize: 11,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 3,
+      ),
     );
   }
 
@@ -240,8 +278,25 @@ class _PersonalInfoCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         children: [
-          SizedBox(width: 80, child: Text(label, style: const TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold))),
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+          SizedBox(
+            width: 80,
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white38,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );
@@ -259,15 +314,28 @@ class _HobbiesCard extends StatelessWidget {
       alignment: Alignment.center,
       border: 1.5,
       linearGradient: LinearGradient(
-        colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.02)],
+        colors: [
+          Colors.white.withValues(alpha: 0.05),
+          Colors.white.withValues(alpha: 0.02),
+        ],
       ),
-      borderGradient: const LinearGradient(colors: [Colors.white10, Colors.transparent]),
+      borderGradient: const LinearGradient(
+        colors: [Colors.white10, Colors.transparent],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('BEYOND CODE', style: TextStyle(color: Color(0xFF56F3D6), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 3)),
+            const Text(
+              'BEYOND CODE',
+              style: TextStyle(
+                color: Color(0xFF56F3D6),
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 3,
+              ),
+            ),
             const SizedBox(height: 32),
             _buildHobby(Icons.videocam_rounded, 'CONTENT CREATION'),
             _buildHobby(Icons.sports_soccer_rounded, 'SPORTS (FOOTBALL)'),
@@ -286,7 +354,14 @@ class _HobbiesCard extends StatelessWidget {
         children: [
           Icon(icon, color: const Color(0xFF56F3D6), size: 20),
           const SizedBox(width: 16),
-          Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );
