@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 class Magnetic extends StatefulWidget {
-  const Magnetic({super.key, required this.child, this.range = 100});
+  const Magnetic({
+    super.key, 
+    required this.child, 
+    this.range = 100,
+    this.strength = 0.3,
+  });
 
   final Widget child;
   final double range;
+  final double strength;
 
   @override
   State<Magnetic> createState() => _MagneticState();
@@ -27,7 +33,7 @@ class _MagneticState extends State<Magnetic> {
         final double dist = Offset(dx, dy).distance;
         if (dist < widget.range) {
           setState(() {
-            _offset = Offset(dx * 0.3, dy * 0.3);
+            _offset = Offset(dx * widget.strength, dy * widget.strength);
           });
         } else {
           setState(() {

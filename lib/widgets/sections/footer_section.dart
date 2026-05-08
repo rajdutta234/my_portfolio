@@ -13,98 +13,81 @@ class FooterSection extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: Colors.white.withValues(alpha: 0.1),
+            color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
             width: 1,
           ),
         ),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            const Color(0xFF56F3D6).withValues(alpha: 0.02),
+            Colors.transparent,
+          ],
+        ),
       ),
-      padding: const EdgeInsets.fromLTRB(20, 28, 20, 36),
+      padding: const EdgeInsets.fromLTRB(24, 60, 24, 80),
       child: Column(
         children: <Widget>[
+          // Glowing Social Links
           Wrap(
-            spacing: 16,
-            runSpacing: 12,
+            spacing: 24,
+            runSpacing: 16,
             alignment: WrapAlignment.center,
             children: <Widget>[
-              TextButton(
-                onPressed: () => openExternalLink(context, linkedinUrl),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: const Text(
-                  'LinkedIn',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => openExternalLink(context, githubUrl),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: const Text(
-                  'GitHub',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => openExternalLink(context, instagramUrl),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: const Text(
-                  'Instagram',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => openExternalLink(context, facebookUrl),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: const Text(
-                  'Facebook',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => openExternalLink(context, 'mailto:$email'),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: const Text(
-                  'Email',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
+              _buildSocialLink(context, 'LINKEDIN', linkedinUrl),
+              _buildSocialLink(context, 'GITHUB', githubUrl),
+              _buildSocialLink(context, 'INSTAGRAM', instagramUrl),
+              _buildSocialLink(context, 'FACEBOOK', facebookUrl),
+              _buildSocialLink(context, 'EMAIL', 'mailto:$email'),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 60),
+
           Text(
-            '© ${DateTime.now().year} $developerName • Full Stack Developer',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.5),
-                  fontWeight: FontWeight.w400,
-                ),
+            'DESIGNED & ENGINEERED BY $developerName',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 4,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '',
+            style: TextStyle(
+              color: const Color(0xFF56F3D6).withValues(alpha: 0.4),
+              fontSize: 9,
+              fontFamily: 'monospace',
+              letterSpacing: 2,
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSocialLink(BuildContext context, String label, String url) {
+    return InkWell(
+      onTap: () => openExternalLink(context, url),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
+          ),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
+          ),
+        ),
       ),
     );
   }

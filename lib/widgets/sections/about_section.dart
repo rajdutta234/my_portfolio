@@ -30,64 +30,84 @@ class AboutSection extends StatelessWidget {
 
               // Main Bio Card
               RevealOnScroll(
-                child: GlassmorphicContainer(
-                  width: double.infinity,
-                  height: mobile ? 700 : 400,
-                  borderRadius: 32,
-                  blur: 20,
-                  alignment: Alignment.center,
-                  border: 1.5,
-                  linearGradient: LinearGradient(
-                    colors: [
-                      const Color(0xFFffffff).withValues(alpha: 0.05),
-                      const Color(0xFFffffff).withValues(alpha: 0.02),
-                    ],
-                  ),
-                  borderGradient: LinearGradient(
-                    colors: [
-                      const Color(0xFF56F3D6).withValues(alpha: 0.3),
-                      Colors.transparent,
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(mobile ? 24 : 48),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (!mobile) ...[
-                          _buildProfileIcon(),
-                          const SizedBox(width: 48),
+                child: Stack(
+                  children: [
+                    GlassmorphicContainer(
+                      width: double.infinity,
+                      height: mobile ? 700 : 400,
+                      borderRadius: 32,
+                      blur: 20,
+                      alignment: Alignment.center,
+                      border: 1.5,
+                      linearGradient: LinearGradient(
+                        colors: [
+                          const Color(0xFFffffff).withValues(alpha: 0.05),
+                          const Color(0xFFffffff).withValues(alpha: 0.02),
                         ],
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'THE ENGINEER BEHIND THE CODE',
-                                style: TextStyle(
-                                  color: const Color(0xFF56F3D6),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 4,
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              Text(
-                                aboutText,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                  height: 1.8,
-                                  fontSize: mobile ? 16 : 18,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                      ),
+                      borderGradient: LinearGradient(
+                        colors: [
+                          const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                          Colors.transparent,
+                        ],
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(mobile ? 24 : 48),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (!mobile) ...[
+                              _buildProfileIcon(),
+                              const SizedBox(width: 48),
                             ],
-                          ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'THE ENGINEER BEHIND THE CODE',
+                                    style: TextStyle(
+                                      color: const Color(0xFF56F3D6),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 4,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Text(
+                                    aboutText,
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(alpha: 0.8),
+                                      height: 1.8,
+                                      fontSize: mobile ? 16 : 18,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    
+                    // Lighting Sweep
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                        ).animate(onPlay: (c) => c.repeat())
+                          .shimmer(
+                            duration: 5.seconds,
+                            color: Colors.white.withValues(alpha: 0.03),
+                            angle: 45,
+                          ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 

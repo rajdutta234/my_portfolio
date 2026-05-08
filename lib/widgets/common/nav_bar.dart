@@ -18,153 +18,138 @@ class PortfolioNavBar extends StatefulWidget {
 }
 
 class _PortfolioNavBarState extends State<PortfolioNavBar> {
-  final Map<int, GlobalKey> _itemKeys = {};
-
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 0; i < widget.items.length; i++) {
-      _itemKeys[i] = GlobalKey();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
     final bool mobile = size.width < 760;
-    final bool isCompact = size.width < 980;
+
+    if (mobile) {
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: GlassContainer(
+            borderRadius: 999,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: _MobileNav(
+              items: widget.items,
+              activeIndex: widget.activeIndex,
+              onTap: widget.onTap,
+            ),
+          ),
+        ),
+      );
+    }
 
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-        child: GlassContainer(
-          borderRadius: 999,
-          padding: EdgeInsets.symmetric(
-            horizontal: mobile ? 12 : 10,
-            vertical: mobile ? 10 : 8,
+        padding: const EdgeInsets.only(left: 24),
+        child: Container(
+          width: 70,
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.03),
+            borderRadius: BorderRadius.circular(35),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 30,
+                spreadRadius: 5,
+              ),
+            ],
           ),
-          child: mobile
-              ? _MobileNav(
-                  items: widget.items,
-                  activeIndex: widget.activeIndex,
-                  onTap: widget.onTap,
-                )
-              : Stack(
-                  children: <Widget>[
-                    _AnimatedIndicator(
-                      activeIndex: widget.activeIndex,
-                      itemKeys: _itemKeys,
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      physics: isCompact
-                          ? null
-                          : const NeverScrollableScrollPhysics(),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: _buildItems(),
-                      ),
-                    ),
-                  ],
-                ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Logo/Home Icon
+              _buildHomeIcon(),
+              const SizedBox(height: 40),
+              // Nav Items
+              ...List.generate(widget.items.length, (index) {
+                return _VerticalNavItem(
+                  title: widget.items[index],
+                  isSelected: index == widget.activeIndex,
+                  onTap: () => widget.onTap(index),
+                  icon: _getIconForSection(widget.items[index]),
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  List<Widget> _buildItems() {
-    return List<Widget>.generate(
-      widget.items.length,
-      (int index) => _NavItem(
-        key: _itemKeys[index],
-        title: widget.items[index],
-        selected: index == widget.activeIndex,
-        onTap: () => widget.onTap(index),
+  Widget _buildHomeIcon() {
+    return Container(
+      width: 45,
+      height: 45,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
+        ),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+            blurRadius: 15,
+          ),
+        ],
       ),
+      child: const Icon(Icons.code_rounded, color: Colors.black, size: 24),
     );
+  }
+
+  IconData _getIconForSection(String title) {
+    switch (title.toLowerCase()) {
+      case 'home': return Icons.home_rounded;
+      case 'about': return Icons.person_rounded;
+      case 'experience': return Icons.work_history_rounded;
+      case 'work': return Icons.grid_view_rounded;
+      case 'contact': return Icons.alternate_email_rounded;
+      default: return Icons.circle;
+    }
   }
 }
 
-class _AnimatedIndicator extends StatelessWidget {
-  const _AnimatedIndicator({required this.activeIndex, required this.itemKeys});
-  final int activeIndex;
-  final Map<int, GlobalKey> itemKeys;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([]), // We'll rely on build triggers
-      builder: (context, child) {
-        final RenderBox? box =
-            itemKeys[activeIndex]?.currentContext?.findRenderObject()
-                as RenderBox?;
-        if (box == null) return const SizedBox.shrink();
-
-        final RenderBox? parent = box.parent as RenderBox?;
-        if (parent == null) return const SizedBox.shrink();
-
-        final Offset offset = box.localToGlobal(Offset.zero, ancestor: parent);
-        final Size size = box.size;
-
-        return AnimatedPositioned(
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeOutBack,
-          left: offset.dx,
-          top: offset.dy,
-          width: size.width,
-          height: size.height,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(999),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  blurRadius: 15,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _NavItem extends StatefulWidget {
-  const _NavItem({
-    super.key,
+class _VerticalNavItem extends StatelessWidget {
+  const _VerticalNavItem({
     required this.title,
-    required this.selected,
+    required this.isSelected,
     required this.onTap,
+    required this.icon,
   });
+
   final String title;
-  final bool selected;
+  final bool isSelected;
   final VoidCallback onTap;
+  final IconData icon;
 
-  @override
-  State<_NavItem> createState() => _NavItemState();
-}
-
-class _NavItemState extends State<_NavItem> {
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 200),
-          style: TextStyle(
-            color: widget.selected ? Colors.black : Colors.white70,
-            fontWeight: FontWeight.w800,
-            fontSize: 13,
-            letterSpacing: 0.8,
-          ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-            child: Text(widget.title.toUpperCase()),
+    return Tooltip(
+      message: title.toUpperCase(),
+      preferBelow: false,
+      margin: const EdgeInsets.only(left: 80),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(15),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFF56F3D6).withValues(alpha: 0.1) : Colors.transparent,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Icon(
+              icon,
+              color: isSelected ? const Color(0xFF56F3D6) : Colors.white54,
+              size: 24,
+            ),
           ),
         ),
       ),
@@ -187,28 +172,22 @@ class _MobileNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Container(
-          width: 10,
-          height: 10,
-          decoration: const BoxDecoration(
-            color: Color(0xFF56F3D6),
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 10),
+        const Icon(Icons.code_rounded, color: Color(0xFF56F3D6), size: 18),
+        const SizedBox(width: 12),
         Text(
           items[activeIndex].toUpperCase(),
           style: const TextStyle(
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.0,
-            fontSize: 13,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
+            fontSize: 12,
+            color: Colors.white,
           ),
         ),
         const Spacer(),
         PopupMenuButton<int>(
-          tooltip: 'Navigate sections',
-          icon: const Icon(Icons.grid_view_rounded, size: 20),
-          color: const Color(0xFF101B2D),
+          tooltip: 'Navigate',
+          icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 24),
+          color: const Color(0xFF020C1B),
           onSelected: onTap,
           itemBuilder: (BuildContext context) {
             return List<PopupMenuEntry<int>>.generate(
@@ -216,14 +195,12 @@ class _MobileNav extends StatelessWidget {
               (int index) => PopupMenuItem<int>(
                 value: index,
                 child: Text(
-                  items[index],
+                  items[index].toUpperCase(),
                   style: TextStyle(
-                    color: index == activeIndex
-                        ? const Color(0xFF56F3D6)
-                        : Colors.white,
-                    fontWeight: index == activeIndex
-                        ? FontWeight.w700
-                        : FontWeight.w500,
+                    color: index == activeIndex ? const Color(0xFF56F3D6) : Colors.white70,
+                    fontWeight: index == activeIndex ? FontWeight.w900 : FontWeight.w500,
+                    fontSize: 11,
+                    letterSpacing: 1,
                   ),
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import './particle_field.dart';
+import './cyber_grid.dart';
 
 class AnimatedBackground extends StatefulWidget {
   const AnimatedBackground({super.key});
@@ -51,7 +52,12 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             ),
           ),
 
-          // Cinematic Mesh Blobs
+          // Layer 1: Cyber Grid Floor (Perspective)
+          const Positioned.fill(
+            child: CyberGrid(),
+          ),
+
+          // Layer 2: Cinematic Mesh Blobs
           AnimatedBuilder(
             animation: _controller,
             builder: (BuildContext context, Widget? child) {
@@ -65,14 +71,26 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             },
           ),
 
-          // Ambient Particles
+          // Layer 3: Neural Particles (Depth)
           ParticleField(
             width: size.width,
             height: size.height,
-            numberOfParticles: 120,
+            numberOfParticles: 150,
             particleColor: const Color(0xFF56F3D6),
           ),
           
+          // Layer 4: Vignette & Color Grading Overlay
+          Container(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                colors: [
+                  Colors.transparent,
+                  const Color(0xFF020C1B).withValues(alpha: 0.5),
+                ],
+                stops: const [0.4, 1.0],
+              ),
+            ),
+          ),
         ],
       ),
     );

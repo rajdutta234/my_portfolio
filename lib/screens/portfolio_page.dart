@@ -7,13 +7,12 @@ import '../notifier/app_notifier.dart';
 import '../widgets/sections/about_section.dart';
 import '../widgets/sections/contact_section.dart';
 import '../widgets/sections/experience_section.dart';
-import '../widgets/sections/achievement_section.dart';
 import '../widgets/sections/footer_section.dart';
 import '../widgets/sections/hero_section.dart';
 import '../widgets/sections/work_section.dart';
 import '../widgets/common/animated_background.dart';
 import '../widgets/common/nav_bar.dart';
-import '../widgets/common/custom_cursor.dart';
+import '../widgets/common/cyber_cursor.dart';
 import '../widgets/common/noise_overlay.dart';
 
 class PortfolioPage extends StatefulWidget {
@@ -58,6 +57,21 @@ class _PortfolioPageState extends State<PortfolioPage> {
       ..removeListener(_handleScroll)
       ..dispose();
     super.dispose();
+  }
+
+  Widget _buildAmbientGlow(double size, Color color) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: [color, Colors.transparent],
+          ),
+        ),
+      ),
+    );
   }
 
   void _handleScroll() {
@@ -110,67 +124,34 @@ class _PortfolioPageState extends State<PortfolioPage> {
     final bool mobile = MediaQuery.sizeOf(context).width < 760;
 
     return Scaffold(
-      body: CustomCursor(
+      body: CyberCursor(
         child: Stack(
           children: <Widget>[
-            const Positioned.fill(child: AnimatedBackground()),
-            const Positioned.fill(child: NoiseOverlay()),
+            // RepaintBoundary for expensive background layers
+            RepaintBoundary(
+              child: Stack(
+                children: [
+                  const Positioned.fill(child: AnimatedBackground()),
+                  const Positioned.fill(child: NoiseOverlay()),
+                ],
+              ),
+            ),
 
-            Positioned(
-              top: -130,
-              right: -80,
-              child: IgnorePointer(
-                child: Container(
-                  width: 380,
-                  height: 380,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: <Color>[
-                        const Color(0xFF00C2FF).withValues(alpha: 0.14),
-                        Colors.transparent,
-                      ],
-                    ),
+            // Optimized Ambient Glows (Moved to a single layer if possible, or kept as is but RepaintBoundary)
+            RepaintBoundary(
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -130,
+                    right: -80,
+                    child: _buildAmbientGlow(380, const Color(0xFF00C2FF).withValues(alpha: 0.1)),
                   ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 200,
-              left: -100,
-              child: IgnorePointer(
-                child: Container(
-                  width: 450,
-                  height: 450,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: <Color>[
-                        const Color(0xFF56F3D6).withValues(alpha: 0.09),
-                        Colors.transparent,
-                      ],
-                    ),
+                  Positioned(
+                    bottom: 200,
+                    left: -100,
+                    child: _buildAmbientGlow(450, const Color(0xFF56F3D6).withValues(alpha: 0.06)),
                   ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 800,
-              right: -150,
-              child: IgnorePointer(
-                child: Container(
-                  width: 400,
-                  height: 400,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: <Color>[
-                        const Color(0xFF2F5B82).withValues(alpha: 0.08),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
+                ],
               ),
             ),
 
@@ -197,10 +178,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ),
                     _SectionWrapper(
                       key: _sectionKeys[4],
-                      child: const AchievementSection(),
-                    ),
-                    _SectionWrapper(
-                      key: _sectionKeys[5],
                       child: const ContactSection(),
                     ),
                     const FooterSection(),

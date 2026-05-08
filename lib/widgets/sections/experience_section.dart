@@ -134,99 +134,119 @@ class _TimelineItem extends StatelessWidget {
               // Cinematic Experience Card
               Expanded(
                 child: PerspectiveCard(
-                  maxTilt: 0.04,
-                  child: GlassmorphicContainer(
-                    width: double.infinity,
-                    height: mobile ? 600 : 320,
-                    borderRadius: 24,
-                    blur: 20,
-                    alignment: Alignment.topLeft,
-                    border: 1.5,
-                    linearGradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFFffffff).withValues(alpha: 0.05),
-                        const Color(0xFFffffff).withValues(alpha: 0.02),
-                      ],
-                    ),
-                    borderGradient: LinearGradient(
-                      colors: [const Color(0xFF56F3D6).withValues(alpha: 0.4), Colors.transparent],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  maxTilt: 0.06,
+                  child: Stack(
+                    children: [
+                      GlassmorphicContainer(
+                        width: double.infinity,
+                        height: mobile ? 600 : 320,
+                        borderRadius: 24,
+                        blur: 20,
+                        alignment: Alignment.topLeft,
+                        border: 1.5,
+                        linearGradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            const Color(0xFFffffff).withValues(alpha: 0.05),
+                            const Color(0xFFffffff).withValues(alpha: 0.02),
+                          ],
+                        ),
+                        borderGradient: LinearGradient(
+                          colors: [const Color(0xFF56F3D6).withValues(alpha: 0.4), Colors.transparent],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      experience.organization.toUpperCase(),
-                                      style: TextStyle(
-                                        fontSize: mobile ? 18 : 24,
-                                        fontWeight: FontWeight.w900,
-                                        color: Colors.white,
-                                        letterSpacing: 1,
-                                      ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          experience.organization.toUpperCase(),
+                                          style: TextStyle(
+                                            fontSize: mobile ? 18 : 24,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                            letterSpacing: 1,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          experience.role,
+                                          style: const TextStyle(
+                                            color: Color(0xFF56F3D6),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      experience.role,
-                                      style: const TextStyle(
-                                        color: Color(0xFF56F3D6),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.5,
-                                      ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.05),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: Colors.white10),
                                     ),
-                                  ],
-                                ),
+                                    child: Text(
+                                      experience.duration,
+                                      style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.05),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.white10),
-                                ),
-                                child: Text(
-                                  experience.duration,
-                                  style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                              const SizedBox(height: 32),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: experience.description.map((line) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 12),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Icon(Icons.keyboard_arrow_right_rounded, color: Color(0xFF56F3D6), size: 18),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Text(
+                                              line,
+                                              style: const TextStyle(color: Colors.white60, fontSize: 14, height: 1.6),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )).toList(),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 32),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: experience.description.map((line) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Icon(Icons.keyboard_arrow_right_rounded, color: Color(0xFF56F3D6), size: 18),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          line,
-                                          style: const TextStyle(color: Colors.white60, fontSize: 14, height: 1.6),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )).toList(),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                      
+                      // Lighting Sweep Effect
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                          ).animate(onPlay: (c) => c.repeat())
+                            .shimmer(
+                              duration: 4.seconds,
+                              color: Colors.white.withValues(alpha: 0.03),
+                              angle: 45,
+                            ),
+                        ),
+                      ),
+                    ],
                   ),
                 ).animate().fadeIn(delay: (index * 200 + 100).ms).slideX(begin: 0.05),
               ),

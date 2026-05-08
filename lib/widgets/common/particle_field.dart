@@ -102,12 +102,46 @@ class _ParticlePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (var particle in particles) {
+    final Paint paint = Paint()..style = PaintingStyle.fill;
+    final Paint linePaint = Paint()..strokeWidth = 0.5;
+
+    for (int i = 0; i < particles.length; i++) {
+      final p1 = particles[i];
+      
+      // Draw Connections (Neural Effect)
+      for (int j = i + 1; j < particles.length; j++) {
+        final p2 = particles[j];
+        final double distance = math.sqrt(
+          math.pow(p1.x - p2.x, 2) + math.pow(p1.y - p2.y, 2)
+        );
+        
+        if (distance < 120) {
+          final double opacity = (1.0 - (distance / 120)).clamp(0.0, 1.0);
+          linePaint.color = color.withValues(alpha: opacity * 0.15);
+          canvas.drawLine(Offset(p1.x, p1.y), Offset(p2.x, p2.y), linePaint);
+        }
+      }
+
+      // Draw Particle
+      final double pOpacity = (0.2 + (p1.size * 0.3)).clamp(0.0, 1.0);
+      paint.color = color.withValues(alpha: pOpacity);
+      
       canvas.drawCircle(
-        Offset(particle.x, particle.y),
-        particle.size * maxSize,
-        Paint()..color = color.withValues(alpha: 0.2 + (particle.size * 0.3)),
+        Offset(p1.x, p1.y),
+        p1.size * maxSize,
+        paint,
       );
+      
+      // Subtle Glow for larger particles
+      if (p1.size > 0.7) {
+        canvas.drawCircle(
+          Offset(p1.x, p1.y),
+          p1.size * maxSize * 2.5,
+          Paint()
+            ..color = color.withValues(alpha: pOpacity * 0.2)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+        );
+      }
     }
   }
 

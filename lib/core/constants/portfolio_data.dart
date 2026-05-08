@@ -6,7 +6,8 @@ import '../../models/skill.dart';
 
 const String developerName = 'Raj Dutta';
 const String developerTitle = 'Full Stack Developer';
-const String tagline = 'Full Stack Developer (Flutter/Dart + Python Flask & FastAPI)';
+const String tagline =
+    'Full Stack Developer (Flutter/Dart + Python Flask & FastAPI)';
 
 const String aboutText =
     'Full Stack Developer (Flutter/Dart + Python Flask & FastAPI) and BCA student with hands-on experience building production-grade admin systems and mobile apps. Strong in scalable UI architecture, state management (Riverpod/GetX), and end-to-end workflows across healthcare, pharmacy, and dealership domains.';
@@ -15,15 +16,16 @@ const String resumeUrl = 'https://example.com/raj-dutta-resume.pdf';
 const String email = 'rajdutta372@gmail.com';
 const String linkedinUrl = 'https://www.facebook.com/share/1BXp5zTrpN/';
 const String githubUrl = 'https://github.com/rajdutta234';
-const String facebookUrl = 'https://www.facebook.com/share/1L4awnkpvY/?mibextid=wwXIfr';
-const String instagramUrl = 'https://www.instagram.com/_raj_dutta_?igsh=MTN1NGR6MDYweTZvcA%3D%3D&utm_source=qr';
+const String facebookUrl =
+    'https://www.facebook.com/share/1L4awnkpvY/?mibextid=wwXIfr';
+const String instagramUrl =
+    'https://www.instagram.com/_raj_dutta_?igsh=MTN1NGR6MDYweTZvcA%3D%3D&utm_source=qr';
 
 const List<String> navItems = <String>[
   'Home',
   'About',
   'Experience',
   'Work',
-  'Achievements',
   'Contact',
 ];
 
@@ -42,7 +44,11 @@ final List<SkillCategory> skills = <SkillCategory>[
     title: 'Frontend',
     icon: Icons.web,
     skills: const <SkillItem>[
-      SkillItem(name: 'Flutter (Web, Desktop, Mobile)', icon: Icons.flutter_dash, proficiency: 0.95),
+      SkillItem(
+        name: 'Flutter (Web, Desktop, Mobile)',
+        icon: Icons.flutter_dash,
+        proficiency: 0.95,
+      ),
       SkillItem(name: 'HTML/CSS', icon: Icons.language, proficiency: 0.9),
       SkillItem(name: 'JavaScript', icon: Icons.javascript, proficiency: 0.85),
     ],
@@ -62,14 +68,26 @@ final List<SkillCategory> skills = <SkillCategory>[
     title: 'Tools & Core Skills',
     icon: Icons.terminal,
     skills: const <SkillItem>[
-      SkillItem(name: 'Git', icon: Icons.terminal, proficiency: 0.9),
-      SkillItem(name: 'UI/UX & Responsive Design', icon: Icons.design_services, proficiency: 0.9),
-      SkillItem(name: 'RBAC & Modular Architecture', icon: Icons.security, proficiency: 0.88),
+      SkillItem(name: 'Git & GitHub', icon: Icons.terminal, proficiency: 0.9),
+      SkillItem(
+        name: 'Google Play Console',
+        icon: Icons.settings_applications,
+        proficiency: 0.85,
+      ),
+      SkillItem(
+        name: 'UI/UX & Responsive Design',
+        icon: Icons.design_services,
+        proficiency: 0.9,
+      ),
+      SkillItem(
+        name: 'RBAC & Modular Architecture',
+        icon: Icons.security,
+        proficiency: 0.88,
+      ),
       SkillItem(name: 'MS Office', icon: Icons.description, proficiency: 0.9),
     ],
   ),
 ];
-
 
 const List<Experience> experiences = <Experience>[
   Experience(
@@ -108,7 +126,8 @@ const List<Project> projects = <Project>[
   // NAIYO24 Projects
   Project(
     title: 'OEMS Admin Panel',
-    description: 'A modern Flutter-based dealership and showroom management dashboard built for cross-platform environments. The system centralizes vehicle inventory, customer management, enquiries, bookings, analytics, and financial operations into a scalable solution. The platform was designed to streamline the entire dealership ecosystem, covering everything from secure authentication and role-based access to real-time KPI tracking and multi-platform delivery pipeline monitoring across Web, Android, iOS, and Desktop.',
+    description:
+        'A modern Flutter-based dealership and showroom management dashboard built for cross-platform environments. The system centralizes vehicle inventory, customer management, enquiries, bookings, analytics, and financial operations into a scalable solution. The platform was designed to streamline the entire dealership ecosystem, covering everything from secure authentication and role-based access to real-time KPI tracking and multi-platform delivery pipeline monitoring across Web, Android, iOS, and Desktop.',
     stack: <String>['Flutter', 'GetX', 'MVC', 'Material 3'],
     githubUrl: '',
     demoUrl: '',
@@ -133,7 +152,8 @@ const List<Project> projects = <Project>[
   ),
   Project(
     title: 'Pharmacy Admin Management Panel',
-    description: 'The Pharmacy Admin Management Panel is a comprehensive web-based system designed to digitize and streamline medical store operations. Built using Flutter and GetX, the application provides a complete workflow covering sales, inventory management, supplier procurement, prescription handling, customer credit tracking, and reporting. The platform features a modular architecture where each business module—from sales and stock alerts to the end-to-end purchase cycle (PO → GRN → Invoice)—is separated for maintainability and seamless backend integration.',
+    description:
+        'The Pharmacy Admin Management Panel is a comprehensive web-based system designed to digitize and streamline medical store operations. Built using Flutter and GetX, the application provides a complete workflow covering sales, inventory management, supplier procurement, prescription handling, customer credit tracking, and reporting. The platform features a modular architecture where each business module—from sales and stock alerts to the end-to-end purchase cycle (PO → GRN → Invoice)—is separated for maintainability and seamless backend integration.',
     stack: <String>['Flutter (Dart)', 'GetX', 'Web/Desktop'],
     githubUrl: '',
     demoUrl: '',
@@ -156,7 +176,8 @@ const List<Project> projects = <Project>[
   ),
   Project(
     title: 'Hospital Management Admin Panel',
-    description: 'A production-grade hospital administration panel designed to streamline clinical, operational, and administrative workflows across hospitals and clinics. The system centralizes patient management, emergency handling, billing, lab operations, and reporting into a high-performance unified dashboard. Built with a focus on performance and modularity, it handles the entire patient journey from registration and emergency triage to doctor allocation and lab reporting, all while maintaining strict Role-Based Access Control (RBAC) to ensure data security and departmental coordination.',
+    description:
+        'A production-grade hospital administration panel designed to streamline clinical, operational, and administrative workflows across hospitals and clinics. The system centralizes patient management, emergency handling, billing, lab operations, and reporting into a high-performance unified dashboard. Built with a focus on performance and modularity, it handles the entire patient journey from registration and emergency triage to doctor allocation and lab reporting, all while maintaining strict Role-Based Access Control (RBAC) to ensure data security and departmental coordination.',
     stack: <String>['Flutter (Dart)', 'Riverpod', 'Web & Desktop'],
     githubUrl: '',
     demoUrl: '',
@@ -179,7 +200,8 @@ const List<Project> projects = <Project>[
   ),
   Project(
     title: 'Screen Recorder Doctor',
-    description: 'A feature-rich mobile application focused on high-fidelity screen recording, media management, and real-time team collaboration. The app combines productivity and communication by enabling users to capture screen activity, manage recording history, and collaborate through chat and video call interfaces within a unified, modern environment. Built using Riverpod and GoRouter, the application delivers a seamless experience with smooth animations, dark/light mode support, and interactive media controls designed for high-performance mobile multitasking.',
+    description:
+        'A feature-rich mobile application focused on high-fidelity screen recording, media management, and real-time team collaboration. The app combines productivity and communication by enabling users to capture screen activity, manage recording history, and collaborate through chat and video call interfaces within a unified, modern environment. Built using Riverpod and GoRouter, the application delivers a seamless experience with smooth animations, dark/light mode support, and interactive media controls designed for high-performance mobile multitasking.',
     stack: <String>['Flutter', 'Riverpod', 'GoRouter', 'Camera API'],
     githubUrl: '',
     demoUrl: '',
@@ -202,7 +224,8 @@ const List<Project> projects = <Project>[
   // Self-Made Projects
   Project(
     title: 'Advanced Calculator App',
-    description: 'A modern, high-performance calculator application designed to deliver both everyday usability and advanced mathematical functionality through a clean, responsive Material 3 interface. Built entirely with Flutter and GetX, the app demonstrates strong fundamentals in state management, real-time expression parsing, and application architecture. It supports dual modes (Standard and Scientific), persistent calculation history with instant recall, and smooth UI animations, showcasing a mastery of complex logic-driven mobile applications.',
+    description:
+        'A modern, high-performance calculator application designed to deliver both everyday usability and advanced mathematical functionality through a clean, responsive Material 3 interface. Built entirely with Flutter and GetX, the app demonstrates strong fundamentals in state management, real-time expression parsing, and application architecture. It supports dual modes (Standard and Scientific), persistent calculation history with instant recall, and smooth UI animations, showcasing a mastery of complex logic-driven mobile applications.',
     stack: <String>['Flutter', 'GetX', 'math_expressions', 'Material 3'],
     githubUrl: 'https://github.com/rajdutta234/calculator',
     demoUrl: '',
@@ -222,7 +245,8 @@ const List<Project> projects = <Project>[
   ),
   Project(
     title: 'U2Me — Dating App Prototype',
-    description: 'U2Me is a modern dating and social discovery mobile application prototype designed to simulate real-world social networking workflows. The application features email/password authentication, a detailed user onboarding process, and a swipe-based discovery system with match simulation logic. Built using GetX architecture and responsive design principles, the project demonstrates scalable frontend development and engaging user experience design, including local messaging interactions and profile management with persistent session handling.',
+    description:
+        'U2Me is a modern dating and social discovery mobile application prototype designed to simulate real-world social networking workflows. The application features email/password authentication, a detailed user onboarding process, and a swipe-based discovery system with match simulation logic. Built using GetX architecture and responsive design principles, the project demonstrates scalable frontend development and engaging user experience design, including local messaging interactions and profile management with persistent session handling.',
     stack: <String>['Flutter', 'GetX', 'SharedPreferences', 'MVC'],
     githubUrl: 'https://github.com/rajdutta234/u2me',
     demoUrl: '',
@@ -244,7 +268,8 @@ const List<Project> projects = <Project>[
   ),
   Project(
     title: 'INEWS — Intelligent News Reader',
-    description: 'INEWS is a sleek, intelligent news reading application delivering a personalized and accessible experience. Built with Flutter and GetX, the app combines clean UI/UX design with interactive social features like article reactions and bookmarking. Key highlights include AI-powered article summaries for quick consumption and Text-to-Speech (TTS) integration for enhanced accessibility. The application is fully responsive across mobile, web, and desktop, using GetStorage for local persistence and a reactive state management system to ensure smooth navigation.',
+    description:
+        'INEWS is a sleek, intelligent news reading application delivering a personalized and accessible experience. Built with Flutter and GetX, the app combines clean UI/UX design with interactive social features like article reactions and bookmarking. Key highlights include AI-powered article summaries for quick consumption and Text-to-Speech (TTS) integration for enhanced accessibility. The application is fully responsive across mobile, web, and desktop, using GetStorage for local persistence and a reactive state management system to ensure smooth navigation.',
     stack: <String>['Flutter', 'GetX', 'GetStorage', 'TTS'],
     githubUrl: 'https://github.com/rajdutta234/inews',
     demoUrl: '',
@@ -265,7 +290,8 @@ const List<Project> projects = <Project>[
   ),
   Project(
     title: 'Premium E-Commerce Mobile App',
-    description: 'A production-style e-commerce application simulating a complete shopping journey with a focus on performance, scalability, and premium user experience. This app covers the entire user flow—from authentication and product discovery to a dynamic cart system and multi-step checkout with various payment methods. Built using GetX for state management and routing, it features high-performance UI components like search debouncing, wishlist synchronization, and persistent local storage, showcasing a scalable frontend architecture ready for production-level API integration.',
+    description:
+        'A production-style e-commerce application simulating a complete shopping journey with a focus on performance, scalability, and premium user experience. This app covers the entire user flow—from authentication and product discovery to a dynamic cart system and multi-step checkout with various payment methods. Built using GetX for state management and routing, it features high-performance UI components like search debouncing, wishlist synchronization, and persistent local storage, showcasing a scalable frontend architecture ready for production-level API integration.',
     stack: <String>['Flutter', 'GetX', 'SharedPreferences'],
     githubUrl: 'https://github.com/rajdutta234/ecommerce',
     demoUrl: '',
@@ -287,7 +313,8 @@ const List<Project> projects = <Project>[
   // Internship Project
   Project(
     title: 'Blood Bank Management System',
-    description: 'A full-stack administrative management system developed during training to digitize blood donation operations. Built with Python Django and MySQL, the platform manages the entire request lifecycle, donor record-keeping, and facility coordination. The system features a secure role-based dashboard for both administrators and donors, ensuring efficient matching and tracking of blood requests. It showcases the integration of complex backend logic with real-world administrative needs, providing a scalable solution for healthcare record management.',
+    description:
+        'A full-stack administrative management system developed during training to digitize blood donation operations. Built with Python Django and MySQL, the platform manages the entire request lifecycle, donor record-keeping, and facility coordination. The system features a secure role-based dashboard for both administrators and donors, ensuring efficient matching and tracking of blood requests. It showcases the integration of complex backend logic with real-world administrative needs, providing a scalable solution for healthcare record management.',
     stack: <String>['Python', 'Django', 'MySQL', 'Bootstrap'],
     githubUrl: '',
     demoUrl: 'https://rajdutta.pythonanywhere.com',
@@ -315,7 +342,8 @@ const List<Certificate> certificates = <Certificate>[
   Certificate(
     title: 'Web Development & Industrial Training',
     issuer: 'Euphoria GenX / Techno Exponent',
-    imageUrl: 'assets/images/Exphoria_Industrial_Training_Certificate_photo.jpeg',
+    imageUrl:
+        'assets/images/Exphoria_Industrial_Training_Certificate_photo.jpeg',
   ),
   Certificate(
     title: 'Web Development Internship',

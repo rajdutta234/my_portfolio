@@ -44,7 +44,8 @@ class _HeroSectionState extends State<HeroSection> {
                 child: Opacity(
                   opacity: 0.6,
                   child: ModelViewer(
-                    src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                    src:
+                        'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
                     alt: 'Developer Workspace',
                     autoRotate: true,
                     cameraControls: false,
@@ -74,19 +75,23 @@ class _HeroSectionState extends State<HeroSection> {
             ),
 
             // Hero Content Area
-            Center(
+            Align(
+              alignment: Alignment.topLeft,
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1200, minHeight: heroHeight),
+                constraints: BoxConstraints(
+                  maxWidth: 1200,
+                  minHeight: heroHeight,
+                ),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: mobile ? 20 : 40,
+                    left: mobile ? 20 : 180,
                     right: mobile ? 20 : 40,
-                    top: mobile ? 120 : 250,
-                    bottom: 80,
+                    top: mobile ? 80 : 140,
+                    bottom: 40,
                   ),
-                  child: mobile 
-                    ? _buildMobileLayout(context)
-                    : _buildDesktopLayout(context, size),
+                  child: mobile
+                      ? _buildMobileLayout(context)
+                      : _buildDesktopLayout(context, size),
                 ),
               ),
             ),
@@ -98,8 +103,8 @@ class _HeroSectionState extends State<HeroSection> {
 
   Widget _buildDesktopLayout(BuildContext context, Size size) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Left Column: Identity & Terminal
         Expanded(
@@ -116,13 +121,11 @@ class _HeroSectionState extends State<HeroSection> {
             ],
           ),
         ),
-        
+
         // Right Column: Holographic Profile
         Expanded(
           flex: 4,
-          child: Center(
-            child: _buildHolographicProfile(context),
-          ),
+          child: Center(child: _buildHolographicProfile(context)),
         ),
       ],
     );
@@ -131,9 +134,9 @@ class _HeroSectionState extends State<HeroSection> {
   Widget _buildMobileLayout(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: 100),
+          const SizedBox(height: 60),
           _buildHolographicProfile(context),
           const SizedBox(height: 40),
           _buildIdentity(context),
@@ -147,9 +150,11 @@ class _HeroSectionState extends State<HeroSection> {
 
   Widget _buildIdentity(BuildContext context) {
     final bool mobile = MediaQuery.sizeOf(context).width < 800;
-    
+
     return Column(
-      crossAxisAlignment: mobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: mobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         Text(
           'HELLO, I AM',
@@ -204,39 +209,67 @@ class _HeroSectionState extends State<HeroSection> {
     return PerspectiveCard(
       child: Magnetic(
         child: SizedBox(
-          width: radius * 1.5,
-          height: radius * 1.5,
+          width: radius * 1.8,
+          height: radius * 1.8,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Outer Rotating Rings
-              _buildOrbitingRing(radius, 1.0, 8, const Color(0xFF56F3D6).withValues(alpha: 0.2)),
-              _buildOrbitingRing(radius * 0.85, -1.2, 5, const Color(0xFF00C2FF).withValues(alpha: 0.3)),
-              
-              // Floating Code Snippets
+              // Multiple Orbiting Rings (Elite Layering)
+              _buildOrbitingRing(
+                radius * 1.3,
+                1.0,
+                15,
+                const Color(0xFF56F3D6).withValues(alpha: 0.1),
+              ),
+              _buildOrbitingRing(
+                radius * 1.1,
+                -0.8,
+                12,
+                const Color(0xFF00C2FF).withValues(alpha: 0.15),
+              ),
+              _buildOrbitingRing(
+                radius * 0.9,
+                1.2,
+                8,
+                const Color(0xFF56F3D6).withValues(alpha: 0.2),
+              ),
+
+              // Floating Code Snippets with advanced motion
               ..._buildFloatingCodeSnippets(),
 
-              // Profile Image
+              // Profile Image with Cinematic Glow
               Container(
-                width: radius,
-                height: radius,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
-                      blurRadius: 40,
-                      spreadRadius: 10,
+                    width: radius,
+                    height: radius,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
+                          blurRadius: 50,
+                          spreadRadius: 5,
+                        ),
+                        BoxShadow(
+                          color: const Color(0xFF00C2FF).withValues(alpha: 0.1),
+                          blurRadius: 80,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/profile.jpg',
-                    fit: BoxFit.cover,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/profile.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .moveY(
+                    begin: -10,
+                    end: 10,
+                    duration: 4.seconds,
+                    curve: Curves.easeInOut,
                   ),
-                ),
-              ),
             ],
           ),
         ),
@@ -244,25 +277,46 @@ class _HeroSectionState extends State<HeroSection> {
     );
   }
 
-  Widget _buildOrbitingRing(double radius, double speed, int duration, Color color) {
+  Widget _buildOrbitingRing(
+    double radius,
+    double speed,
+    int duration,
+    Color color,
+  ) {
     return Container(
-      width: radius * 1.2,
-      height: radius * 1.2,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: color, width: 1.5),
-      ),
-    )
-    .animate(onPlay: (c) => c.repeat())
-    .rotate(duration: duration.seconds, begin: 0, end: speed);
+          width: radius,
+          height: radius,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: color, width: 1.0),
+          ),
+        )
+        .animate(onPlay: (c) => c.repeat())
+        .rotate(duration: duration.seconds, begin: 0, end: speed);
   }
 
   List<Widget> _buildFloatingCodeSnippets() {
     return [
-      _FloatingSnippet(text: 'flutter_animate', offset: const Offset(-120, -100), delay: 0),
-      _FloatingSnippet(text: 'Flask', offset: const Offset(140, -60), delay: 500),
-      _FloatingSnippet(text: 'Riverpod', offset: const Offset(-130, 80), delay: 1000),
-      _FloatingSnippet(text: 'FastAPI', offset: const Offset(110, 110), delay: 1500),
+      _FloatingSnippet(
+        text: 'flutter_animate',
+        offset: const Offset(-120, -100),
+        delay: 0,
+      ),
+      _FloatingSnippet(
+        text: 'Flask',
+        offset: const Offset(140, -60),
+        delay: 500,
+      ),
+      _FloatingSnippet(
+        text: 'Riverpod',
+        offset: const Offset(-130, 80),
+        delay: 1000,
+      ),
+      _FloatingSnippet(
+        text: 'FastAPI',
+        offset: const Offset(110, 110),
+        delay: 1500,
+      ),
     ];
   }
 
@@ -281,9 +335,14 @@ class _HeroSectionState extends State<HeroSection> {
               backgroundColor: const Color(0xFF56F3D6),
               foregroundColor: Colors.black,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
-            child: const Text('EXPLORE WORK', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+            child: const Text(
+              'EXPLORE WORK',
+              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
+            ),
           ),
         ),
         Magnetic(
@@ -293,9 +352,14 @@ class _HeroSectionState extends State<HeroSection> {
               foregroundColor: Colors.white,
               side: const BorderSide(color: Colors.white24, width: 2),
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
-            child: const Text('RESUME', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+            child: const Text(
+              'RESUME',
+              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
+            ),
           ),
         ),
       ],
@@ -304,7 +368,11 @@ class _HeroSectionState extends State<HeroSection> {
 }
 
 class _FloatingSnippet extends StatelessWidget {
-  const _FloatingSnippet({required this.text, required this.offset, required this.delay});
+  const _FloatingSnippet({
+    required this.text,
+    required this.offset,
+    required this.delay,
+  });
   final String text;
   final Offset offset;
   final int delay;
@@ -312,22 +380,26 @@ class _FloatingSnippet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: offset,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.white10),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.white38, fontSize: 10, fontFamily: 'monospace'),
-        ),
-      ),
-    )
-    .animate(onPlay: (c) => c.repeat(reverse: true))
-    .moveY(begin: -10, end: 10, duration: 2.seconds, delay: delay.ms)
-    .fadeIn(duration: 1.seconds);
+          offset: offset,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.white10),
+            ),
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Colors.white38,
+                fontSize: 10,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+        )
+        .animate(onPlay: (c) => c.repeat(reverse: true))
+        .moveY(begin: -10, end: 10, duration: 2.seconds, delay: delay.ms)
+        .fadeIn(duration: 1.seconds);
   }
 }
