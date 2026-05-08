@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/constants/portfolio_data.dart';
-import '../common/glass_container.dart';
 import '../common/link_utils.dart';
 import '../common/section_title.dart';
-import '../common/glow_input.dart';
 import '../common/magnetic.dart';
 
 class ContactSection extends StatefulWidget {
@@ -39,167 +37,16 @@ class _ContactSectionState extends State<ContactSection> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1100),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 100),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 120),
           child: Column(
             children: [
               const SectionTitle(
-                title: 'Get In Touch',
-                subtitle: "Let's build something exceptional together",
-              ).animate().fadeIn().moveY(begin: 30, end: 0),
-              const SizedBox(height: 60),
-              
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!mobile)
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _ContactInfoCard(
-                            icon: const Icon(Icons.email_rounded, color: Color(0xFF56F3D6), size: 24),
-                            title: 'Email Me',
-                            value: email,
-                            onTap: () => openExternalLink(context, 'mailto:$email'),
-                          ),
-                          const SizedBox(height: 24),
-                          _ContactInfoCard(
-                            icon: const FaIcon(FontAwesomeIcons.linkedin, color: Color(0xFF56F3D6), size: 24),
-                            title: 'LinkedIn',
-                            value: 'Connect on LinkedIn',
-                            onTap: () => openExternalLink(context, linkedinUrl),
-                          ),
-                          const SizedBox(height: 24),
-                          _ContactInfoCard(
-                            icon: const FaIcon(FontAwesomeIcons.facebook, color: Color(0xFF56F3D6), size: 24),
-                            title: 'Facebook',
-                            value: 'Raj Dutta',
-                            onTap: () => openExternalLink(context, facebookUrl),
-                          ),
-                          const SizedBox(height: 24),
-                          _ContactInfoCard(
-                            icon: const FaIcon(FontAwesomeIcons.instagram, color: Color(0xFF56F3D6), size: 24),
-                            title: 'Instagram',
-                            value: '@_raj_dutta_',
-                            onTap: () => openExternalLink(context, instagramUrl),
-                          ),
-                          const SizedBox(height: 24),
-                          _ContactInfoCard(
-                            icon: const FaIcon(FontAwesomeIcons.github, color: Color(0xFF56F3D6), size: 24),
-                            title: 'GitHub',
-                            value: 'rajdutta234',
-                            onTap: () => openExternalLink(context, githubUrl),
-                          ),
-
-
-                        ],
-                      ).animate().fadeIn(delay: 200.ms).moveX(begin: -30, end: 0),
-                    ),
-                  
-                  if (!mobile) const SizedBox(width: 48),
-                  
-                  Expanded(
-                    flex: 3,
-                    child: GlassContainer(
-                      padding: const EdgeInsets.all(40),
-                      borderRadius: 32,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'SEND A MESSAGE',
-                            style: TextStyle(
-                              color: Color(0xFF56F3D6),
-                              fontWeight: FontWeight.w900,
-                              fontSize: 12,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GlowInput(
-                                  child: _ModernInputField(
-                                    controller: _nameController,
-                                    hint: 'Full Name',
-                                    icon: Icons.person_outline_rounded,
-                                  ),
-                                ),
-                              ),
-                              if (!mobile) const SizedBox(width: 20),
-                              if (!mobile)
-                                Expanded(
-                                  child: GlowInput(
-                                    child: _ModernInputField(
-                                      controller: _emailController,
-                                      hint: 'Email Address',
-                                      icon: Icons.alternate_email_rounded,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                          if (mobile) const SizedBox(height: 20),
-                          if (mobile)
-                            GlowInput(
-                              child: _ModernInputField(
-                                controller: _emailController,
-                                hint: 'Email Address',
-                                icon: Icons.alternate_email_rounded,
-                              ),
-                            ),
-                          const SizedBox(height: 20),
-                          GlowInput(
-                            child: _ModernInputField(
-                              controller: _messageController,
-                              hint: 'How can I help you?',
-                              icon: Icons.chat_bubble_outline_rounded,
-                              maxLines: 5,
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          Magnetic(
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: 64,
-                              child: FilledButton(
-                                onPressed: _isSubmitting ? null : _submit,
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: const Color(0xFF56F3D6),
-                                  foregroundColor: const Color(0xFF031313),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: _isSubmitting
-                                    ? const SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 3,
-                                          color: Color(0xFF031313),
-                                        ),
-                                      )
-                                    : const Text(
-                                        'DISPATCH MESSAGE',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 15,
-                                          letterSpacing: 1.5,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ).animate().fadeIn(delay: 400.ms).moveY(begin: 30, end: 0),
-                  ),
-                ],
+                title: 'Neural Connection',
+                subtitle: "Synchronize your vision with my engineering capabilities.",
               ),
+              const SizedBox(height: 80),
+              
+              mobile ? _buildMobileLayout() : _buildDesktopLayout(),
             ],
           ),
         ),
@@ -207,49 +54,211 @@ class _ContactSectionState extends State<ContactSection> {
     );
   }
 
-  void _submit() async {
-    if (_nameController.text.isEmpty || _emailController.text.isEmpty || _messageController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
-      );
-      return;
-    }
+  Widget _buildDesktopLayout() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            children: [
+              _ContactAnchor(
+                icon: const Icon(Icons.alternate_email_rounded, color: Color(0xFF56F3D6)),
+                title: 'DIRECT PROTOCOL',
+                value: email,
+                onTap: () => openExternalLink(context, 'mailto:$email'),
+              ),
+              const SizedBox(height: 24),
+              _ContactAnchor(
+                icon: const FaIcon(FontAwesomeIcons.linkedinIn, color: Color(0xFF00C2FF)),
+                title: 'PROFESSIONAL NODE',
+                value: 'LinkedIn Profile',
+                onTap: () => openExternalLink(context, linkedinUrl),
+              ),
+              const SizedBox(height: 24),
+              _ContactAnchor(
+                icon: const FaIcon(FontAwesomeIcons.github, color: Colors.white),
+                title: 'SOURCE REPOSITORY',
+                value: 'GitHub Workspace',
+                onTap: () => openExternalLink(context, githubUrl),
+              ),
+              const SizedBox(height: 24),
+              _ContactAnchor(
+                icon: const FaIcon(FontAwesomeIcons.instagram, color: Colors.pinkAccent),
+                title: 'SOCIAL FREQUENCY',
+                value: '@_raj_dutta_',
+                onTap: () => openExternalLink(context, instagramUrl),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 60),
+        Expanded(
+          flex: 3,
+          child: _buildMessageForm(),
+        ),
+      ],
+    );
+  }
 
-    setState(() => _isSubmitting = true);
-    await Future.delayed(const Duration(seconds: 2));
-    if (!mounted) return;
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: const Color(0xFF56F3D6),
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        content: const Text(
-          'Message transmitted successfully!',
-          style: TextStyle(color: Color(0xFF031313), fontWeight: FontWeight.w800),
+  Widget _buildMobileLayout() {
+    return Column(
+      children: [
+        _buildMessageForm(),
+        const SizedBox(height: 48),
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          alignment: WrapAlignment.center,
+          children: [
+            _buildSmallAnchor(FontAwesomeIcons.linkedinIn, linkedinUrl),
+            _buildSmallAnchor(FontAwesomeIcons.github, githubUrl),
+            _buildSmallAnchor(FontAwesomeIcons.instagram, instagramUrl),
+            _buildSmallAnchor(FontAwesomeIcons.facebook, facebookUrl),
+            _buildSmallAnchor(Icons.email_rounded, 'mailto:$email'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSmallAnchor(dynamic icon, String url) {
+    return Magnetic(
+      child: IconButton(
+        onPressed: () => openExternalLink(context, url),
+        icon: icon is IconData 
+            ? Icon(icon, color: const Color(0xFF56F3D6), size: 24)
+            : FaIcon(icon as FaIconData?, color: const Color(0xFF56F3D6), size: 24),
+        style: IconButton.styleFrom(
+          backgroundColor: Colors.white.withValues(alpha: 0.05),
+          padding: const EdgeInsets.all(20),
         ),
       ),
     );
+  }
 
+  Widget _buildMessageForm() {
+    return GlassmorphicContainer(
+      width: double.infinity,
+      height: 600,
+      borderRadius: 32,
+      blur: 25,
+      alignment: Alignment.topLeft,
+      border: 1.5,
+      linearGradient: LinearGradient(
+        colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.01)],
+      ),
+      borderGradient: LinearGradient(
+        colors: [const Color(0xFF56F3D6).withValues(alpha: 0.2), Colors.transparent],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'INITIATE ENQUIRY',
+              style: TextStyle(color: Color(0xFF56F3D6), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 3),
+            ),
+            const SizedBox(height: 40),
+            _buildInput(_nameController, 'FULL NAME', Icons.person_outline_rounded),
+            const SizedBox(height: 24),
+            _buildInput(_emailController, 'SECURE EMAIL', Icons.alternate_email_rounded),
+            const SizedBox(height: 24),
+            _buildInput(_messageController, 'MESSAGE PAYLOAD', Icons.chat_bubble_outline_rounded, maxLines: 4),
+            const Spacer(),
+            _buildDispatchButton(),
+          ],
+        ),
+      ),
+    ).animate().fadeIn(delay: 300.ms).moveY(begin: 30);
+  }
+
+  Widget _buildInput(TextEditingController controller, String label, IconData icon, {int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+        const SizedBox(height: 12),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          style: const TextStyle(color: Colors.white, fontSize: 15),
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon, color: const Color(0xFF56F3D6).withValues(alpha: 0.4), size: 18),
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.03),
+            contentPadding: const EdgeInsets.all(20),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xFF56F3D6), width: 1)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDispatchButton() {
+    return Magnetic(
+      child: Container(
+        width: double.infinity,
+        height: 64,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)]),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(color: const Color(0xFF56F3D6).withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 2),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: _isSubmitting ? null : _submit,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+          child: _isSubmitting 
+            ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2))
+            : const Text('DISPATCH MESSAGE', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, letterSpacing: 2)),
+        ),
+      ),
+    );
+  }
+
+  void _submit() async {
+    if (_nameController.text.isEmpty || _emailController.text.isEmpty || _messageController.text.isEmpty) return;
+    setState(() => _isSubmitting = true);
+    await Future.delayed(2.seconds);
+    if (!mounted) return;
     setState(() => _isSubmitting = false);
+    
     _nameController.clear();
     _emailController.clear();
     _messageController.clear();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        content: GlassmorphicContainer(
+          width: double.infinity,
+          height: 80,
+          borderRadius: 20,
+          blur: 20,
+          alignment: Alignment.center,
+          border: 1,
+          linearGradient: const LinearGradient(colors: [Color(0xFF0D1829), Color(0xFF020C1B)]),
+          borderGradient: const LinearGradient(colors: [Color(0xFF56F3D6), Colors.transparent]),
+          child: const Center(child: Text('TRANSMISSION SUCCESSFUL', style: TextStyle(color: Color(0xFF56F3D6), fontWeight: FontWeight.bold, letterSpacing: 2))),
+        ),
+      ),
+    );
   }
 }
 
-class _ContactInfoCard extends StatelessWidget {
-  const _ContactInfoCard({
-    required this.icon,
-    required this.title,
-    required this.value,
-    required this.onTap,
-  });
-
+class _ContactAnchor extends StatelessWidget {
+  const _ContactAnchor({required this.icon, required this.title, required this.value, required this.onTap});
   final Widget icon;
-
-
   final String title;
   final String value;
   final VoidCallback onTap;
@@ -259,86 +268,36 @@ class _ContactInfoCard extends StatelessWidget {
     return Magnetic(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: GlassContainer(
-          padding: const EdgeInsets.all(24),
-          borderRadius: 24,
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: icon,
-
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title.toUpperCase(),
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.4),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+        borderRadius: BorderRadius.circular(20),
+        child: GlassmorphicContainer(
+          width: double.infinity,
+          height: 100,
+          borderRadius: 20,
+          blur: 15,
+          alignment: Alignment.center,
+          border: 1,
+          linearGradient: LinearGradient(
+            colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.02)],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ModernInputField extends StatelessWidget {
-  const _ModernInputField({
-    required this.controller,
-    required this.hint,
-    required this.icon,
-    this.maxLines = 1,
-  });
-
-  final TextEditingController controller;
-  final String hint;
-  final IconData icon;
-  final int maxLines;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      maxLines: maxLines,
-      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15),
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: const Color(0xFF56F3D6).withValues(alpha: 0.5), size: 20),
-        hintText: hint,
-        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.2), fontWeight: FontWeight.w400),
-        filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.02),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.white10),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFF56F3D6), width: 1.5),
+          borderGradient: const LinearGradient(colors: [Colors.white10, Colors.transparent]),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              children: [
+                icon,
+                const SizedBox(width: 20),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                    const SizedBox(height: 6),
+                    Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

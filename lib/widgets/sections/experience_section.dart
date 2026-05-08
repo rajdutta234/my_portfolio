@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/constants/portfolio_data.dart';
 import '../../models/experience.dart';
-import '../common/glass_container.dart';
 import '../common/section_title.dart';
 import '../common/reveal_on_scroll.dart';
 import '../common/perspective_card.dart';
@@ -17,18 +17,17 @@ class ExperienceSection extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1100),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 120),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const RevealOnScroll(
                 child: SectionTitle(
-                  title: 'Experience',
-                  subtitle: 'Internships and practical product development',
+                  title: 'Career Odyssey',
+                  subtitle: 'A chronological log of engineering impact and professional growth.',
                 ),
               ),
-              const SizedBox(height: 60),
-              // Using a standard Column instead of ListView.builder for transparency in layout
+              const SizedBox(height: 80),
               Column(
                 children: List.generate(experiences.length, (index) {
                   return _TimelineItem(
@@ -59,158 +58,177 @@ class _TimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 760;
+    final bool mobile = MediaQuery.sizeOf(context).width < 800;
 
     return Stack(
       children: [
-        // Timeline Connector Line
+        // Cinematic Glowing Path
         if (!isLast)
           Positioned(
-            left: mobile ? 6 : 8,
-            top: 24,
+            left: mobile ? 11 : 14,
+            top: 40,
             bottom: 0,
             child: Container(
-              width: 2,
+              width: 3,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
                     const Color(0xFF56F3D6),
-                    const Color(0xFF56F3D6).withValues(alpha: 0.1),
+                    const Color(0xFF00C2FF).withValues(alpha: 0.1),
                   ],
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  ),
+                ],
               ),
             ),
           ).animate().scaleY(
-                delay: (index * 150 + 400).ms,
-                duration: 600.ms,
+                delay: (index * 200 + 400).ms,
+                duration: 800.ms,
                 alignment: Alignment.topCenter,
               ),
 
         Padding(
-          padding: EdgeInsets.only(bottom: mobile ? 32 : 50),
+          padding: const EdgeInsets.only(bottom: 60),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Timeline Dot
+              // Pulsing Timeline Marker
               Container(
-                margin: const EdgeInsets.only(top: 6),
-                width: mobile ? 14 : 18,
-                height: mobile ? 14 : 18,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFF56F3D6),
-                  border: Border.all(color: const Color(0xFF0D1829), width: 3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF56F3D6).withValues(alpha: 0.5),
-                      blurRadius: 12,
-                      spreadRadius: 2,
+                margin: const EdgeInsets.only(top: 10),
+                width: mobile ? 24 : 30,
+                height: mobile ? 24 : 30,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: mobile ? 24 : 30,
+                      height: mobile ? 24 : 30,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
+                        border: Border.all(color: const Color(0xFF56F3D6), width: 1),
+                      ),
+                    ).animate(onPlay: (c) => c.repeat(reverse: true))
+                    .scale(begin: const Offset(1, 1), end: const Offset(1.3, 1.3), duration: 1.5.seconds),
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFF56F3D6),
+                      ),
                     ),
                   ],
                 ),
-              ).animate().scale(delay: (index * 150).ms, duration: 400.ms),
+              ).animate().scale(delay: (index * 200).ms),
 
-              const SizedBox(width: 24),
+              const SizedBox(width: 32),
 
-              // Content Card
+              // Cinematic Experience Card
               Expanded(
                 child: PerspectiveCard(
-                  maxTilt: 0.05,
-                  child: GlassContainer(
-                    padding: EdgeInsets.all(mobile ? 20 : 32),
+                  maxTilt: 0.04,
+                  child: GlassmorphicContainer(
+                    width: double.infinity,
+                    height: mobile ? 600 : 320,
                     borderRadius: 24,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Organization & Duration
-                        Wrap(
-                          spacing: 12,
-                          runSpacing: 10,
-                          alignment: WrapAlignment.spaceBetween,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Text(
-                              experience.organization,
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: -0.5,
-                                    fontSize: mobile ? 18 : 22,
-                                  ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF0D1829).withValues(alpha: 0.8),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFF56F3D6).withValues(alpha: 0.2)),
-                              ),
-                              child: Text(
-                                experience.duration,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF56F3D6),
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        // Role
-                        Text(
-                          experience.role,
-                          style: TextStyle(
-                            color: const Color(0xFF56F3D6).withValues(alpha: 0.9),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 16,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        // Description Bullets
-                        ...experience.description.map(
-                          (line) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: Container(
-                                    width: 6,
-                                    height: 6,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFF56F3D6),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Text(
-                                    line,
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(alpha: 0.75),
-                                      height: 1.6,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                    blur: 20,
+                    alignment: Alignment.topLeft,
+                    border: 1.5,
+                    linearGradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFFffffff).withValues(alpha: 0.05),
+                        const Color(0xFFffffff).withValues(alpha: 0.02),
                       ],
                     ),
+                    borderGradient: LinearGradient(
+                      colors: [const Color(0xFF56F3D6).withValues(alpha: 0.4), Colors.transparent],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      experience.organization.toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize: mobile ? 18 : 24,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                        letterSpacing: 1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      experience.role,
+                                      style: const TextStyle(
+                                        color: Color(0xFF56F3D6),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.white10),
+                                ),
+                                child: Text(
+                                  experience.duration,
+                                  style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: experience.description.map((line) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.keyboard_arrow_right_rounded, color: Color(0xFF56F3D6), size: 18),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          line,
+                                          style: const TextStyle(color: Colors.white60, fontSize: 14, height: 1.6),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ).animate().fadeIn(delay: (index * 150 + 100).ms).moveX(begin: 30, end: 0),
+                ).animate().fadeIn(delay: (index * 200 + 100).ms).slideX(begin: 0.05),
               ),
             ],
           ),

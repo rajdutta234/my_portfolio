@@ -7,6 +7,7 @@ import '../notifier/app_notifier.dart';
 import '../widgets/sections/about_section.dart';
 import '../widgets/sections/contact_section.dart';
 import '../widgets/sections/experience_section.dart';
+import '../widgets/sections/achievement_section.dart';
 import '../widgets/sections/footer_section.dart';
 import '../widgets/sections/hero_section.dart';
 import '../widgets/sections/work_section.dart';
@@ -196,6 +197,10 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ),
                     _SectionWrapper(
                       key: _sectionKeys[4],
+                      child: const AchievementSection(),
+                    ),
+                    _SectionWrapper(
+                      key: _sectionKeys[5],
                       child: const ContactSection(),
                     ),
                     const FooterSection(),

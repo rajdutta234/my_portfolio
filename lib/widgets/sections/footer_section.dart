@@ -53,6 +53,32 @@ class FooterSection extends StatelessWidget {
                 ),
               ),
               TextButton(
+                onPressed: () => openExternalLink(context, instagramUrl),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                child: const Text(
+                  'Instagram',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => openExternalLink(context, facebookUrl),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                child: const Text(
+                  'Facebook',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+              TextButton(
                 onPressed: () => openExternalLink(context, 'mailto:$email'),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

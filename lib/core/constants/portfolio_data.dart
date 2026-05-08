@@ -6,10 +6,10 @@ import '../../models/skill.dart';
 
 const String developerName = 'Raj Dutta';
 const String developerTitle = 'Full Stack Developer';
-const String tagline = 'Full Stack Developer (Flutter/Dart + Python Django)';
+const String tagline = 'Full Stack Developer (Flutter/Dart + Python Flask & FastAPI)';
 
 const String aboutText =
-    'Full Stack Developer (Flutter/Dart + Python Django) and BCA student with hands-on experience building production-grade admin systems and mobile apps. Strong in scalable UI architecture, state management (Riverpod/GetX), and end-to-end workflows across healthcare, pharmacy, and dealership domains.';
+    'Full Stack Developer (Flutter/Dart + Python Flask & FastAPI) and BCA student with hands-on experience building production-grade admin systems and mobile apps. Strong in scalable UI architecture, state management (Riverpod/GetX), and end-to-end workflows across healthcare, pharmacy, and dealership domains.';
 
 const String resumeUrl = 'https://example.com/raj-dutta-resume.pdf';
 const String email = 'rajdutta372@gmail.com';
@@ -23,6 +23,7 @@ const List<String> navItems = <String>[
   'About',
   'Experience',
   'Work',
+  'Achievements',
   'Contact',
 ];
 
@@ -50,7 +51,8 @@ final List<SkillCategory> skills = <SkillCategory>[
     title: 'Backend & State Mgmt',
     icon: Icons.dns,
     skills: const <SkillItem>[
-      SkillItem(name: 'Django', icon: Icons.api, proficiency: 0.85),
+      SkillItem(name: 'Flask', icon: Icons.api, proficiency: 0.9),
+      SkillItem(name: 'FastAPI', icon: Icons.bolt, proficiency: 0.88),
       SkillItem(name: 'Riverpod', icon: Icons.layers, proficiency: 0.92),
       SkillItem(name: 'GetX', icon: Icons.layers, proficiency: 0.92),
       SkillItem(name: 'GoRouter', icon: Icons.route, proficiency: 0.88),

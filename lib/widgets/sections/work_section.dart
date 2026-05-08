@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/constants/portfolio_data.dart';
 import '../../models/certificate.dart';
 import '../../models/project.dart';
 import '../../models/skill.dart';
-import '../common/glass_container.dart';
 import '../common/link_utils.dart';
 import '../common/section_title.dart';
 import '../common/perspective_card.dart';
@@ -47,66 +47,31 @@ class _WorkSectionState extends State<WorkSection>
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1300),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 100),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 120),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SectionTitle(
-                title: 'Expertise & Work',
+                title: 'Portfolio Showcase',
                 subtitle:
-                    'A professional showcase of my projects, certifications, and technical proficiencies',
-              ).animate().fadeIn().moveX(begin: -30, end: 0),
+                    'Engineering solutions with precision, scale, and high-performance standards.',
+              ).animate().fadeIn().slideX(begin: -0.1),
               const SizedBox(height: 60),
 
-              // Premium Tab Bar
-              Container(
-                height: mobile ? 56 : 64,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0D1829).withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white12),
-                ),
-                child: TabBar(
-                  controller: _tabController,
-                  isScrollable: mobile,
-                  indicator: BoxDecoration(
-                    color: const Color(0xFF56F3D6),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  labelColor: const Color(0xFF021414),
-                  unselectedLabelColor: Colors.white60,
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 13,
-                    letterSpacing: 1.5,
-                  ),
-                  padding: const EdgeInsets.all(6),
-                  tabs: const [
-                    Tab(text: 'PROJECTS'),
-                    Tab(text: 'CERTIFICATES'),
-                    Tab(text: 'SKILLS'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 60),
+              // Premium Cinematic Tab Bar
+              _buildPremiumTabBar(mobile),
+              
+              const SizedBox(height: 80),
 
-              // Animated Content
-              AnimatedSize(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
+              // Animated Content Transition
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 600),
+                switchInCurve: Curves.easeOutQuart,
+                switchOutCurve: Curves.easeInQuart,
                 child: [
-                  _ProjectsTab(mobile: mobile),
-                  _CertificatesTab(mobile: mobile),
-                  _TechStackTab(mobile: mobile),
+                  _ProjectsTab(mobile: mobile, key: const ValueKey('projects')),
+                  _CertificatesTab(mobile: mobile, key: const ValueKey('certs')),
+                  _TechStackTab(mobile: mobile, key: const ValueKey('tech')),
                 ][_activeIndex],
               ),
             ],
@@ -115,37 +80,77 @@ class _WorkSectionState extends State<WorkSection>
       ),
     );
   }
+
+  Widget _buildPremiumTabBar(bool mobile) {
+    return Container(
+      height: 70,
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+      ),
+      child: TabBar(
+        controller: _tabController,
+        isScrollable: mobile,
+        indicator: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
+          ),
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+              blurRadius: 20,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: Colors.transparent,
+        labelColor: Colors.black,
+        unselectedLabelColor: Colors.white54,
+        labelStyle: const TextStyle(
+          fontWeight: FontWeight.w900,
+          fontSize: 13,
+          letterSpacing: 2,
+        ),
+        tabs: const [
+          Tab(text: 'PROJECTS'),
+          Tab(text: 'CREDENTIALS'),
+          Tab(text: 'CAPABILITIES'),
+        ],
+      ),
+    );
+  }
 }
 
 class _ProjectsTab extends StatelessWidget {
-  const _ProjectsTab({required this.mobile});
+  const _ProjectsTab({required this.mobile, super.key});
   final bool mobile;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double width = constraints.maxWidth;
-        final int crossAxisCount = mobile ? 1 : 3;
-        final double spacing = 32.0;
-        final double itemWidth =
-            (width - (spacing * (crossAxisCount - 1))) / crossAxisCount;
-
-        return Wrap(
-          spacing: spacing,
-          runSpacing: spacing,
-          children: projects.asMap().entries.map((entry) {
-            final index = entry.key;
-            final project = entry.value;
-            return SizedBox(
-              width: itemWidth,
-              child: _ProjectCard(
-                project: project,
-                index: index,
-                mobile: mobile,
-              ),
+        final int crossAxisCount = mobile ? 1 : 2;
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: projects.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 32,
+            mainAxisSpacing: 40,
+            childAspectRatio: mobile ? 0.9 : 1.4,
+          ),
+          itemBuilder: (context, index) {
+            return _ProjectCard(
+              project: projects[index],
+              index: index,
+              mobile: mobile,
             );
-          }).toList(),
+          },
         );
       },
     );
@@ -162,70 +167,105 @@ class _ProjectCard extends StatelessWidget {
   final int index;
   final bool mobile;
 
-  void _showProjectDetails(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.9),
-      builder: (context) => _ProjectDetailDialog(project: project),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return PerspectiveCard(
-      maxTilt: 0.08,
+      maxTilt: 0.05,
       child: InkWell(
-        onTap: () => _showProjectDetails(context),
-        borderRadius: BorderRadius.circular(28),
-        child: GlassContainer(
-          padding: EdgeInsets.zero,
-          borderRadius: 28,
+        onTap: () => _showDetails(context),
+        borderRadius: BorderRadius.circular(32),
+        child: GlassmorphicContainer(
+          width: double.infinity,
+          height: double.infinity,
+          borderRadius: 32,
+          blur: 15,
+          alignment: Alignment.center,
+          border: 1.5,
+          linearGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFFffffff).withValues(alpha: 0.05),
+              const Color(0xFFffffff).withValues(alpha: 0.02),
+            ],
+          ),
+          borderGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFF56F3D6).withValues(alpha: 0.2),
+              const Color(0xFF00C2FF).withValues(alpha: 0.1),
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                child: AspectRatio(
-                  aspectRatio: 16 / 10,
-                  child: Image.asset(
-                    project.imageUrl!,
-                    fit: BoxFit.cover,
+              Expanded(
+                flex: 6,
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    image: DecorationImage(
+                      image: AssetImage(project.imageUrl!),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      project.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -0.2,
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              project.title,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const Icon(Icons.arrow_outward_rounded, color: Color(0xFF56F3D6), size: 20),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      project.stack.take(3).join(' • '),
-                      style: const TextStyle(
-                        color: Color(0xFF56F3D6),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        children: project.stack.take(3).map((s) => Text(
+                          s,
+                          style: const TextStyle(
+                            color: Color(0xFF56F3D6),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        )).toList(),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
-    ).animate().fadeIn(delay: (index * 80).ms).moveY(begin: 30, end: 0);
+    ).animate().fadeIn(delay: (index * 150).ms).scale(begin: const Offset(0.95, 0.95));
+  }
+
+  void _showDetails(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.85),
+      builder: (context) => _ProjectDetailDialog(project: project),
+    );
   }
 }
 
@@ -240,153 +280,137 @@ class _ProjectDetailDialog extends StatelessWidget {
     return Center(
       child: Container(
         margin: const EdgeInsets.all(24),
-        constraints: const BoxConstraints(maxWidth: 900),
+        constraints: const BoxConstraints(maxWidth: 1000),
         child: Material(
           color: Colors.transparent,
-          child: PerspectiveCard(
-            maxTilt: 0.04,
-            child: GlassContainer(
-              padding: EdgeInsets.zero,
-              borderRadius: 32,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header Image
-                    Stack(
+          child: GlassmorphicContainer(
+            width: double.infinity,
+            height: mobile ? double.infinity : 700,
+            borderRadius: 32,
+            blur: 25,
+            alignment: Alignment.center,
+            border: 2,
+            linearGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF0D1829).withValues(alpha: 0.9),
+                const Color(0xFF020C1B).withValues(alpha: 0.9),
+              ],
+            ),
+            borderGradient: const LinearGradient(
+              colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
+            ),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(mobile ? 20 : 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'PROJECT DEEP-DIVE',
+                        style: TextStyle(
+                          color: const Color(0xFF56F3D6),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close_rounded, color: Colors.white54),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    project.title,
+                    style: TextStyle(
+                      fontSize: mobile ? 32 : 48,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: -1,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(project.imageUrl!, fit: BoxFit.cover),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Text(
+                    project.description,
+                    style: const TextStyle(color: Colors.white70, fontSize: 16, height: 1.8),
+                  ),
+                  const SizedBox(height: 40),
+                  _buildSectionTitle('CORE CONTRIBUTIONS'),
+                  const SizedBox(height: 20),
+                  ...project.contributions.map((c) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-                          child: AspectRatio(
-                            aspectRatio: mobile ? 4 / 3 : 21 / 9,
-                            child: Image.asset(project.imageUrl!, fit: BoxFit.cover),
+                        const Icon(Icons.check_circle_outline, color: Color(0xFF56F3D6), size: 18),
+                        const SizedBox(width: 12),
+                        Expanded(child: Text(c, style: const TextStyle(color: Colors.white))),
+                      ],
+                    ),
+                  )),
+                  const SizedBox(height: 40),
+                  _buildSectionTitle('TECHNOLOGIES'),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: project.stack.map((s) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.white10),
+                      ),
+                      child: Text(s, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 60),
+                  Row(
+                    children: [
+                      if (project.githubUrl.isNotEmpty)
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => openExternalLink(context, project.githubUrl),
+                            icon: const Icon(Icons.code_rounded),
+                            label: const Text('VIEW SOURCE'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white12,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.all(20),
+                            ),
                           ),
                         ),
-                        Positioned(
-                          top: 20,
-                          right: 20,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black54,
-                            child: IconButton(
-                              icon: const Icon(Icons.close, color: Colors.white, size: 20),
-                              onPressed: () => Navigator.pop(context),
+                      if (project.demoUrl.isNotEmpty) ...[
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => openExternalLink(context, project.demoUrl),
+                            icon: const Icon(Icons.launch_rounded),
+                            label: const Text('LIVE DEMO'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF56F3D6),
+                              foregroundColor: Colors.black,
+                              padding: const EdgeInsets.all(20),
                             ),
                           ),
                         ),
                       ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(mobile ? 24 : 48),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  project.title,
-                                  style: TextStyle(
-                                    fontSize: mobile ? 24 : 36,
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: -1,
-                                  ),
-                                ),
-                              ),
-                              if (project.githubUrl.isNotEmpty)
-                                _DialogIconButton(
-                                  icon: Icons.code,
-                                  onPressed: () => openExternalLink(context, project.githubUrl),
-                                ),
-                              if (project.demoUrl.isNotEmpty) ...[
-                                const SizedBox(width: 12),
-                                _DialogIconButton(
-                                  icon: Icons.launch,
-                                  onPressed: () => openExternalLink(context, project.demoUrl),
-                                ),
-                              ],
-                            ],
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            project.description,
-                            style: TextStyle(
-                              fontSize: mobile ? 14 : 16,
-                              color: Colors.white70,
-                              height: 1.7,
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          if (project.contributions.isNotEmpty) ...[
-                            const Text(
-                              'PROJECT CONTRIBUTIONS',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w900,
-                                fontSize: 13,
-                                letterSpacing: 2.5,
-                                color: Color(0xFF56F3D6),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            ...project.contributions.map(
-                              (c) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 4),
-                                      child: Icon(Icons.bolt_rounded,
-                                          size: 18, color: Color(0xFF56F3D6)),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Text(
-                                        c,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          height: 1.5,
-                                          fontSize: 14.5,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                          const SizedBox(height: 40),
-                          Wrap(
-                            spacing: 12,
-                            runSpacing: 12,
-                            children: project.stack
-                                .map(
-                                  (s) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha: 0.05),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white10),
-                                    ),
-                                    child: Text(
-                                      s,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -394,174 +418,116 @@ class _ProjectDetailDialog extends StatelessWidget {
       ),
     );
   }
-}
 
-class _DialogIconButton extends StatelessWidget {
-  const _DialogIconButton({required this.icon, required this.onPressed});
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF56F3D6).withValues(alpha: 0.3)),
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: const Color(0xFF56F3D6), size: 20),
-        onPressed: onPressed,
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        color: Color(0xFF56F3D6),
+        fontSize: 11,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 2,
       ),
     );
   }
 }
 
 class _CertificatesTab extends StatelessWidget {
-  const _CertificatesTab({required this.mobile});
+  const _CertificatesTab({required this.mobile, super.key});
   final bool mobile;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double width = constraints.maxWidth;
-        final int crossAxisCount = mobile ? 2 : 4;
-        final double spacing = 24.0;
-        final double itemWidth = (width - (spacing * (crossAxisCount - 1))) / crossAxisCount;
-
-        return Wrap(
-          spacing: spacing,
-          runSpacing: spacing,
-          children: certificates.asMap().entries.map((entry) {
-            final index = entry.key;
-            final certificate = entry.value;
-            return SizedBox(
-              width: itemWidth,
-              height: itemWidth * 0.85,
-              child: PerspectiveCard(
-                maxTilt: 0.12,
-                child: _CertificateCard(certificate: certificate),
-              )
-                  .animate()
-                  .fadeIn(delay: (index * 50).ms)
-                  .scale(begin: const Offset(0.9, 0.9)),
-            );
-          }).toList(),
-        );
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: certificates.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: mobile ? 2 : 4,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+        childAspectRatio: 0.8,
+      ),
+      itemBuilder: (context, index) {
+        return _CertificateCard(certificate: certificates[index], index: index);
       },
     );
   }
 }
 
-class _TechStackTab extends StatelessWidget {
-  const _TechStackTab({required this.mobile});
-  final bool mobile;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double width = constraints.maxWidth;
-        final double itemWidth = mobile ? width : (width - 32) / 2;
-
-        return Wrap(
-          spacing: 32,
-          runSpacing: 32,
-          children: skills.asMap().entries.map((entry) {
-            final index = entry.key;
-            final category = entry.value;
-            return SizedBox(
-              width: itemWidth,
-              child: PerspectiveCard(
-                maxTilt: 0.05,
-                child: _SkillCategoryCard(
-                  category: category,
-                  index: index,
-                ),
-              ).animate().fadeIn(delay: (index * 100).ms).moveY(begin: 20, end: 0),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-}
-
-class _CertificateCard extends StatefulWidget {
-  const _CertificateCard({required this.certificate});
+class _CertificateCard extends StatelessWidget {
+  const _CertificateCard({required this.certificate, required this.index});
   final Certificate certificate;
-
-  @override
-  State<_CertificateCard> createState() => _CertificateCardState();
-}
-
-class _CertificateCardState extends State<_CertificateCard> {
-  bool _hovered = false;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GlassContainer(
-        padding: EdgeInsets.zero,
-        borderRadius: 24,
-        child: Stack(
+    return PerspectiveCard(
+      maxTilt: 0.1,
+      child: GlassmorphicContainer(
+        width: double.infinity,
+        height: double.infinity,
+        borderRadius: 20,
+        blur: 10,
+        alignment: Alignment.center,
+        border: 1,
+        linearGradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFFffffff).withValues(alpha: 0.05),
+            const Color(0xFFffffff).withValues(alpha: 0.02),
+          ],
+        ),
+        borderGradient: LinearGradient(
+          colors: [Colors.white.withValues(alpha: 0.2), Colors.transparent],
+        ),
+        child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Image.asset(
-                widget.certificate.imageUrl,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  image: DecorationImage(
+                    image: AssetImage(certificate.imageUrl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
-            AnimatedOpacity(
-              opacity: _hovered ? 0.95 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0D1829).withValues(alpha: 0.9),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.certificate.title,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      widget.certificate.issuer,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.6),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Icon(
-                      Icons.verified_user_rounded,
-                      color: Color(0xFF56F3D6),
-                      size: 32,
-                    ),
-                  ],
-                ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                certificate.title,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white70),
               ),
             ),
           ],
         ),
       ),
+    ).animate().fadeIn(delay: (index * 100).ms).scale(begin: const Offset(0.9, 0.9));
+  }
+}
+
+class _TechStackTab extends StatelessWidget {
+  const _TechStackTab({required this.mobile, super.key});
+  final bool mobile;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 24,
+      runSpacing: 24,
+      children: skills.asMap().entries.map((entry) {
+        return SizedBox(
+          width: mobile ? double.infinity : (MediaQuery.sizeOf(context).width - 350) / 2,
+          child: _SkillCategoryCard(category: entry.value, index: entry.key),
+        );
+      }).toList(),
     );
   }
 }
@@ -573,37 +539,39 @@ class _SkillCategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
-      padding: const EdgeInsets.all(32),
+    return GlassmorphicContainer(
+      width: double.infinity,
+      height: 450,
       borderRadius: 24,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+      blur: 20,
+      alignment: Alignment.center,
+      border: 1.5,
+      linearGradient: LinearGradient(
+        colors: [
+          Colors.white.withValues(alpha: 0.05),
+          Colors.white.withValues(alpha: 0.02),
+        ],
+      ),
+      borderGradient: LinearGradient(
+        colors: [const Color(0xFF56F3D6).withValues(alpha: 0.3), Colors.transparent],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(category.icon, color: const Color(0xFF56F3D6), size: 28),
+                const SizedBox(width: 16),
+                Text(
+                  category.title,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
                 ),
-                child: Icon(category.icon, color: const Color(0xFF56F3D6), size: 22),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                category.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-          ...category.skills.map(
-            (s) => Padding(
+              ],
+            ),
+            const SizedBox(height: 32),
+            ...category.skills.map((s) => Padding(
               padding: const EdgeInsets.only(bottom: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -611,49 +579,27 @@ class _SkillCategoryCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        s.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        '${(s.proficiency * 100).toInt()}%',
-                        style: TextStyle(
-                          color: const Color(0xFF56F3D6).withValues(alpha: 0.7),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                      Text(s.name, style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                      Text('${(s.proficiency * 100).toInt()}%', style: const TextStyle(color: Color(0xFF56F3D6))),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   Stack(
                     children: [
                       Container(
-                        height: 6,
+                        height: 4,
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                        decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)),
                       ),
                       FractionallySizedBox(
                         widthFactor: s.proficiency,
                         child: Container(
-                          height: 6,
+                          height: 4,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
-                            ),
-                            borderRadius: BorderRadius.circular(10),
+                            gradient: const LinearGradient(colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)]),
+                            borderRadius: BorderRadius.circular(2),
                             boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
-                                blurRadius: 8,
-                                spreadRadius: 1,
-                              ),
+                              BoxShadow(color: const Color(0xFF56F3D6).withValues(alpha: 0.4), blurRadius: 8),
                             ],
                           ),
                         ),
@@ -662,10 +608,10 @@ class _SkillCategoryCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          ),
-        ],
+            )),
+          ],
+        ),
       ),
-    );
+    ).animate().fadeIn(delay: (index * 150).ms).moveY(begin: 20);
   }
 }

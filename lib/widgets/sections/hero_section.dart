@@ -1,16 +1,14 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import '../../core/constants/portfolio_data.dart';
 import '../common/link_utils.dart';
-import '../common/typing_text.dart';
 import '../common/parallax_layer.dart';
 import '../common/magnetic.dart';
 import '../common/perspective_card.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import '../common/developer_terminal.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key, required this.onViewProjects});
@@ -27,573 +25,63 @@ class _HeroSectionState extends State<HeroSection> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
-    final bool mobile = size.width < 700;
-    final bool tablet = size.width >= 700 && size.width < 1100;
-    final double heroHeight = size.height < 760 ? 760 : size.height;
+    final bool mobile = size.width < 800;
+    final double heroHeight = size.height < 800 ? 800 : size.height;
 
     return MouseRegion(
       onHover: (event) => setState(() => _mousePosition = event.position),
-      child: SizedBox(
-        height: heroHeight,
+      child: Container(
+        constraints: BoxConstraints(minHeight: heroHeight),
         child: Stack(
           children: [
-            ParallaxLayer(
-              speed: 0.02,
-              mousePosition: _mousePosition,
-              child: IgnorePointer(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      center: const Alignment(-0.8, -0.9),
-                      radius: 1.1,
-                      colors: <Color>[
-                        const Color(0xFF56F3D6).withValues(alpha: 0.12),
-                        Colors.transparent,
-                      ],
-                    ),
+            // 3D Model Background (Cinematic Workspace)
+            if (!mobile)
+              Positioned(
+                right: -100,
+                top: 0,
+                bottom: 0,
+                width: size.width * 0.6,
+                child: Opacity(
+                  opacity: 0.6,
+                  child: ModelViewer(
+                    src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                    alt: 'Developer Workspace',
+                    autoRotate: true,
+                    cameraControls: false,
+                    disableZoom: true,
+                    shadowIntensity: 1,
+                    environmentImage: 'neutral',
                   ),
                 ),
-              ),
-            ),
+              ).animate().fadeIn(duration: 2.seconds),
+
+            // Deep Background Parallax Layers
             ParallaxLayer(
-              speed: -0.015,
+              speed: 0.01,
               mousePosition: _mousePosition,
-              child: IgnorePointer(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      center: const Alignment(0.95, 0.9),
-                      radius: 1.2,
-                      colors: <Color>[
-                        const Color(0xFF00C2FF).withValues(alpha: 0.1),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1120),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: mobile ? 18 : 36,
-                    vertical: 24,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      ParallaxLayer(
-                        speed: -0.015,
-                        mousePosition: _mousePosition,
-                        child: Text(
-                          'INNOVATE',
-                          style: TextStyle(
-                            fontSize: mobile
-                                ? 72
-                                : tablet
-                                ? 140
-                                : 190,
-                            fontWeight: FontWeight.w900,
-                            color: const Color(
-                              0xFF56F3D6,
-                            ).withValues(alpha: 0.06),
-                            letterSpacing: mobile ? 10 : 20,
-                          ),
-                        ),
-                      ),
-
-                      // Floating Parallax Particles
-                      ...List.generate(6, (index) {
-                        final random = (index * 137) % 1000 / 1000;
-                        return ParallaxLayer(
-                          speed: 0.05 + (random * 0.05),
-                          mousePosition: _mousePosition,
-                          child: Transform.translate(
-                            offset: Offset(
-                              (random * 800) - 400,
-                              (random * 600) - 300,
-                            ),
-                            child:
-                                Container(
-                                      width: 8 + (random * 12),
-                                      height: 8 + (random * 12),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: RadialGradient(
-                                          colors: [
-                                            const Color(
-                                              0xFF56F3D6,
-                                            ).withValues(alpha: 0.4),
-                                            Colors.transparent,
-                                          ],
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.1,
-                                          ),
-                                          width: 1,
-                                        ),
-                                      ),
-                                    )
-                                    .animate(onPlay: (c) => c.repeat())
-                                    .moveY(
-                                      begin: -20,
-                                      end: 20,
-                                      duration: (2000 + random * 2000).ms,
-                                      curve: Curves.easeInOut,
-                                    ),
-                          ),
-                        );
-                      }),
-
-                      ParallaxLayer(
-                        speed: 0.03,
-                        mousePosition: _mousePosition,
-                        child: PerspectiveCard(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: <Color>[
-                                  const Color(
-                                    0xFF1E2A3E,
-                                  ).withValues(alpha: 0.52),
-                                  const Color(
-                                    0xFF0D1829,
-                                  ).withValues(alpha: 0.32),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                width: 1.5,
-                              ),
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                  color: const Color(
-                                    0xFF56F3D6,
-                                  ).withValues(alpha: 0.15),
-                                  blurRadius: 40,
-                                  spreadRadius: 5,
-                                ),
-                                BoxShadow(
-                                  color: const Color(
-                                    0xFF00C2FF,
-                                  ).withValues(alpha: 0.08),
-                                  blurRadius: 60,
-                                  spreadRadius: 8,
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(40),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 24,
-                                  sigmaY: 24,
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: mobile ? 20 : 60,
-                                    vertical: mobile ? 20 : 40,
-                                  ),
-                                  child: LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      return Center(
-                                        child: FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: ConstrainedBox(
-                                            constraints: BoxConstraints(
-                                              minHeight: constraints.maxHeight,
-                                              maxWidth: constraints.maxWidth,
-                                            ),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment: mobile
-                                                  ? CrossAxisAlignment.start
-                                                  : CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Magnetic(
-                                                  child: Container(
-                                                    width: mobile ? 108 : 180,
-                                                    height: mobile ? 108 : 180,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color:
-                                                              const Color(
-                                                                0xFF00C2FF,
-                                                              ).withValues(
-                                                                alpha: 0.24,
-                                                              ),
-                                                          blurRadius: 50,
-                                                          spreadRadius: 10,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Stack(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      children: [
-                                                        Container(
-                                                              width: mobile
-                                                                  ? 108
-                                                                  : 180,
-                                                              height: mobile
-                                                                  ? 108
-                                                                  : 180,
-                                                              decoration: BoxDecoration(
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                                border: Border.all(
-                                                                  color: Colors
-                                                                      .white24,
-                                                                  width: 1,
-                                                                ),
-                                                              ),
-                                                            )
-                                                            .animate(
-                                                              onPlay: (c) =>
-                                                                  c.repeat(),
-                                                            )
-                                                            .rotate(
-                                                              duration:
-                                                                  10.seconds,
-                                                            ),
-                                                        Container(
-                                                              width: mobile
-                                                                  ? 104
-                                                                  : 172,
-                                                              height: mobile
-                                                                  ? 104
-                                                                  : 172,
-                                                              decoration: BoxDecoration(
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                                border: Border.all(
-                                                                  color:
-                                                                      const Color(
-                                                                        0xFF56F3D6,
-                                                                      ).withValues(
-                                                                        alpha:
-                                                                            0.4,
-                                                                      ),
-                                                                  width: 2,
-                                                                ),
-                                                              ),
-                                                            )
-                                                            .animate(
-                                                              onPlay: (c) =>
-                                                                  c.repeat(),
-                                                            )
-                                                            .rotate(
-                                                              duration:
-                                                                  4.seconds,
-                                                              begin: 1,
-                                                              end: 0,
-                                                            ),
-                                                        ClipOval(
-                                                          child: Image.asset(
-                                                            'assets/images/profile.jpg',
-                                                            width: mobile
-                                                                ? 98
-                                                                : 165,
-                                                            height: mobile
-                                                                ? 98
-                                                                : 165,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ).animate().scale(
-                                                  delay: 200.ms,
-                                                  duration: 800.ms,
-                                                  curve: Curves.easeOutBack,
-                                                ),
-                                                const SizedBox(height: 24),
-                                                Column(
-                                                  crossAxisAlignment: mobile
-                                                      ? CrossAxisAlignment.start
-                                                      : CrossAxisAlignment
-                                                            .center,
-                                                  children: [
-                                                    Text(
-                                                          developerName
-                                                              .toUpperCase(),
-                                                          style: Theme.of(context)
-                                                              .textTheme
-                                                              .displayMedium
-                                                              ?.copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w900,
-                                                                letterSpacing:
-                                                                    -2,
-                                                                height: 1.0,
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: mobile
-                                                                    ? 40
-                                                                    : null,
-                                                              ),
-                                                        )
-                                                        .animate()
-                                                        .fadeIn(delay: 400.ms)
-                                                        .moveY(
-                                                          begin: 30,
-                                                          end: 0,
-                                                          curve: Curves
-                                                              .easeOutCubic,
-                                                        ),
-                                                    const SizedBox(height: 12),
-                                                    Text(
-                                                          developerTitle,
-                                                          style: Theme.of(context)
-                                                              .textTheme
-                                                              .headlineSmall
-                                                              ?.copyWith(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.72,
-                                                                    ),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                letterSpacing:
-                                                                    1.2,
-                                                                fontSize: mobile
-                                                                    ? 18
-                                                                    : null,
-                                                              ),
-                                                        )
-                                                        .animate()
-                                                        .fadeIn(delay: 600.ms)
-                                                        .moveY(
-                                                          begin: 30,
-                                                          end: 0,
-                                                          curve: Curves
-                                                              .easeOutCubic,
-                                                        ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 20),
-                                                const TypingText(
-                                                  words: [
-                                                    tagline,
-                                                    'Architecting the future of web.',
-                                                    'Pixels with purpose.',
-                                                  ],
-                                                ).animate().fadeIn(
-                                                  delay: 800.ms,
-                                                ),
-                                                const SizedBox(height: 28),
-                                                Wrap(
-                                                  spacing: 12,
-                                                  runSpacing: 12,
-                                                  alignment: mobile
-                                                      ? WrapAlignment.start
-                                                      : WrapAlignment.center,
-                                                  children: [
-                                                    Magnetic(
-                                                      child: FilledButton(
-                                                        onPressed: widget
-                                                            .onViewProjects,
-                                                        style: FilledButton.styleFrom(
-                                                          backgroundColor:
-                                                              const Color(
-                                                                0xFF56F3D6,
-                                                              ),
-                                                          foregroundColor:
-                                                              const Color(
-                                                                0xFF031313,
-                                                              ),
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 34,
-                                                                vertical: 20,
-                                                              ),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  20,
-                                                                ),
-                                                          ),
-                                                        ),
-                                                        child: const Text(
-                                                          'EXPLORE WORK',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            letterSpacing: 1,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Magnetic(
-                                                      child: OutlinedButton(
-                                                        onPressed: () =>
-                                                            openExternalLink(
-                                                              context,
-                                                              resumeUrl,
-                                                            ),
-                                                        style: OutlinedButton.styleFrom(
-                                                          side:
-                                                              const BorderSide(
-                                                                color: Colors
-                                                                    .white24,
-                                                                width: 2,
-                                                              ),
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 32,
-                                                                vertical: 20,
-                                                              ),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  20,
-                                                                ),
-                                                          ),
-                                                        ),
-                                                        child: const Text(
-                                                          'RESUME',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            letterSpacing: 1,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ).animate().fadeIn(delay: 1.seconds).moveY(begin: 30, end: 0),
-                                                const SizedBox(height: 16),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    _SocialIcon(
-                                                      icon: const FaIcon(FontAwesomeIcons.linkedin, color: Colors.white, size: 28),
-                                                      url: linkedinUrl,
-                                                      label: 'LinkedIn',
-                                                    ),
-                                                    const SizedBox(width: 14),
-                                                    _SocialIcon(
-                                                      icon: const FaIcon(FontAwesomeIcons.facebook, color: Colors.white, size: 28),
-                                                      url: facebookUrl,
-                                                      label: 'Facebook',
-                                                    ),
-                                                    const SizedBox(width: 14),
-                                                    _SocialIcon(
-                                                      icon: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 28),
-                                                      url: instagramUrl,
-                                                      label: 'Instagram',
-                                                    ),
-                                                    const SizedBox(width: 14),
-                                                    _SocialIcon(
-                                                      icon: const FaIcon(FontAwesomeIcons.github, color: Colors.white, size: 28),
-                                                      url: githubUrl,
-                                                      label: 'GitHub',
-                                                    ),
-
-
-                                                  ],
-                                                ).animate().fadeIn(
-                                                  delay: 1.2.seconds,
-                                                ),
-                                                const SizedBox(height: 36),
-                                                Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                            20,
-                                                          ),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.03,
-                                                            ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                        border: Border.all(
-                                                          color: Colors.white
-                                                              .withValues(
-                                                                alpha: 0.08,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceAround,
-                                                        children: [
-                                                          _buildStatItem(
-                                                            context,
-                                                            'PROJECTS',
-                                                            projects.length
-                                                                .toString(),
-                                                            Icons.rocket_launch,
-                                                          ),
-                                                          Container(
-                                                            width: 1,
-                                                            height: 30,
-                                                            color:
-                                                                Colors.white12,
-                                                          ),
-                                                          _buildStatItem(
-                                                            context,
-                                                            'EXP',
-                                                            '1+ YRS',
-                                                            Icons.timeline,
-                                                          ),
-                                                          Container(
-                                                            width: 1,
-                                                            height: 30,
-                                                            color:
-                                                                Colors.white12,
-                                                          ),
-                                                          _buildStatItem(
-                                                            context,
-                                                            'AWARDS',
-                                                            certificates.length
-                                                                .toString(),
-                                                            Icons.emoji_events,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                    .animate()
-                                                    .fadeIn(delay: 1.4.seconds)
-                                                    .moveY(begin: 20, end: 0),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: const Alignment(-0.7, -0.6),
+                    radius: 1.2,
+                    colors: [
+                      const Color(0xFF56F3D6).withValues(alpha: 0.08),
+                      Colors.transparent,
                     ],
                   ),
+                ),
+              ),
+            ),
+
+            // Hero Content Area
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: mobile ? 20 : 40),
+                  child: mobile 
+                    ? _buildMobileLayout(context)
+                    : _buildDesktopLayout(context, size),
                 ),
               ),
             ),
@@ -603,73 +91,236 @@ class _HeroSectionState extends State<HeroSection> {
     );
   }
 
-  Widget _buildStatItem(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-  ) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+  Widget _buildDesktopLayout(BuildContext context, Size size) {
+    return Row(
       children: [
-        Icon(icon, color: const Color(0xFF56F3D6), size: 18),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
-            fontSize: 16,
-            letterSpacing: 1,
+        // Left Column: Identity & Terminal
+        Expanded(
+          flex: 5,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildIdentity(context),
+              const SizedBox(height: 40),
+              const DeveloperTerminal(),
+              const SizedBox(height: 40),
+              _buildActionButtons(context),
+            ],
           ),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.4),
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1,
+        
+        // Right Column: Holographic Profile
+        Expanded(
+          flex: 4,
+          child: Center(
+            child: _buildHolographicProfile(context),
           ),
         ),
       ],
     );
   }
-}
 
-class _SocialIcon extends StatelessWidget {
-  const _SocialIcon({
-    required this.icon,
-    required this.url,
-    required this.label,
-  });
-  final Widget icon;
+  Widget _buildMobileLayout(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 100),
+          _buildHolographicProfile(context),
+          const SizedBox(height: 40),
+          _buildIdentity(context),
+          const SizedBox(height: 30),
+          _buildActionButtons(context),
+          const SizedBox(height: 100),
+        ],
+      ),
+    );
+  }
 
-
-  final String url;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Magnetic(
-      range: 60,
-      child: Tooltip(
-        message: label,
-        child: InkWell(
-          onTap: () => openExternalLink(context, url),
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0D1829).withValues(alpha: 0.55),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white24),
+  Widget _buildIdentity(BuildContext context) {
+    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+    
+    return Column(
+      crossAxisAlignment: mobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Text(
+          'HELLO, I AM',
+          style: TextStyle(
+            color: const Color(0xFF56F3D6),
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 4,
+          ),
+        ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.2),
+        const SizedBox(height: 12),
+        Text(
+          developerName.toUpperCase(),
+          textAlign: mobile ? TextAlign.center : TextAlign.start,
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+            fontSize: mobile ? 48 : 84,
+            letterSpacing: -2,
+            height: 1.1,
+            color: Colors.white,
+          ),
+        ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 40,
+          child: DefaultTextStyle(
+            style: TextStyle(
+              fontSize: mobile ? 20 : 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white70,
+              fontFamily: 'monospace',
             ),
-            child: icon,
+            child: AnimatedTextKit(
+              animatedTexts: [
+                TypewriterAnimatedText('Full Stack Developer'),
+                TypewriterAnimatedText('Flutter Engineer'),
+                TypewriterAnimatedText('AI Solutions Architect'),
+                TypewriterAnimatedText('Cross Platform Specialist'),
+              ],
+              repeatForever: true,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
+  Widget _buildHolographicProfile(BuildContext context) {
+    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+    final double radius = mobile ? 120 : 200;
+
+    return PerspectiveCard(
+      child: Magnetic(
+        child: SizedBox(
+          width: radius * 1.5,
+          height: radius * 1.5,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Outer Rotating Rings
+              _buildOrbitingRing(radius, 1.0, 8, const Color(0xFF56F3D6).withValues(alpha: 0.2)),
+              _buildOrbitingRing(radius * 0.85, -1.2, 5, const Color(0xFF00C2FF).withValues(alpha: 0.3)),
+              
+              // Floating Code Snippets
+              ..._buildFloatingCodeSnippets(),
+
+              // Profile Image
+              Container(
+                width: radius,
+                height: radius,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                      blurRadius: 40,
+                      spreadRadius: 10,
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/profile.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildOrbitingRing(double radius, double speed, int duration, Color color) {
+    return Container(
+      width: radius * 1.2,
+      height: radius * 1.2,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: color, width: 1.5),
+      ),
+    )
+    .animate(onPlay: (c) => c.repeat())
+    .rotate(duration: duration.seconds, begin: 0, end: speed);
+  }
+
+  List<Widget> _buildFloatingCodeSnippets() {
+    return [
+      _FloatingSnippet(text: 'flutter_animate', offset: const Offset(-120, -100), delay: 0),
+      _FloatingSnippet(text: 'MVVM', offset: const Offset(140, -60), delay: 500),
+      _FloatingSnippet(text: 'Riverpod', offset: const Offset(-130, 80), delay: 1000),
+      _FloatingSnippet(text: 'Django API', offset: const Offset(110, 110), delay: 1500),
+    ];
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+
+    return Wrap(
+      spacing: 20,
+      runSpacing: 20,
+      alignment: mobile ? WrapAlignment.center : WrapAlignment.start,
+      children: [
+        Magnetic(
+          child: ElevatedButton(
+            onPressed: widget.onViewProjects,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF56F3D6),
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('EXPLORE WORK', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+          ),
+        ),
+        Magnetic(
+          child: OutlinedButton(
+            onPressed: () => openExternalLink(context, resumeUrl),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Colors.white24, width: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('RESUME', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+          ),
+        ),
+      ],
+    ).animate().fadeIn(delay: 1.seconds).moveY(begin: 20);
+  }
+}
+
+class _FloatingSnippet extends StatelessWidget {
+  const _FloatingSnippet({required this.text, required this.offset, required this.delay});
+  final String text;
+  final Offset offset;
+  final int delay;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: offset,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.white10),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.white38, fontSize: 10, fontFamily: 'monospace'),
+        ),
+      ),
+    )
+    .animate(onPlay: (c) => c.repeat(reverse: true))
+    .moveY(begin: -10, end: 10, duration: 2.seconds, delay: delay.ms)
+    .fadeIn(duration: 1.seconds);
   }
 }

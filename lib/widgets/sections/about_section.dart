@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/constants/portfolio_data.dart';
-import '../common/glass_container.dart';
 import '../common/reveal_on_scroll.dart';
 import '../common/section_title.dart';
+import '../common/perspective_card.dart';
 
 class AboutSection extends StatelessWidget {
   const AboutSection({super.key});
@@ -16,80 +18,83 @@ class AboutSection extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1200),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: mobile ? 40 : 60),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 120),
           child: Column(
             children: [
+              const SectionTitle(
+                title: 'Professional Profile',
+                subtitle: 'A brief overview of my technical journey and engineering philosophy.',
+              ),
+              const SizedBox(height: 80),
+              
               // Main Bio Card
               RevealOnScroll(
-                child: GlassContainer(
-                  padding: EdgeInsets.all(mobile ? 24 : 48),
+                child: GlassmorphicContainer(
+                  width: double.infinity,
+                  height: mobile ? 700 : 400,
                   borderRadius: 32,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const SectionTitle(
-                        title: 'About Me',
-                        subtitle: 'Building production-grade applications with purpose',
-                      ),
-                      SizedBox(height: mobile ? 32 : 48),
-                      if (mobile)
-                        Text(
-                          aboutText,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            height: 1.7,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0.3,
-                          ),
-                        )
-                      else
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Neon Accent Bar
-                            Container(
-                              width: 3,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Color(0xFF56F3D6),
-                                    Colors.transparent,
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(2),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
-                                    blurRadius: 10,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 40),
-                            Expanded(
-                              child: Text(
-                                aboutText,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  height: 1.8,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                  blur: 20,
+                  alignment: Alignment.center,
+                  border: 1.5,
+                  linearGradient: LinearGradient(
+                    colors: [
+                      const Color(0xFFffffff).withValues(alpha: 0.05),
+                      const Color(0xFFffffff).withValues(alpha: 0.02),
                     ],
+                  ),
+                  borderGradient: LinearGradient(
+                    colors: [const Color(0xFF56F3D6).withValues(alpha: 0.3), Colors.transparent],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(mobile ? 24 : 48),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!mobile) ...[
+                          _buildProfileIcon(),
+                          const SizedBox(width: 48),
+                        ],
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'THE ENGINEER BEHIND THE CODE',
+                                style: TextStyle(
+                                  color: const Color(0xFF56F3D6),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 4,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Text(
+                                aboutText,
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  height: 1.8,
+                                  fontSize: mobile ? 16 : 18,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              
+              const SizedBox(height: 40),
+
+              // Stats Dashboard
+              RevealOnScroll(
+                child: _StatsDashboard(mobile: mobile),
+              ),
+
+              const SizedBox(height: 40),
               
               // Personal & Hobbies Cards
               RevealOnScroll(
@@ -101,19 +106,91 @@ class AboutSection extends StatelessWidget {
                         _HobbiesCard(),
                       ],
                     )
-                  : IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(flex: 3, child: _PersonalInfoCard()),
-                          const SizedBox(width: 32),
-                          Expanded(flex: 2, child: _HobbiesCard()),
-                        ],
-                      ),
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: _PersonalInfoCard()),
+                        const SizedBox(width: 40),
+                        Expanded(child: _HobbiesCard()),
+                      ],
                     ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileIcon() {
+    return Container(
+      width: 180,
+      height: 180,
+      decoration: BoxDecoration(
+        color: const Color(0xFF56F3D6).withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(40),
+        border: Border.all(color: const Color(0xFF56F3D6).withValues(alpha: 0.2)),
+      ),
+      child: const Center(
+        child: Icon(Icons.person_outline_rounded, color: Color(0xFF56F3D6), size: 80),
+      ),
+    ).animate(onPlay: (c) => c.repeat(reverse: true))
+    .moveY(begin: -10, end: 10, duration: 3.seconds, curve: Curves.easeInOut);
+  }
+}
+
+class _StatsDashboard extends StatelessWidget {
+  const _StatsDashboard({required this.mobile});
+  final bool mobile;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 24,
+      runSpacing: 24,
+      children: [
+        _buildStatItem('3+', 'YEARS EXP', Icons.bolt_rounded),
+        _buildStatItem('12+', 'PROJECTS', Icons.rocket_launch_rounded),
+        _buildStatItem('5+', 'CERTIFICATES', Icons.verified_rounded),
+        _buildStatItem('100%', 'COMMITMENT', Icons.favorite_rounded),
+      ],
+    );
+  }
+
+  Widget _buildStatItem(String value, String label, IconData icon) {
+    return PerspectiveCard(
+      maxTilt: 0.15,
+      child: GlassmorphicContainer(
+        width: mobile ? double.infinity : 270,
+        height: 140,
+        borderRadius: 24,
+        blur: 15,
+        alignment: Alignment.center,
+        border: 1,
+        linearGradient: LinearGradient(
+          colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.02)],
+        ),
+        borderGradient: const LinearGradient(colors: [Colors.white24, Colors.transparent]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: const Color(0xFF56F3D6), size: 32),
+            const SizedBox(width: 20),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white),
+                ),
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white.withValues(alpha: 0.5), letterSpacing: 2),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -123,18 +200,48 @@ class AboutSection extends StatelessWidget {
 class _PersonalInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+    return GlassmorphicContainer(
+      width: double.infinity,
+      height: 320,
       borderRadius: 24,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _InfoSubTitle(title: 'PERSONAL DETAILS'),
-          SizedBox(height: 28),
-          _InfoRow(label: 'Born', value: '02 November 2005'),
-          _InfoRow(label: 'Nationality', value: 'Indian'),
-          _InfoRow(label: 'Languages', value: 'English, Hindi, Bengali'),
-          _InfoRow(label: 'Location', value: 'Kolkata, India'),
+      blur: 20,
+      alignment: Alignment.center,
+      border: 1.5,
+      linearGradient: LinearGradient(
+        colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.02)],
+      ),
+      borderGradient: const LinearGradient(colors: [Colors.white10, Colors.transparent]),
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader('IDENTIFICATION'),
+            const SizedBox(height: 32),
+            _buildRow('NAME', developerName),
+            _buildRow('BORN', '02 NOV 2005'),
+            _buildRow('CITY', 'KOLKATA, IND'),
+            _buildRow('STATUS', 'BCA STUDENT'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(String title) {
+    return Text(
+      title,
+      style: const TextStyle(color: Color(0xFF56F3D6), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 3),
+    );
+  }
+
+  Widget _buildRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          SizedBox(width: 80, child: Text(label, style: const TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold))),
+          Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -144,104 +251,42 @@ class _PersonalInfoCard extends StatelessWidget {
 class _HobbiesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+    return GlassmorphicContainer(
+      width: double.infinity,
+      height: 320,
       borderRadius: 24,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _InfoSubTitle(title: 'BEYOND CODE'),
-          SizedBox(height: 28),
-          _HobbyItem(icon: Icons.videocam_rounded, label: 'Content Creator'),
-          _HobbyItem(icon: Icons.sports_soccer_rounded, label: 'Football & Badminton'),
-          _HobbyItem(icon: Icons.flight_rounded, label: 'Travel Lifestyle'),
-        ],
+      blur: 20,
+      alignment: Alignment.center,
+      border: 1.5,
+      linearGradient: LinearGradient(
+        colors: [Colors.white.withValues(alpha: 0.05), Colors.white.withValues(alpha: 0.02)],
       ),
-    );
-  }
-}
-
-
-class _InfoSubTitle extends StatelessWidget {
-  const _InfoSubTitle({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 8),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color(0xFF56F3D6), width: 1.5),
-        ),
-      ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFF56F3D6),
-          fontWeight: FontWeight.w900,
-          fontSize: 12,
-          letterSpacing: 2.5,
+      borderGradient: const LinearGradient(colors: [Colors.white10, Colors.transparent]),
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('BEYOND CODE', style: TextStyle(color: Color(0xFF56F3D6), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 3)),
+            const SizedBox(height: 32),
+            _buildHobby(Icons.videocam_rounded, 'CONTENT CREATION'),
+            _buildHobby(Icons.sports_soccer_rounded, 'SPORTS (FOOTBALL)'),
+            _buildHobby(Icons.flight_rounded, 'TRAVEL & EXPLORATION'),
+            _buildHobby(Icons.music_note_rounded, 'LO-FI ENTHUSIAST'),
+          ],
         ),
       ),
     );
   }
-}
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildHobby(IconData icon, String label) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              '$label: ',
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.35), fontSize: 13),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _HobbyItem extends StatelessWidget {
-  const _HobbyItem({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: const Color(0xFF56F3D6), size: 18),
-          ),
+          Icon(icon, color: const Color(0xFF56F3D6), size: 20),
           const SizedBox(width: 16),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14),
-          ),
+          Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
         ],
       ),
     );
