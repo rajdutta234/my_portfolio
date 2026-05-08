@@ -33,6 +33,8 @@ if db_url:
     # Alembic needs sync driver for its internal operations usually
     if db_url.startswith("sqlite+aiosqlite"):
         db_url = db_url.replace("sqlite+aiosqlite", "sqlite")
+    elif db_url.startswith("postgresql+asyncpg"):
+        db_url = db_url.replace("postgresql+asyncpg", "postgresql+psycopg2")
     config.set_main_option("sqlalchemy.url", db_url)
 
 # other values from the config, defined by the needs of env.py,
