@@ -10,17 +10,19 @@ class AboutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1200),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: mobile ? 40 : 60),
           child: Column(
             children: [
               // Main Bio Card
               RevealOnScroll(
                 child: GlassContainer(
-                  padding: const EdgeInsets.all(48),
+                  padding: EdgeInsets.all(mobile ? 24 : 48),
                   borderRadius: 32,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,48 +31,60 @@ class AboutSection extends StatelessWidget {
                         title: 'About Me',
                         subtitle: 'Building production-grade applications with purpose',
                       ),
-                      const SizedBox(height: 48),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Neon Accent Bar
-                          Container(
-                            width: 3,
-                            height: 140,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xFF56F3D6),
-                                  Colors.transparent,
+                      SizedBox(height: mobile ? 32 : 48),
+                      if (mobile)
+                        Text(
+                          aboutText,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            height: 1.7,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.3,
+                          ),
+                        )
+                      else
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Neon Accent Bar
+                            Container(
+                              width: 3,
+                              height: 140,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color(0xFF56F3D6),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
-                                  blurRadius: 10,
-                                  spreadRadius: 1,
-                                ),
-                              ],
                             ),
-                          ),
-                          const SizedBox(width: 40),
-                          Expanded(
-                            child: Text(
-                              aboutText,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                height: 1.8,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.3,
+                            const SizedBox(width: 40),
+                            Expanded(
+                              child: Text(
+                                aboutText,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  height: 1.8,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.3,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                     ],
                   ),
                 ),
@@ -79,49 +93,24 @@ class AboutSection extends StatelessWidget {
               
               // Personal & Hobbies Cards
               RevealOnScroll(
-                child: IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: GlassContainer(
-                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-                          borderRadius: 24,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const _InfoSubTitle(title: 'PERSONAL DETAILS'),
-                              const SizedBox(height: 28),
-                              const _InfoRow(label: 'Born', value: '02 November 2005'),
-                              const _InfoRow(label: 'Nationality', value: 'Indian'),
-                              const _InfoRow(label: 'Languages', value: 'English, Hindi, Bengali'),
-                              const _InfoRow(label: 'Location', value: 'Kolkata, India'),
-                            ],
-                          ),
-                        ),
+                child: mobile 
+                  ? Column(
+                      children: [
+                        _PersonalInfoCard(),
+                        const SizedBox(height: 24),
+                        _HobbiesCard(),
+                      ],
+                    )
+                  : IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(flex: 3, child: _PersonalInfoCard()),
+                          const SizedBox(width: 32),
+                          Expanded(flex: 2, child: _HobbiesCard()),
+                        ],
                       ),
-                      const SizedBox(width: 32),
-                      Expanded(
-                        flex: 2,
-                        child: GlassContainer(
-                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-                          borderRadius: 24,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const _InfoSubTitle(title: 'BEYOND CODE'),
-                              const SizedBox(height: 28),
-                              const _HobbyItem(icon: Icons.videocam_rounded, label: 'Content Creator'),
-                              const _HobbyItem(icon: Icons.sports_soccer_rounded, label: 'Football & Badminton'),
-                              const _HobbyItem(icon: Icons.flight_rounded, label: 'Travel Lifestyle'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
               ),
             ],
           ),
@@ -130,6 +119,48 @@ class AboutSection extends StatelessWidget {
     );
   }
 }
+
+class _PersonalInfoCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GlassContainer(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+      borderRadius: 24,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          _InfoSubTitle(title: 'PERSONAL DETAILS'),
+          SizedBox(height: 28),
+          _InfoRow(label: 'Born', value: '02 November 2005'),
+          _InfoRow(label: 'Nationality', value: 'Indian'),
+          _InfoRow(label: 'Languages', value: 'English, Hindi, Bengali'),
+          _InfoRow(label: 'Location', value: 'Kolkata, India'),
+        ],
+      ),
+    );
+  }
+}
+
+class _HobbiesCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GlassContainer(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+      borderRadius: 24,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          _InfoSubTitle(title: 'BEYOND CODE'),
+          SizedBox(height: 28),
+          _HobbyItem(icon: Icons.videocam_rounded, label: 'Content Creator'),
+          _HobbyItem(icon: Icons.sports_soccer_rounded, label: 'Football & Badminton'),
+          _HobbyItem(icon: Icons.flight_rounded, label: 'Travel Lifestyle'),
+        ],
+      ),
+    );
+  }
+}
+
 
 class _InfoSubTitle extends StatelessWidget {
   const _InfoSubTitle({required this.title});

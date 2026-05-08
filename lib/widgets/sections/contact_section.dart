@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 import '../../core/constants/portfolio_data.dart';
 import '../common/glass_container.dart';
@@ -56,39 +58,41 @@ class _ContactSectionState extends State<ContactSection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _ContactInfoCard(
-                            icon: Icons.email_rounded,
+                            icon: const Icon(Icons.email_rounded, color: Color(0xFF56F3D6), size: 24),
                             title: 'Email Me',
                             value: email,
                             onTap: () => openExternalLink(context, 'mailto:$email'),
                           ),
                           const SizedBox(height: 24),
                           _ContactInfoCard(
-                            icon: Icons.link_rounded,
+                            icon: const FaIcon(FontAwesomeIcons.linkedin, color: Color(0xFF56F3D6), size: 24),
                             title: 'LinkedIn',
                             value: 'Connect on LinkedIn',
                             onTap: () => openExternalLink(context, linkedinUrl),
                           ),
                           const SizedBox(height: 24),
                           _ContactInfoCard(
-                            icon: Icons.facebook_rounded,
+                            icon: const FaIcon(FontAwesomeIcons.facebook, color: Color(0xFF56F3D6), size: 24),
                             title: 'Facebook',
                             value: 'Raj Dutta',
                             onTap: () => openExternalLink(context, facebookUrl),
                           ),
                           const SizedBox(height: 24),
                           _ContactInfoCard(
-                            icon: Icons.camera_alt_rounded,
+                            icon: const FaIcon(FontAwesomeIcons.instagram, color: Color(0xFF56F3D6), size: 24),
                             title: 'Instagram',
                             value: '@_raj_dutta_',
                             onTap: () => openExternalLink(context, instagramUrl),
                           ),
                           const SizedBox(height: 24),
                           _ContactInfoCard(
-                            icon: Icons.code_rounded,
+                            icon: const FaIcon(FontAwesomeIcons.github, color: Color(0xFF56F3D6), size: 24),
                             title: 'GitHub',
                             value: 'rajdutta234',
                             onTap: () => openExternalLink(context, githubUrl),
                           ),
+
+
                         ],
                       ).animate().fadeIn(delay: 200.ms).moveX(begin: -30, end: 0),
                     ),
@@ -243,7 +247,9 @@ class _ContactInfoCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final Widget icon;
+
+
   final String title;
   final String value;
   final VoidCallback onTap;
@@ -265,7 +271,8 @@ class _ContactInfoCard extends StatelessWidget {
                   color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: const Color(0xFF56F3D6), size: 24),
+                child: icon,
+
               ),
               const SizedBox(width: 20),
               Column(

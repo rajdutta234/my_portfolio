@@ -9,6 +9,8 @@ import '../common/typing_text.dart';
 import '../common/parallax_layer.dart';
 import '../common/magnetic.dart';
 import '../common/perspective_card.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key, required this.onViewProjects});
@@ -484,29 +486,30 @@ class _HeroSectionState extends State<HeroSection> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     _SocialIcon(
-                                                      icon: Icons.link,
+                                                      icon: const FaIcon(FontAwesomeIcons.linkedin, color: Colors.white, size: 28),
                                                       url: linkedinUrl,
                                                       label: 'LinkedIn',
                                                     ),
                                                     const SizedBox(width: 14),
                                                     _SocialIcon(
-                                                      icon: Icons.facebook,
+                                                      icon: const FaIcon(FontAwesomeIcons.facebook, color: Colors.white, size: 28),
                                                       url: facebookUrl,
                                                       label: 'Facebook',
                                                     ),
                                                     const SizedBox(width: 14),
                                                     _SocialIcon(
-                                                      icon: Icons
-                                                          .camera_alt_rounded,
+                                                      icon: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 28),
                                                       url: instagramUrl,
                                                       label: 'Instagram',
                                                     ),
                                                     const SizedBox(width: 14),
                                                     _SocialIcon(
-                                                      icon: Icons.code,
+                                                      icon: const FaIcon(FontAwesomeIcons.github, color: Colors.white, size: 28),
                                                       url: githubUrl,
                                                       label: 'GitHub',
                                                     ),
+
+
                                                   ],
                                                 ).animate().fadeIn(
                                                   delay: 1.2.seconds,
@@ -640,7 +643,9 @@ class _SocialIcon extends StatelessWidget {
     required this.url,
     required this.label,
   });
-  final IconData icon;
+  final Widget icon;
+
+
   final String url;
   final String label;
 
@@ -660,7 +665,8 @@ class _SocialIcon extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white24),
             ),
-            child: Icon(icon, color: Colors.white, size: 28),
+            child: icon,
+
           ),
         ),
       ),
