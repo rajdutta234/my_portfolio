@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/constants/portfolio_data.dart';
+import '../../provider/portfolio_provider.dart';
 import '../../models/certificate.dart';
 import '../../models/project.dart';
 import '../../models/skill.dart';
@@ -57,6 +59,8 @@ class _WorkSectionState extends State<WorkSection>
                     'Engineering solutions with precision, scale, and high-performance standards.',
               ).animate().fadeIn().slideX(begin: -0.1),
               const SizedBox(height: 60),
+              _buildFilterChips(context),
+              const SizedBox(height: 40),
 
               // Premium Cinematic Tab Bar
               _buildPremiumTabBar(mobile),
@@ -78,6 +82,38 @@ class _WorkSectionState extends State<WorkSection>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFilterChips(BuildContext context) {
+    final provider = context.watch<PortfolioProvider>();
+    final categories = ['ALL', 'FLUTTER', 'PYTHON', 'FLASK', 'FASTAPI'];
+    
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: categories.map((cat) {
+        final isSelected = provider.selectedCategory == cat;
+        return FilterChip(
+          selected: isSelected,
+          label: Text(cat),
+          onSelected: (_) => provider.setCategory(cat),
+          backgroundColor: Colors.white.withValues(alpha: 0.05),
+          selectedColor: const Color(0xFF56F3D6).withValues(alpha: 0.2),
+          labelStyle: TextStyle(
+            color: isSelected ? const Color(0xFF56F3D6) : Colors.white70,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: isSelected ? const Color(0xFF56F3D6) : Colors.white10,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -131,13 +167,14 @@ class _ProjectsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final filteredProjects = context.watch<PortfolioProvider>().filteredProjects;
     return LayoutBuilder(
       builder: (context, constraints) {
         final int crossAxisCount = mobile ? 1 : 2;
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: projects.length,
+          itemCount: filteredProjects.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: 32,
@@ -146,7 +183,7 @@ class _ProjectsTab extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             return _ProjectCard(
-              project: projects[index],
+              project: filteredProjects[index],
               index: index,
               mobile: mobile,
             );

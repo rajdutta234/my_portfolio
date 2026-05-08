@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'notifier/app_notifier.dart';
+import 'provider/portfolio_provider.dart';
 import 'routes/app_routes.dart';
 
 void main() {
@@ -14,8 +15,11 @@ class PortfolioApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AppNotifier>(
-      create: (_) => AppNotifier(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AppNotifier()),
+        ChangeNotifierProvider(create: (_) => PortfolioProvider()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Raj Dutta | Portfolio',
