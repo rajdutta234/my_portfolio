@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'glass_container.dart';
+import '../../provider/portfolio_provider.dart';
 
-class PortfolioNavBar extends StatefulWidget {
+class PortfolioNavBar extends ConsumerStatefulWidget {
   const PortfolioNavBar({
     super.key,
     required this.items,
@@ -14,10 +16,10 @@ class PortfolioNavBar extends StatefulWidget {
   final ValueChanged<int> onTap;
 
   @override
-  State<PortfolioNavBar> createState() => _PortfolioNavBarState();
+  ConsumerState<PortfolioNavBar> createState() => _PortfolioNavBarState();
 }
 
-class _PortfolioNavBarState extends State<PortfolioNavBar> {
+class _PortfolioNavBarState extends ConsumerState<PortfolioNavBar> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
@@ -83,22 +85,29 @@ class _PortfolioNavBarState extends State<PortfolioNavBar> {
   }
 
   Widget _buildHomeIcon() {
-    return Container(
-      width: 45,
-      height: 45,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
-        ),
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
-            blurRadius: 15,
+    return InkWell(
+      onTap: () => widget.onTap(0),
+      onHover: (hovering) {
+        ref.read(cursorHoverProvider.notifier).set(hovering);
+      },
+      borderRadius: BorderRadius.circular(25),
+      child: Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
           ),
-        ],
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+              blurRadius: 15,
+            ),
+          ],
+        ),
+        child: const Icon(Icons.code_rounded, color: Colors.black, size: 24),
       ),
-      child: const Icon(Icons.code_rounded, color: Colors.black, size: 24),
     );
   }
 
@@ -114,7 +123,7 @@ class _PortfolioNavBarState extends State<PortfolioNavBar> {
   }
 }
 
-class _VerticalNavItem extends StatelessWidget {
+class _VerticalNavItem extends ConsumerWidget {
   const _VerticalNavItem({
     required this.title,
     required this.isSelected,
@@ -128,7 +137,7 @@ class _VerticalNavItem extends StatelessWidget {
   final IconData icon;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Tooltip(
       message: title.toUpperCase(),
       preferBelow: false,
@@ -137,6 +146,9 @@ class _VerticalNavItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: InkWell(
           onTap: onTap,
+          onHover: (hovering) {
+            ref.read(cursorHoverProvider.notifier).set(hovering);
+          },
           borderRadius: BorderRadius.circular(15),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),

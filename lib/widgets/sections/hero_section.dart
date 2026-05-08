@@ -84,7 +84,7 @@ class _HeroSectionState extends State<HeroSection> {
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: mobile ? 20 : 180,
+                    left: mobile ? 20 : 250,
                     right: mobile ? 20 : 40,
                     top: mobile ? 80 : 140,
                     bottom: 40,
@@ -109,16 +109,19 @@ class _HeroSectionState extends State<HeroSection> {
         // Left Column: Identity & Terminal
         Expanded(
           flex: 5,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildIdentity(context),
-              const SizedBox(height: 40),
-              const DeveloperTerminal(),
-              const SizedBox(height: 40),
-              _buildActionButtons(context),
-            ],
+          child: PerspectiveCard(
+            maxTilt: 0.03,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildIdentity(context),
+                const SizedBox(height: 40),
+                const DeveloperTerminal(),
+                const SizedBox(height: 40),
+                _buildActionButtons(context),
+              ],
+            ),
           ),
         ),
 
@@ -171,7 +174,7 @@ class _HeroSectionState extends State<HeroSection> {
           textAlign: mobile ? TextAlign.center : TextAlign.start,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
             fontWeight: FontWeight.w900,
-            fontSize: mobile ? 48 : 84,
+            fontSize: mobile ? 40 : 84,
             letterSpacing: -2,
             height: 1.1,
             color: Colors.white,
@@ -182,7 +185,7 @@ class _HeroSectionState extends State<HeroSection> {
           height: 40,
           child: DefaultTextStyle(
             style: TextStyle(
-              fontSize: mobile ? 20 : 28,
+              fontSize: mobile ? 18 : 28,
               fontWeight: FontWeight.bold,
               color: Colors.white70,
               fontFamily: 'monospace',
@@ -204,7 +207,7 @@ class _HeroSectionState extends State<HeroSection> {
 
   Widget _buildHolographicProfile(BuildContext context) {
     final bool mobile = MediaQuery.sizeOf(context).width < 800;
-    final double radius = mobile ? 120 : 200;
+    final double radius = mobile ? 140 : 260;
 
     return PerspectiveCard(
       child: Magnetic(

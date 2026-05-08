@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/constants/portfolio_data.dart';
-import '../notifier/app_notifier.dart';
+import '../provider/portfolio_provider.dart';
 import '../widgets/sections/about_section.dart';
 import '../widgets/sections/contact_section.dart';
 import '../widgets/sections/experience_section.dart';
@@ -14,17 +13,18 @@ import '../widgets/common/animated_background.dart';
 import '../widgets/common/nav_bar.dart';
 import '../widgets/common/cyber_cursor.dart';
 import '../widgets/common/noise_overlay.dart';
+import '../widgets/common/cinematic_section.dart';
 
-class PortfolioPage extends StatefulWidget {
+class PortfolioPage extends ConsumerStatefulWidget {
   const PortfolioPage({super.key, this.initialSectionIndex});
 
   final int? initialSectionIndex;
 
   @override
-  State<PortfolioPage> createState() => _PortfolioPageState();
+  ConsumerState<PortfolioPage> createState() => _PortfolioPageState();
 }
 
-class _PortfolioPageState extends State<PortfolioPage> {
+class _PortfolioPageState extends ConsumerState<PortfolioPage> {
   final ScrollController _scrollController = ScrollController();
   final List<GlobalKey> _sectionKeys = List<GlobalKey>.generate(
     navItems.length,
@@ -45,8 +45,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
         return;
       }
       _initialJumpHandled = true;
-      context.read<AppNotifier>().activeSectionIndex =
-          widget.initialSectionIndex!;
+      ref.read(activeSectionProvider.notifier).set(
+          widget.initialSectionIndex!);
       _scrollToSection(widget.initialSectionIndex!);
     });
   }
@@ -75,8 +75,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
   }
 
   void _handleScroll() {
-    final AppNotifier notifier = context.read<AppNotifier>();
-
     if (_scrollController.hasClients) {
       setState(() {
         _scrollProgress =
@@ -85,6 +83,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 .clamp(0, 1);
       });
     }
+
+    final activeIndex = ref.read(activeSectionProvider);
 
     for (int i = 0; i < _sectionKeys.length; i++) {
       final BuildContext? context = _sectionKeys[i].currentContext;
@@ -98,8 +98,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
       }
 
       final double top = object.localToGlobal(Offset.zero).dy;
-      if (top <= 180 && top > -420 && notifier.activeSectionIndex != i) {
-        notifier.activeSectionIndex = i;
+      if (top <= 180 && top > -420 && activeIndex != i) {
+        ref.read(activeSectionProvider.notifier).set(i);
       }
     }
   }
@@ -120,7 +120,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
   @override
   Widget build(BuildContext context) {
-    final int activeIndex = context.watch<AppNotifier>().activeSectionIndex;
+    final int activeIndex = ref.watch(activeSectionProvider);
     final bool mobile = MediaQuery.sizeOf(context).width < 760;
 
     return Scaffold(
@@ -164,19 +164,19 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       key: _sectionKeys[0],
                       onViewProjects: () => _scrollToSection(3),
                     ),
-                    _SectionWrapper(
+                    CinematicSection(
                       key: _sectionKeys[1],
                       child: const AboutSection(),
                     ),
-                    _SectionWrapper(
+                    CinematicSection(
                       key: _sectionKeys[2],
                       child: const ExperienceSection(),
                     ),
-                    _SectionWrapper(
+                    CinematicSection(
                       key: _sectionKeys[3],
                       child: const WorkSection(),
                     ),
-                    _SectionWrapper(
+                    CinematicSection(
                       key: _sectionKeys[4],
                       child: const ContactSection(),
                     ),
@@ -230,15 +230,3 @@ class _PortfolioPageState extends State<PortfolioPage> {
   }
 }
 
-class _SectionWrapper extends StatelessWidget {
-  const _SectionWrapper({super.key, required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return child
-        .animate()
-        .fadeIn(duration: 800.ms)
-        .moveY(begin: 40, end: 0, curve: Curves.easeOutCubic);
-  }
-}

@@ -34,7 +34,7 @@ class AboutSection extends StatelessWidget {
                   children: [
                     GlassmorphicContainer(
                       width: double.infinity,
-                      height: mobile ? 700 : 400,
+                      height: mobile ? 800 : 400,
                       borderRadius: 32,
                       blur: 20,
                       alignment: Alignment.center,
@@ -309,12 +309,14 @@ class _PersonalInfoCard extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+          Flexible(
+            child: Text(
+              value,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -374,12 +376,14 @@ class _HobbiesCard extends StatelessWidget {
         children: [
           Icon(icon, color: const Color(0xFF56F3D6), size: 20),
           const SizedBox(width: 16),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

@@ -139,7 +139,7 @@ class _TimelineItem extends StatelessWidget {
                     children: [
                       GlassmorphicContainer(
                         width: double.infinity,
-                        height: mobile ? 600 : 320,
+                        height: mobile ? 700 : 320,
                         borderRadius: 24,
                         blur: 20,
                         alignment: Alignment.topLeft,
@@ -160,23 +160,20 @@ class _TimelineItem extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Column(
+                              mobile
+                                  ? Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           experience.organization.toUpperCase(),
-                                          style: TextStyle(
-                                            fontSize: mobile ? 18 : 24,
+                                          style: const TextStyle(
+                                            fontSize: 18,
                                             fontWeight: FontWeight.w900,
                                             color: Colors.white,
                                             letterSpacing: 1,
                                           ),
                                         ),
-                                        const SizedBox(height: 6),
+                                        const SizedBox(height: 8),
                                         Text(
                                           experience.role,
                                           style: const TextStyle(
@@ -186,23 +183,81 @@ class _TimelineItem extends StatelessWidget {
                                             letterSpacing: 0.5,
                                           ),
                                         ),
+                                        const SizedBox(height: 16),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 14, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white
+                                                .withValues(alpha: 0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                                color: Colors.white10),
+                                          ),
+                                          child: Text(
+                                            experience.duration,
+                                            style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                experience.organization
+                                                    .toUpperCase(),
+                                                style: TextStyle(
+                                                  fontSize: mobile ? 18 : 24,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: Colors.white,
+                                                  letterSpacing: 1,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                experience.role,
+                                                style: const TextStyle(
+                                                  color: Color(0xFF56F3D6),
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 14, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white
+                                                .withValues(alpha: 0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                                color: Colors.white10),
+                                          ),
+                                          child: Text(
+                                            experience.duration,
+                                            style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha: 0.05),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white10),
-                                    ),
-                                    child: Text(
-                                      experience.duration,
-                                      style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
                               const SizedBox(height: 32),
                               Expanded(
                                 child: SingleChildScrollView(

@@ -1,17 +1,17 @@
 import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../notifier/app_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../provider/portfolio_provider.dart';
 
-class CustomCursor extends StatefulWidget {
+class CustomCursor extends ConsumerStatefulWidget {
   const CustomCursor({super.key, required this.child});
   final Widget child;
 
   @override
-  State<CustomCursor> createState() => _CustomCursorState();
+  ConsumerState<CustomCursor> createState() => _CustomCursorState();
 }
 
-class _CustomCursorState extends State<CustomCursor> with TickerProviderStateMixin {
+class _CustomCursorState extends ConsumerState<CustomCursor> with TickerProviderStateMixin {
   Offset _pointerPosition = Offset.zero;
   Offset _trailPosition = Offset.zero;
   bool _isVisible = false;
@@ -43,7 +43,7 @@ class _CustomCursorState extends State<CustomCursor> with TickerProviderStateMix
     final bool isDesktop = MediaQuery.sizeOf(context).width > 1024;
     if (!isDesktop) return widget.child;
 
-    final bool isHovering = context.watch<AppNotifier>().isCursorHovering;
+    final bool isHovering = ref.watch(cursorHoverProvider);
     if (isHovering) {
       _hoverController.forward();
     } else {

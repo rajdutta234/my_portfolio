@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import './particle_field.dart';
 import './cyber_grid.dart';
+import './digital_rain.dart';
+import './floating_3d_elements.dart';
 
 class AnimatedBackground extends StatefulWidget {
   const AnimatedBackground({super.key});
@@ -78,8 +80,18 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             numberOfParticles: 150,
             particleColor: const Color(0xFF56F3D6),
           ),
+
+          // Layer 4: Digital Rain (3D Falling Code)
+          const Positioned.fill(
+            child: DigitalRain(),
+          ),
+
+          // Layer 5: Floating 3D Geometric Shapes
+          const Positioned.fill(
+            child: Floating3DElements(),
+          ),
           
-          // Layer 4: Vignette & Color Grading Overlay
+          // Layer 6: Vignette & Color Grading Overlay
           Container(
             decoration: BoxDecoration(
               gradient: RadialGradient(

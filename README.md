@@ -27,6 +27,58 @@ While the frontend is a visual marvel, my engineering core is rooted in powerful
 
 ---
 
+## 🧠 Backend Engine & API Ecosystem
+
+The portfolio is powered by a high-performance **FastAPI** backend that manages data persistence and asynchronous workflows.
+
+### 🛠 API Capabilities
+*   **Asynchronous Processing**: Built on `SQLAlchemy 2.0` with `aiosqlite` for non-blocking database operations.
+*   **Data Integrity**: Strict validation using **Pydantic v2** models and `EmailStr`.
+*   **Automated Documentation**: Interactive Swagger/OpenAPI documentation available for rapid integration testing.
+*   **CORS Management**: Securely handles cross-origin requests from the Flutter Web client.
+
+### 🚀 Running the API Locally
+
+1.  **Initialize Environment**:
+    ```bash
+    cd backend
+    python -m venv venv
+    source venv/bin/activate  # Or .\venv\Scripts\Activate.ps1 on Windows
+    pip install -r requirements.txt
+    ```
+2.  **Launch Server**:
+    ```bash
+    python main.py
+    ```
+3.  **Explore Documentation**:
+    *   **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+    *   **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+> [!TIP]
+> **Accessing the Docs**: If `http://0.0.0.0:8000/docs` does not load in your browser, it is because `0.0.0.0` is the binding address for the server. You should always use **`http://localhost:8000/docs`** or **`http://127.0.0.1:8000/docs`** to access the interactive API documentation on Windows.
+
+### 📡 API Reference
+
+#### 📧 Contact Module
+*   **Endpoint**: `POST /api/contact/send`
+*   **Summary**: Submit a contact message.
+*   **Description**: Receives a contact inquiry (Name, Email, Message), validates the data, and persists it to the database.
+*   **Request Body**:
+    ```json
+    {
+      "name": "Your Name",
+      "email": "your.email@example.com",
+      "message": "Your message here..."
+    }
+    ```
+
+#### 💓 System Module
+*   **Endpoint**: `GET /`
+*   **Summary**: Health Check.
+*   **Description**: Returns the operational status and connectivity state of the API engine.
+
+---
+
 ## 🏗️ Immersive Portfolio Walkthrough
 
 ### 1. ⚡ The Hero Sphere (Home)

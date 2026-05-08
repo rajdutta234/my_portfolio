@@ -98,9 +98,7 @@ class DeveloperTerminal extends StatelessWidget {
           ),
         ),
       ],
-    ).animate(onPlay: (c) => c.repeat(reverse: true))
-      .shimmer(duration: 4.seconds, color: const Color(0xFF56F3D6).withValues(alpha: 0.05))
-      .fadeIn(delay: 1.2.seconds);
+    ).animate().fadeIn(delay: 1.2.seconds);
   }
 
   Widget _buildCircle(Color color) {
