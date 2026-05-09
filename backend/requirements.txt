@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-sqlalchemy[asyncio]
-aiosqlite
-pydantic[email]
-python-dotenv
-alembic
