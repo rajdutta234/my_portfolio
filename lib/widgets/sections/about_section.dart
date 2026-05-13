@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/constants/portfolio_data.dart';
+import '../../core/responsive.dart';
 import '../common/reveal_on_scroll.dart';
 import '../common/section_title.dart';
 import '../common/perspective_card.dart';
@@ -12,7 +13,7 @@ class AboutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+    final bool isMobile = Responsive.isMobile(context);
 
     return Center(
       child: ConstrainedBox(
@@ -26,7 +27,7 @@ class AboutSection extends StatelessWidget {
                 subtitle:
                     'A brief overview of my technical journey and engineering philosophy.',
               ),
-              const SizedBox(height: 80),
+              const SizedBox(height: 60),
 
               // Main Bio Card
               RevealOnScroll(
@@ -34,7 +35,7 @@ class AboutSection extends StatelessWidget {
                   children: [
                     GlassmorphicContainer(
                       width: double.infinity,
-                      height: mobile ? 800 : 400,
+                      height: isMobile ? 900 : 480,
                       borderRadius: 32,
                       blur: 20,
                       alignment: Alignment.center,
@@ -52,39 +53,51 @@ class AboutSection extends StatelessWidget {
                         ],
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(mobile ? 24 : 48),
-                        child: Row(
+                        padding: EdgeInsets.all(isMobile ? 24 : 48),
+                        child: Flex(
+                          direction: isMobile ? Axis.vertical : Axis.horizontal,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (!mobile) ...[
-                              _buildProfileIcon(),
-                              const SizedBox(width: 48),
-                            ],
+                            if (isMobile) 
+                              Center(child: _buildProfileIcon(isMobile))
+                            else
+                              _buildProfileIcon(isMobile),
+                            
+                            SizedBox(
+                              width: isMobile ? 0 : 48,
+                              height: isMobile ? 32 : 0,
+                            ),
+                            
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'THE ENGINEER BEHIND THE CODE',
-                                    style: TextStyle(
-                                      color: const Color(0xFF56F3D6),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 4,
+                              flex: 1,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'THE ENGINEER BEHIND THE CODE',
+                                      textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                                      style: const TextStyle(
+                                        color: Color(0xFF56F3D6),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 4,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 24),
-                                  Text(
-                                    aboutText,
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(alpha: 0.8),
-                                      height: 1.8,
-                                      fontSize: mobile ? 16 : 18,
-                                      letterSpacing: 0.5,
+                                    const SizedBox(height: 24),
+                                    Text(
+                                      aboutText,
+                                      textAlign: isMobile ? TextAlign.center : TextAlign.start,
+                                      style: TextStyle(
+                                        color: Colors.white.withValues(alpha: 0.8),
+                                        height: 1.8,
+                                        fontSize: isMobile ? 16 : 18,
+                                        letterSpacing: 0.5,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -114,13 +127,13 @@ class AboutSection extends StatelessWidget {
               const SizedBox(height: 40),
 
               // Stats Dashboard
-              RevealOnScroll(child: _StatsDashboard(mobile: mobile)),
+              RevealOnScroll(child: _StatsDashboard(isMobile: isMobile)),
 
               const SizedBox(height: 40),
 
               // Personal & Hobbies Cards
               RevealOnScroll(
-                child: mobile
+                child: isMobile
                     ? Column(
                         children: [
                           _PersonalInfoCard(),
@@ -144,19 +157,19 @@ class AboutSection extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileIcon() {
+  Widget _buildProfileIcon(bool isMobile) {
     return Container(
-          width: 180,
-          height: 180,
+          width: isMobile ? 120 : 180,
+          height: isMobile ? 120 : 180,
           decoration: BoxDecoration(
             color: const Color(0xFF56F3D6).withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(isMobile ? 30 : 40),
             border: Border.all(
               color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
             ),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(isMobile ? 30 : 40),
             child: Image.asset(
               'assets/images/profile_picture_photo.jpeg',
               fit: BoxFit.cover,
@@ -174,8 +187,8 @@ class AboutSection extends StatelessWidget {
 }
 
 class _StatsDashboard extends StatelessWidget {
-  const _StatsDashboard({required this.mobile});
-  final bool mobile;
+  const _StatsDashboard({required this.isMobile});
+  final bool isMobile;
 
   @override
   Widget build(BuildContext context) {
@@ -183,19 +196,19 @@ class _StatsDashboard extends StatelessWidget {
       spacing: 24,
       runSpacing: 24,
       children: [
-        _buildStatItem('1+', 'YEARS EXP', Icons.bolt_rounded),
-        _buildStatItem('12+', 'PROJECTS', Icons.rocket_launch_rounded),
-        _buildStatItem('5+', 'CERTIFICATES', Icons.verified_rounded),
-        _buildStatItem('100%', 'COMMITMENT', Icons.favorite_rounded),
+        _buildStatItem(context, '1+', 'YEARS EXP', Icons.bolt_rounded),
+        _buildStatItem(context, '12+', 'PROJECTS', Icons.rocket_launch_rounded),
+        _buildStatItem(context, '5+', 'CERTIFICATES', Icons.verified_rounded),
+        _buildStatItem(context, '100%', 'COMMITMENT', Icons.favorite_rounded),
       ],
     );
   }
 
-  Widget _buildStatItem(String value, String label, IconData icon) {
+  Widget _buildStatItem(BuildContext context, String value, String label, IconData icon) {
     return PerspectiveCard(
       maxTilt: 0.15,
       child: GlassmorphicContainer(
-        width: mobile ? double.infinity : 270,
+        width: isMobile ? (MediaQuery.of(context).size.width - 64).clamp(0, 400) : 270,
         height: 140,
         borderRadius: 24,
         blur: 15,

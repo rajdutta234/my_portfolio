@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/constants/portfolio_data.dart';
+import '../../core/responsive.dart';
 import '../../notifier/app_notifier.dart';
 import '../../provider/portfolio_provider.dart';
 import '../common/link_utils.dart';
@@ -33,7 +34,7 @@ class _ContactSectionState extends ConsumerState<ContactSection> {
 
   @override
   Widget build(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 900;
+    final bool isMobile = Responsive.isMobile(context);
     final contactState = ref.watch(contactNotifierProvider);
 
     // Listen for success or error to show notifications
@@ -53,7 +54,7 @@ class _ContactSectionState extends ConsumerState<ContactSection> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1100),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 120),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
           child: Column(
             children: [
               const SectionTitle(
@@ -63,7 +64,7 @@ class _ContactSectionState extends ConsumerState<ContactSection> {
               ),
               const SizedBox(height: 80),
 
-              mobile ? _buildMobileLayout(contactState.isLoading) : _buildDesktopLayout(contactState.isLoading),
+              isMobile ? _buildMobileLayout(contactState.isLoading) : _buildDesktopLayout(contactState.isLoading),
             ],
           ),
         ),
@@ -212,10 +213,10 @@ class _ContactSectionState extends ConsumerState<ContactSection> {
   }
 
   Widget _buildMessageForm(BuildContext context, bool isLoading) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 900;
+    final bool isMobile = Responsive.isMobile(context);
     return GlassmorphicContainer(
       width: double.infinity,
-      height: mobile ? 700 : 600,
+      height: isMobile ? 700 : 600,
       borderRadius: 32,
       blur: 25,
       alignment: Alignment.topLeft,

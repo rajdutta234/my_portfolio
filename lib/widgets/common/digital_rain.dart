@@ -25,14 +25,14 @@ class _DigitalRainState extends State<DigitalRain> with SingleTickerProviderStat
   }
 
   void _initializeDrops() {
-    for (int i = 0; i < 80; i++) {
+    for (int i = 0; i < 40; i++) {
       _drops.add(_RainDrop(
         x: _random.nextDouble(),
         y: _random.nextDouble() * 2 - 1,
-        speed: _random.nextDouble() * 0.007 + 0.003,
+        speed: _random.nextDouble() * 0.005 + 0.002,
         chars: _generateChars(),
         depth: _random.nextDouble(), // 0 = far, 1 = near
-      ));
+      )..updatePainter());
     }
   }
 
@@ -75,14 +75,16 @@ class _DigitalRainState extends State<DigitalRain> with SingleTickerProviderStat
       drop.y += drop.speed;
       
       // Randomly change characters as they fall for more engagement
-      if (_random.nextDouble() > 0.95 && !drop.chars.contains(RegExp(r'[A-Z]'))) {
+      if (_random.nextDouble() > 0.98 && !drop.chars.contains(RegExp(r'[A-Z]'))) {
         drop.chars = _generateChars();
+        drop.updatePainter();
       }
 
       if (drop.y > 1.2) {
         drop.y = -0.5;
         drop.x = _random.nextDouble();
         drop.chars = _generateChars();
+        drop.updatePainter();
       }
     }
   }
@@ -102,6 +104,30 @@ class _RainDrop {
     required this.chars,
     required this.depth,
   });
+
+  TextPainter? painter;
+
+  void updatePainter() {
+    final double opacity = (0.05 + (depth * 0.15)).clamp(0.0, 1.0);
+    final double fontSize = 8 + (depth * 8);
+    final Color color = depth > 0.7 
+        ? const Color(0xFF56F3D6) 
+        : const Color(0xFF00C2FF);
+
+    painter = TextPainter(
+      text: TextSpan(
+        text: chars,
+        style: TextStyle(
+          color: color.withValues(alpha: opacity),
+          fontSize: fontSize,
+          fontFamily: 'monospace',
+          fontWeight: FontWeight.bold,
+          height: 1.2,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+  }
 }
 
 class _RainPainter extends CustomPainter {
@@ -111,38 +137,24 @@ class _RainPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (var drop in drops) {
-      final double opacity = (0.05 + (drop.depth * 0.15)).clamp(0.0, 1.0);
+      if (drop.painter == null) continue;
+      
       final double fontSize = 8 + (drop.depth * 8);
-      final Color color = drop.depth > 0.7 
-          ? const Color(0xFF56F3D6) 
-          : const Color(0xFF00C2FF);
-
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: drop.chars,
-          style: TextStyle(
-            color: color.withValues(alpha: opacity),
-            fontSize: fontSize,
-            fontFamily: 'monospace',
-            fontWeight: FontWeight.bold,
-            height: 1.2,
-          ),
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout();
 
       canvas.save();
       // Apply slight perspective tilt
       canvas.translate(drop.x * size.width, drop.y * size.height);
       canvas.skew(0.1 * (1 - drop.depth), 0);
       
-      textPainter.paint(canvas, Offset.zero);
+      drop.painter!.paint(canvas, Offset.zero);
       
-      // Add a small glow to the "head" of the drop
-      final headPaint = Paint()
-        ..color = Colors.white.withValues(alpha: opacity * 0.5)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-      canvas.drawCircle(Offset(fontSize / 2, 0), fontSize / 2, headPaint);
+      // Add a small glow to the "head" of the drop (only for near drops)
+      if (drop.depth > 0.8) {
+        final headPaint = Paint()
+          ..color = Colors.white.withValues(alpha: 0.1)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+        canvas.drawCircle(Offset(fontSize / 2, 0), fontSize / 2, headPaint);
+      }
       
       canvas.restore();
     }

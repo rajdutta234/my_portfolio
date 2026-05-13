@@ -6,7 +6,7 @@ class ParticleField extends StatefulWidget {
     super.key,
     required this.width,
     required this.height,
-    this.numberOfParticles = 100,
+    this.numberOfParticles = 70,
     this.particleColor = const Color(0xFF56F3D6),
     this.maxParticleSize = 2.0,
   });
@@ -109,16 +109,19 @@ class _ParticlePainter extends CustomPainter {
       final p1 = particles[i];
       
       // Draw Connections (Neural Effect)
-      for (int j = i + 1; j < particles.length; j++) {
+      int connections = 0;
+      for (int j = i + 1; j < particles.length && connections < 3; j++) {
         final p2 = particles[j];
-        final double distance = math.sqrt(
-          math.pow(p1.x - p2.x, 2) + math.pow(p1.y - p2.y, 2)
-        );
+        final double dx = p1.x - p2.x;
+        final double dy = p1.y - p2.y;
+        final double distSq = dx * dx + dy * dy;
         
-        if (distance < 120) {
-          final double opacity = (1.0 - (distance / 120)).clamp(0.0, 1.0);
-          linePaint.color = color.withValues(alpha: opacity * 0.15);
+        if (distSq < 10000) { // 100 * 100
+          final double distance = math.sqrt(distSq);
+          final double opacity = (1.0 - (distance / 100)).clamp(0.0, 1.0);
+          linePaint.color = color.withValues(alpha: opacity * 0.1);
           canvas.drawLine(Offset(p1.x, p1.y), Offset(p2.x, p2.y), linePaint);
+          connections++;
         }
       }
 

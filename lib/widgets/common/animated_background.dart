@@ -15,7 +15,7 @@ class AnimatedBackground extends StatefulWidget {
 class _AnimatedBackgroundState extends State<AnimatedBackground>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  Offset _mousePosition = Offset.zero;
+  final ValueNotifier<Offset> _mousePosition = ValueNotifier<Offset>(Offset.zero);
 
   @override
   void initState() {
@@ -29,6 +29,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   @override
   void dispose() {
     _controller.dispose();
+    _mousePosition.dispose();
     super.dispose();
   }
 
@@ -37,7 +38,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
     final Size size = MediaQuery.sizeOf(context);
     
     return MouseRegion(
-      onHover: (event) => setState(() => _mousePosition = event.localPosition),
+      onHover: (event) => _mousePosition.value = event.localPosition,
       child: Stack(
         children: [
           // Deep Base Gradient
@@ -61,12 +62,12 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
           // Layer 2: Cinematic Mesh Blobs
           AnimatedBuilder(
-            animation: _controller,
+            animation: Listenable.merge([_controller, _mousePosition]),
             builder: (BuildContext context, Widget? child) {
               return CustomPaint(
                 painter: _MeshPainter(
                   progress: _controller.value,
-                  mousePosition: _mousePosition,
+                  mousePosition: _mousePosition.value,
                 ),
                 size: Size.infinite,
               );
@@ -136,12 +137,6 @@ class _MeshPainter extends CustomPainter {
         'size': 400.0,
         'speed': 0.5,
       },
-      {
-        'color': const Color(0xFF0EA5E9),
-        'pos': const Offset(0.1, 0.8),
-        'size': 350.0,
-        'speed': 0.6,
-      },
     ];
 
     for (int i = 0; i < blobs.length; i++) {
@@ -162,7 +157,7 @@ class _MeshPainter extends CustomPainter {
 
       final Paint paint = Paint()
         ..color = blob['color'].withValues(alpha: 0.08)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 150);
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 80);
 
       canvas.drawCircle(
         Offset(x, y),

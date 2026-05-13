@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/responsive.dart';
 import '../core/constants/portfolio_data.dart';
 import '../provider/portfolio_provider.dart';
 import '../widgets/sections/about_section.dart';
@@ -32,7 +33,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
   );
 
   bool _initialJumpHandled = false;
-  double _scrollProgress = 0;
+  final ValueNotifier<double> _scrollProgress = ValueNotifier<double>(0);
 
   @override
   void initState() {
@@ -56,6 +57,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
     _scrollController
       ..removeListener(_handleScroll)
       ..dispose();
+    _scrollProgress.dispose();
     super.dispose();
   }
 
@@ -76,15 +78,16 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
 
   void _handleScroll() {
     if (_scrollController.hasClients) {
-      setState(() {
-        _scrollProgress =
-            (_scrollController.offset /
-                    _scrollController.position.maxScrollExtent)
-                .clamp(0, 1);
-      });
+      _scrollProgress.value =
+          (_scrollController.offset /
+                  _scrollController.position.maxScrollExtent)
+              .clamp(0, 1);
     }
 
     final activeIndex = ref.read(activeSectionProvider);
+
+    // Only check every few pixels to save CPU
+    if (_scrollController.offset % 5 > 2) return;
 
     for (int i = 0; i < _sectionKeys.length; i++) {
       final BuildContext? context = _sectionKeys[i].currentContext;
@@ -98,8 +101,9 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
       }
 
       final double top = object.localToGlobal(Offset.zero).dy;
-      if (top <= 180 && top > -420 && activeIndex != i) {
+      if (top <= 200 && top > -400 && activeIndex != i) {
         ref.read(activeSectionProvider.notifier).set(i);
+        break; // Found the active one, no need to check others
       }
     }
   }
@@ -121,7 +125,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
   @override
   Widget build(BuildContext context) {
     final int activeIndex = ref.watch(activeSectionProvider);
-    final bool mobile = MediaQuery.sizeOf(context).width < 760;
+    final bool isMobile = Responsive.isMobile(context);
 
     return Scaffold(
       body: CyberCursor(
@@ -156,33 +160,58 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
             ),
 
             Positioned.fill(
-              child: SingleChildScrollView(
+              child: CustomScrollView(
                 controller: _scrollController,
-                child: Column(
-                  children: <Widget>[
-                    HeroSection(
-                      key: _sectionKeys[0],
-                      onViewProjects: () => _scrollToSection(3),
-                    ),
-                    CinematicSection(
-                      key: _sectionKeys[1],
-                      child: const AboutSection(),
-                    ),
-                    CinematicSection(
-                      key: _sectionKeys[2],
-                      child: const ExperienceSection(),
-                    ),
-                    CinematicSection(
-                      key: _sectionKeys[3],
-                      child: const WorkSection(),
-                    ),
-                    CinematicSection(
-                      key: _sectionKeys[4],
-                      child: const ContactSection(),
-                    ),
-                    const FooterSection(),
-                  ],
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
                 ),
+                slivers: <Widget>[
+                  SliverToBoxAdapter(
+                    child: RepaintBoundary(
+                      child: HeroSection(
+                        key: _sectionKeys[0],
+                        onViewProjects: () => _scrollToSection(3),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: RepaintBoundary(
+                      child: CinematicSection(
+                        key: _sectionKeys[1],
+                        child: const AboutSection(),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: RepaintBoundary(
+                      child: CinematicSection(
+                        key: _sectionKeys[2],
+                        child: const ExperienceSection(),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: RepaintBoundary(
+                      child: CinematicSection(
+                        key: _sectionKeys[3],
+                        child: const WorkSection(),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: RepaintBoundary(
+                      child: CinematicSection(
+                        key: _sectionKeys[4],
+                        child: const ContactSection(),
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: RepaintBoundary(child: FooterSection()),
+                  ),
+                  // Bottom spacing for smoother scroll end
+                  const SliverPadding(padding: EdgeInsets.only(bottom: 50)),
+                ],
               ),
             ),
 
@@ -190,31 +219,36 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
               top: 0,
               left: 0,
               right: 0,
-              child: Container(
-                height: mobile ? 3 : 4,
-                alignment: Alignment.centerLeft,
-                child: FractionallySizedBox(
-                  widthFactor: _scrollProgress,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: <Color>[
-                          const Color(0xFF56F3D6).withValues(alpha: 0.95),
-                          const Color(0xFF00C2FF).withValues(alpha: 0.95),
-                        ],
-                      ),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          color: const Color(
-                            0xFF00C2FF,
-                          ).withValues(alpha: 0.45),
-                          blurRadius: 12,
-                          spreadRadius: 1,
+              child: ValueListenableBuilder<double>(
+                valueListenable: _scrollProgress,
+                builder: (context, progress, _) {
+                  return Container(
+                    height: isMobile ? 3 : 4,
+                    alignment: Alignment.centerLeft,
+                    child: FractionallySizedBox(
+                      widthFactor: progress,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: <Color>[
+                              const Color(0xFF56F3D6).withValues(alpha: 0.95),
+                              const Color(0xFF00C2FF).withValues(alpha: 0.95),
+                            ],
+                          ),
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                              color: const Color(
+                                0xFF00C2FF,
+                              ).withValues(alpha: 0.45),
+                              blurRadius: 12,
+                              spreadRadius: 1,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
 

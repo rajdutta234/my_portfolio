@@ -17,7 +17,7 @@ class Magnetic extends StatefulWidget {
 }
 
 class _MagneticState extends State<Magnetic> {
-  Offset _offset = Offset.zero;
+  final ValueNotifier<Offset> _offset = ValueNotifier<Offset>(Offset.zero);
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +32,22 @@ class _MagneticState extends State<Magnetic> {
         
         final double dist = Offset(dx, dy).distance;
         if (dist < widget.range) {
-          setState(() {
-            _offset = Offset(dx * widget.strength, dy * widget.strength);
-          });
+          _offset.value = Offset(dx * widget.strength, dy * widget.strength);
         } else {
-          setState(() {
-            _offset = Offset.zero;
-          });
+          _offset.value = Offset.zero;
         }
       },
-      onExit: (_) => setState(() => _offset = Offset.zero),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOutCubic,
-        transform: Matrix4.translationValues(_offset.dx, _offset.dy, 0),
+      onExit: (_) => _offset.value = Offset.zero,
+      child: ValueListenableBuilder<Offset>(
+        valueListenable: _offset,
+        builder: (context, offset, child) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOutCubic,
+            transform: Matrix4.translationValues(offset.dx, offset.dy, 0),
+            child: child,
+          );
+        },
         child: widget.child,
       ),
     );

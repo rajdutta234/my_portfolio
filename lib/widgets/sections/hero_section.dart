@@ -4,6 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import '../../core/constants/portfolio_data.dart';
+import '../../core/responsive.dart';
 import '../common/link_utils.dart';
 import '../common/parallax_layer.dart';
 import '../common/magnetic.dart';
@@ -20,58 +21,64 @@ class HeroSection extends StatefulWidget {
 }
 
 class _HeroSectionState extends State<HeroSection> {
-  Offset _mousePosition = Offset.zero;
+  final ValueNotifier<Offset> _mousePosition = ValueNotifier<Offset>(Offset.zero);
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
-    final bool mobile = size.width < 800;
+    final bool isMobile = Responsive.isMobile(context);
     final double heroHeight = size.height < 800 ? 800 : size.height;
 
     return MouseRegion(
-      onHover: (event) => setState(() => _mousePosition = event.position),
+      onHover: (event) => _mousePosition.value = event.position,
       child: Container(
         constraints: BoxConstraints(minHeight: heroHeight),
         child: Stack(
+          clipBehavior: Clip.hardEdge,
           children: [
             // 3D Model Background (Cinematic Workspace)
-            if (!mobile)
-              Positioned(
-                right: -100,
-                top: 0,
-                bottom: 0,
-                width: size.width * 0.6,
-                child: Opacity(
-                  opacity: 0.6,
-                  child: ModelViewer(
-                    src:
-                        'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
-                    alt: 'Developer Workspace',
-                    autoRotate: true,
-                    cameraControls: false,
-                    disableZoom: true,
-                    shadowIntensity: 1,
-                    environmentImage: 'neutral',
-                  ),
-                ),
-              ).animate().fadeIn(duration: 2.seconds),
-
-            // Deep Background Parallax Layers
-            ParallaxLayer(
-              speed: 0.01,
-              mousePosition: _mousePosition,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: const Alignment(-0.7, -0.6),
-                    radius: 1.2,
-                    colors: [
-                      const Color(0xFF56F3D6).withValues(alpha: 0.08),
-                      Colors.transparent,
-                    ],
-                  ),
+            // 3D Model Background (Cinematic Workspace)
+            Positioned(
+              right: isMobile ? -150 : -100,
+              top: isMobile ? 200 : 0,
+              bottom: 0,
+              width: isMobile ? size.width * 1.2 : size.width * 0.6,
+              child: Opacity(
+                opacity: isMobile ? 0.4 : 0.6,
+                child: ModelViewer(
+                  src:
+                      'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                  alt: 'Developer Workspace',
+                  autoRotate: true,
+                  cameraControls: false,
+                  disableZoom: true,
+                  shadowIntensity: 1,
+                  environmentImage: 'neutral',
                 ),
               ),
+            ).animate().fadeIn(duration: 2.seconds),
+
+            // Deep Background Parallax Layers
+            ValueListenableBuilder<Offset>(
+              valueListenable: _mousePosition,
+              builder: (context, pos, _) {
+                return ParallaxLayer(
+                  speed: 0.01,
+                  mousePosition: pos,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: const Alignment(-0.7, -0.6),
+                        radius: 1.2,
+                        colors: [
+                          const Color(0xFF56F3D6).withValues(alpha: 0.08),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
 
             // Hero Content Area
@@ -84,12 +91,12 @@ class _HeroSectionState extends State<HeroSection> {
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: mobile ? 20 : 250,
-                    right: mobile ? 20 : 40,
-                    top: mobile ? 80 : 140,
+                    left: isMobile ? 20 : 250,
+                    right: isMobile ? 20 : 40,
+                    top: isMobile ? 80 : 140,
                     bottom: 40,
                   ),
-                  child: mobile
+                  child: isMobile
                       ? _buildMobileLayout(context)
                       : _buildDesktopLayout(context, size),
                 ),
@@ -135,81 +142,122 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   Widget _buildMobileLayout(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(height: 60),
-          _buildHolographicProfile(context),
-          const SizedBox(height: 40),
-          _buildIdentity(context),
-          const SizedBox(height: 30),
-          _buildActionButtons(context),
-          const SizedBox(height: 100),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(height: 60),
+        _buildHolographicProfile(context),
+        const SizedBox(height: 50),
+        _buildIdentity(context),
+        const SizedBox(height: 40),
+        const DeveloperTerminal(),
+        const SizedBox(height: 50),
+        _buildActionButtons(context),
+        const SizedBox(height: 100),
+      ],
     );
   }
 
   Widget _buildIdentity(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+    final bool isMobile = Responsive.isMobile(context);
 
     return Column(
-      crossAxisAlignment: mobile
+      crossAxisAlignment: isMobile
           ? CrossAxisAlignment.center
           : CrossAxisAlignment.start,
       children: [
-        Text(
-          'HELLO, I AM',
-          style: TextStyle(
-            color: const Color(0xFF56F3D6),
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 4,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
+            ),
+          ),
+          child: const Text(
+            'SYSTEMS ENGINEER',
+            style: TextStyle(
+              color: Color(0xFF56F3D6),
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 4,
+            ),
           ),
         ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.2),
-        const SizedBox(height: 12),
-        Text(
-          developerName.toUpperCase(),
-          textAlign: mobile ? TextAlign.center : TextAlign.start,
-          style: Theme.of(context).textTheme.displayLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            fontSize: mobile ? 40 : 84,
-            letterSpacing: -2,
-            height: 1.1,
-            color: Colors.white,
+        const SizedBox(height: 24),
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [Colors.white, Color(0xFF56F3D6)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ).createShader(bounds),
+          child: Text(
+            developerName.toUpperCase(),
+            textAlign: isMobile ? TextAlign.center : TextAlign.start,
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+              fontWeight: FontWeight.w900,
+              fontSize: isMobile ? 40 : 84,
+              letterSpacing: -3,
+              height: 0.9,
+              color: Colors.white,
+            ),
           ),
         ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 40,
-          child: DefaultTextStyle(
-            style: TextStyle(
-              fontSize: mobile ? 18 : 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white70,
-              fontFamily: 'monospace',
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: const BoxDecoration(
+                color: Color(0xFF56F3D6),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFF56F3D6),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
             ),
-            child: AnimatedTextKit(
-              animatedTexts: [
-                TypewriterAnimatedText('Full Stack Developer'),
-                TypewriterAnimatedText('Flutter Engineer'),
-                TypewriterAnimatedText('AI Solutions Architect'),
-                TypewriterAnimatedText('Cross Platform Specialist'),
-              ],
-              repeatForever: true,
+            const SizedBox(width: 12),
+            SizedBox(
+              height: 32,
+              child: DefaultTextStyle(
+                style: TextStyle(
+                  fontSize: isMobile ? 16 : 22,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white70,
+                  fontFamily: 'monospace',
+                  letterSpacing: 1,
+                ),
+                child: AnimatedTextKit(
+                  animatedTexts: [
+                    TypewriterAnimatedText('Building Scalable Architectures'),
+                    TypewriterAnimatedText('Full Stack Flutter Specialist'),
+                    TypewriterAnimatedText('AI-Driven Ecosystem Developer'),
+                    TypewriterAnimatedText('Cross-Platform Engineering'),
+                  ],
+                  repeatForever: true,
+                ),
+              ),
             ),
-          ),
-        ),
+          ],
+        ).animate().fadeIn(delay: 400.ms),
       ],
     );
   }
 
   Widget _buildHolographicProfile(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 800;
-    final double radius = mobile ? 140 : 260;
+    final bool isMobile = Responsive.isMobile(context);
+    final double radius = isMobile ? 120 : 260;
 
     return PerspectiveCard(
+      maxTilt: isMobile ? 0.05 : 0.1,
       child: Magnetic(
         child: SizedBox(
           width: radius * 1.8,
@@ -324,27 +372,51 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+    final bool isMobile = Responsive.isMobile(context);
 
     return Wrap(
-      spacing: 20,
-      runSpacing: 20,
-      alignment: mobile ? WrapAlignment.center : WrapAlignment.start,
+      spacing: 24,
+      runSpacing: 24,
+      alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
       children: [
         Magnetic(
-          child: ElevatedButton(
-            onPressed: widget.onViewProjects,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF56F3D6),
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
-            child: const Text(
-              'EXPLORE WORK',
-              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
+            child: ElevatedButton(
+              onPressed: widget.onViewProjects,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF56F3D6),
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'EXPLORE WORK',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Icon(Icons.arrow_forward_rounded, size: 16),
+                ],
+              ),
             ),
           ),
         ),
@@ -353,15 +425,40 @@ class _HeroSectionState extends State<HeroSection> {
             onPressed: () => openExternalLink(context, resumeUrl),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
-              side: const BorderSide(color: Colors.white24, width: 2),
+              side: BorderSide(
+                color: Colors.white.withValues(alpha: 0.1),
+                width: 2,
+              ),
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
+            ).copyWith(
+              backgroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.hovered)) {
+                  return Colors.white.withValues(alpha: 0.05);
+                }
+                return Colors.transparent;
+              }),
             ),
-            child: const Text(
-              'RESUME',
-              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'RESUME',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 2,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Icon(
+                  Icons.file_download_outlined,
+                  size: 16,
+                  color: Colors.white.withValues(alpha: 0.6),
+                ),
+              ],
             ),
           ),
         ),

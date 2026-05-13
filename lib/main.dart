@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
@@ -22,6 +23,21 @@ class PortfolioApp extends StatelessWidget {
       title: 'Raj Dutta | Portfolio',
       theme: AppTheme.darkTheme,
       routerConfig: AppRoutes.router,
+      builder: (context, child) {
+        return ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+            },
+          ),
+          child: child!,
+        );
+      },
     );
   }
 }

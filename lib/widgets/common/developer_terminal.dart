@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class DeveloperTerminal extends StatelessWidget {
@@ -10,20 +9,20 @@ class DeveloperTerminal extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          constraints: const BoxConstraints(maxWidth: 500),
-          padding: const EdgeInsets.all(24),
+          constraints: const BoxConstraints(maxWidth: 480),
+          padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
-            color: const Color(0xFF020C1B).withValues(alpha: 0.85),
-            borderRadius: BorderRadius.circular(16),
+            color: const Color(0xFF020C1B).withValues(alpha: 0.8),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: const Color(0xFF56F3D6).withValues(alpha: 0.3),
-              width: 1.5,
+              color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
+              width: 2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
-                blurRadius: 30,
-                spreadRadius: 2,
+                color: const Color(0xFF56F3D6).withValues(alpha: 0.05),
+                blurRadius: 40,
+                spreadRadius: 5,
               ),
             ],
           ),
@@ -34,63 +33,96 @@ class DeveloperTerminal extends StatelessWidget {
               Row(
                 children: [
                   _buildCircle(const Color(0xFFFF5F56)),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   _buildCircle(const Color(0xFFFFBD2E)),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   _buildCircle(const Color(0xFF27C93F)),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 20),
                   Text(
                     'raj@developer: ~/portfolio',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.4),
-                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.3),
+                      fontSize: 12,
                       fontFamily: 'monospace',
-                      letterSpacing: 1,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              
-              // Terminal Content
-              DefaultTextStyle(
-                style: const TextStyle(
-                  color: Color(0xFF56F3D6),
-                  fontSize: 13,
-                  fontFamily: 'monospace',
-                  height: 1.6,
-                  letterSpacing: 1.1,
+              const SizedBox(height: 32),
+
+              // Terminal Content with Enhanced Syntax Highlighting
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 14,
+                    height: 1.8,
+                    letterSpacing: 1.2,
+                  ),
+                  children: [
+                    _buildTerminalLine('> whoami', const Color(0xFF00C2FF)),
+                    _buildOutputLine('RAJ DUTTA [SYSTEMS_ENGINEER]'),
+                    const TextSpan(text: '\n'),
+                    _buildTerminalLine(
+                      '> stack --detailed',
+                      const Color(0xFF00C2FF),
+                    ),
+                    _buildOutputLine(
+                      'FLUTTER | FASTAPI | FLASK | HTML | CSS | JS ',
+                    ),
+                    const TextSpan(text: '\n'),
+                    _buildTerminalLine(
+                      '> systems.status',
+                      const Color(0xFF00C2FF),
+                    ),
+                    _buildOutputLine('ALL_MODULES: OPERATIONAL [100%]'),
+                    const TextSpan(text: '\n'),
+                    _buildTerminalLine(
+                      '> current_focus',
+                      const Color(0xFF00C2FF),
+                    ),
+                    _buildOutputLine('AI_INTEGRATED_ECOSYSTEMS'),
+                  ],
                 ),
-                child: AnimatedTextKit(
-                  animatedTexts: [
-                    TypewriterAnimatedText(
-                      '> whoami\nRAJ DUTTA [SENIOR_ENGINEER]\n\n'
-                      '> stack --detailed\nFLUTTER | FASTAPI | FLASK | DJANGO\n\n'
-                      '> systems.status\nALL_MODULES: OPERATIONAL [100%]\n\n'
-                      '> projects --count\n12+ PRODUCTION_GRADE_SYSTEMS\n\n'
-                      '> current_focus\nAI_INTEGRATED_ECOSYSTEMS',
-                      speed: const Duration(milliseconds: 30),
+              ).animate().fadeIn(duration: 1.seconds),
+
+              const SizedBox(height: 12),
+              // Glowing Cursor
+              Container(
+                width: 10,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF56F3D6),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF56F3D6).withValues(alpha: 0.5),
+                      blurRadius: 8,
                     ),
                   ],
-                  totalRepeatCount: 1,
-                  displayFullTextOnTap: true,
                 ),
-              ),
+              ).animate(onPlay: (c) => c.repeat()).fadeOut(duration: 500.ms),
             ],
           ),
         ),
 
-        // Scanline Shader Overlay
+        // Cyberpunk Scanline / Noise Overlay
         Positioned.fill(
           child: IgnorePointer(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: List.generate(20, (index) => 
-                    index % 2 == 0 ? Colors.black.withValues(alpha: 0.1) : Colors.transparent
+            child: Opacity(
+              opacity: 0.05,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: List.generate(
+                      40,
+                      (index) =>
+                          index % 2 == 0 ? Colors.black : Colors.transparent,
+                    ),
                   ),
                 ),
               ),
@@ -98,7 +130,26 @@ class DeveloperTerminal extends StatelessWidget {
           ),
         ),
       ],
-    ).animate().fadeIn(delay: 1.2.seconds);
+    ).animate().fadeIn(delay: 1.2.seconds).moveY(begin: 20);
+  }
+
+  TextSpan _buildTerminalLine(String text, Color color) {
+    return TextSpan(
+      children: [
+        TextSpan(
+          text: text,
+          style: TextStyle(color: color, fontWeight: FontWeight.bold),
+        ),
+        const TextSpan(text: '\n'),
+      ],
+    );
+  }
+
+  TextSpan _buildOutputLine(String text) {
+    return TextSpan(
+      text: text,
+      style: const TextStyle(color: Color(0xFF56F3D6)),
+    );
   }
 
   Widget _buildCircle(Color color) {
@@ -109,10 +160,7 @@ class DeveloperTerminal extends StatelessWidget {
         color: color.withValues(alpha: 0.8),
         shape: BoxShape.circle,
         boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.3),
-            blurRadius: 4,
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 4),
         ],
       ),
     );

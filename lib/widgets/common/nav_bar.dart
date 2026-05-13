@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'glass_container.dart';
+import '../../core/responsive.dart';
 import '../../provider/portfolio_provider.dart';
 
 class PortfolioNavBar extends ConsumerStatefulWidget {
@@ -22,10 +23,9 @@ class PortfolioNavBar extends ConsumerStatefulWidget {
 class _PortfolioNavBarState extends ConsumerState<PortfolioNavBar> {
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.sizeOf(context);
-    final bool mobile = size.width < 760;
+    final bool isMobile = Responsive.isMobile(context);
 
-    if (mobile) {
+    if (isMobile) {
       return Align(
         alignment: Alignment.topCenter,
         child: Padding(
@@ -182,44 +182,64 @@ class _MobileNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        const Icon(Icons.code_rounded, color: Color(0xFF56F3D6), size: 18),
-        const SizedBox(width: 12),
-        Text(
-          items[activeIndex].toUpperCase(),
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-            letterSpacing: 2.0,
-            fontSize: 12,
-            color: Colors.white,
-          ),
-        ),
-        const Spacer(),
-        PopupMenuButton<int>(
-          tooltip: 'Navigate',
-          icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 24),
-          color: const Color(0xFF020C1B),
-          onSelected: onTap,
-          itemBuilder: (BuildContext context) {
-            return List<PopupMenuEntry<int>>.generate(
-              items.length,
-              (int index) => PopupMenuItem<int>(
-                value: index,
-                child: Text(
-                  items[index].toUpperCase(),
-                  style: TextStyle(
-                    color: index == activeIndex ? const Color(0xFF56F3D6) : Colors.white70,
-                    fontWeight: index == activeIndex ? FontWeight.w900 : FontWeight.w500,
-                    fontSize: 11,
-                    letterSpacing: 1,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(items.length, (index) {
+          final bool isSelected = index == activeIndex;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: InkWell(
+              onTap: () => onTap(index),
+              borderRadius: BorderRadius.circular(20),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isSelected ? const Color(0xFF56F3D6).withValues(alpha: 0.15) : Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected ? const Color(0xFF56F3D6).withValues(alpha: 0.3) : Colors.transparent,
                   ),
                 ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _getIconForSection(items[index]),
+                      color: isSelected ? const Color(0xFF56F3D6) : Colors.white54,
+                      size: 16,
+                    ),
+                    if (isSelected) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        items[index].toUpperCase(),
+                        style: const TextStyle(
+                          color: Color(0xFF56F3D6),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 10,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-            );
-          },
-        ),
-      ],
+            ),
+          );
+        }),
+      ),
     );
+  }
+
+  IconData _getIconForSection(String title) {
+    switch (title.toLowerCase()) {
+      case 'home': return Icons.home_rounded;
+      case 'about': return Icons.person_rounded;
+      case 'experience': return Icons.work_history_rounded;
+      case 'work': return Icons.grid_view_rounded;
+      case 'contact': return Icons.alternate_email_rounded;
+      default: return Icons.circle;
+    }
   }
 }

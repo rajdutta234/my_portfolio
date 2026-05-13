@@ -13,42 +13,45 @@ class SectionTitle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         // Layered 3D Heading
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Shadow Layer for depth
-            Positioned(
-              top: 2,
-              left: 2,
-              child: Text(
-                title.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2,
-                  color: Colors.white10,
-                  height: 1.1,
+        SizedBox(
+          width: double.infinity,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Shadow Layer for depth
+              Positioned(
+                top: 2,
+                left: 2,
+                child: Text(
+                  title.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 2,
+                    color: Colors.white10,
+                    height: 1.1,
+                  ),
                 ),
               ),
-            ),
-            // Main Heading
-            Text(
-              title.toUpperCase(),
-              style: TextStyle(
-                fontSize: 34,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 2,
-                height: 1.1,
-                foreground: Paint()
-                  ..shader = const LinearGradient(
-                    colors: [
-                      Color(0xFFFFFFFF),
-                      Color(0xFF56F3D6),
-                    ],
-                  ).createShader(Rect.fromLTWH(0, 0, 400, 70)),
+              // Main Heading
+              Text(
+                title.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                  height: 1.1,
+                  foreground: Paint()
+                    ..shader = const LinearGradient(
+                      colors: [
+                        Color(0xFFFFFFFF),
+                        Color(0xFF56F3D6),
+                      ],
+                    ).createShader(const Rect.fromLTWH(0, 0, 400, 70)),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ).animate().fadeIn(duration: 600.ms).moveX(begin: -20, end: 0),
         
         const SizedBox(height: 12),

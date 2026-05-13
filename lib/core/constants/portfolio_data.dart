@@ -5,12 +5,12 @@ import '../../models/project.dart';
 import '../../models/skill.dart';
 
 const String developerName = 'Raj Dutta';
-const String developerTitle = 'Full Stack Developer';
+const String developerTitle = 'Systems Engineer & Full Stack Specialist';
 const String tagline =
-    'Full Stack Developer (Flutter/Dart + Python Flask & FastAPI)';
+    'Architecting Scalable Ecosystems with Flutter, FastAPI & AI Integration';
 
 const String aboutText =
-    'Full Stack Developer (Flutter/Dart + Python Flask & FastAPI) and BCA student with hands-on experience building production-grade admin systems and mobile apps. Strong in scalable UI architecture, state management (Riverpod/GetX), and end-to-end workflows across healthcare, pharmacy, and dealership domains.';
+    'I am a results-driven Systems Engineer and Full Stack Developer dedicated to architecting production-grade solutions across the entire digital spectrum. With a foundation in Computer Applications (BCA) and a specialization in Flutter and Python ecosystems (FastAPI/Flask), I build scalable, high-performance applications anchored in clean architecture and intuitive UX design. My engineering philosophy revolves around translating complex business logic into maintainable, robust, and elegant digital products. Beyond development, I am deeply invested in the intersection of Artificial Intelligence and Software Engineering, constantly exploring emerging technologies to solve real-world problems and deliver high-impact value through code.';
 
 const String resumeUrl = 'https://example.com/raj-dutta-resume.pdf';
 const String email = 'rajdutta372@gmail.com';
@@ -37,7 +37,7 @@ final List<SkillCategory> skills = <SkillCategory>[
       SkillItem(name: 'Dart', icon: Icons.code, proficiency: 0.95),
       SkillItem(name: 'Python', icon: Icons.code, proficiency: 0.9),
       SkillItem(name: 'Java', icon: Icons.code, proficiency: 0.8),
-      SkillItem(name: 'C/C++', icon: Icons.code, proficiency: 0.85),
+      SkillItem(name: 'Flutter', icon: Icons.flutter_dash, proficiency: 0.95),
     ],
   ),
   SkillCategory(
@@ -62,6 +62,15 @@ final List<SkillCategory> skills = <SkillCategory>[
       SkillItem(name: 'Riverpod', icon: Icons.layers, proficiency: 0.92),
       SkillItem(name: 'GetX', icon: Icons.layers, proficiency: 0.92),
       SkillItem(name: 'GoRouter', icon: Icons.route, proficiency: 0.88),
+    ],
+  ),
+  SkillCategory(
+    title: 'Databases',
+    icon: Icons.storage,
+    skills: const <SkillItem>[
+      SkillItem(name: 'PostgreSQL', icon: Icons.storage, proficiency: 0.85),
+      SkillItem(name: 'MySQL', icon: Icons.storage, proficiency: 0.9),
+      SkillItem(name: 'SQLAlchemy', icon: Icons.storage, proficiency: 0.88),
     ],
   ),
   SkillCategory(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'perspective_card.dart';
+import '../../core/responsive.dart';
 
 class CinematicSection extends StatefulWidget {
   const CinematicSection({super.key, required this.child});
@@ -14,7 +15,7 @@ class _CinematicSectionState extends State<CinematicSection> {
   
   @override
   Widget build(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+    final bool isMobile = Responsive.isMobile(context);
     
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -24,11 +25,15 @@ class _CinematicSectionState extends State<CinematicSection> {
             final RenderBox? box = context.findRenderObject() as RenderBox?;
             double scrollSkew = 0.0;
             
-            if (box != null && box.hasSize) {
-              final double viewportHeight = MediaQuery.of(context).size.height;
+            if (box != null && box.hasSize && box.attached) {
+              final double viewportHeight = MediaQuery.sizeOf(context).height;
               final double widgetY = box.localToGlobal(Offset.zero).dy;
-              final double progress = (widgetY / viewportHeight).clamp(-0.2, 1.2);
-              scrollSkew = mobile ? 0.0 : (progress - 0.4) * 0.15;
+              
+              // Only calculate transformation if the section is near the viewport
+              if (widgetY > -viewportHeight && widgetY < viewportHeight * 2) {
+                final double progress = (widgetY / viewportHeight).clamp(-0.2, 1.2);
+                scrollSkew = isMobile ? 0.0 : (progress - 0.4) * 0.12;
+              }
             }
 
             return Transform(
@@ -45,10 +50,10 @@ class _CinematicSectionState extends State<CinematicSection> {
               // Glass Plate Base with 3D Shadow
               Positioned.fill(
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: mobile ? 10 : 40),
+                  margin: EdgeInsets.symmetric(horizontal: isMobile ? 10 : 40),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.01),
-                    borderRadius: BorderRadius.circular(mobile ? 20 : 40),
+                    borderRadius: BorderRadius.circular(isMobile ? 20 : 40),
                     border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                     boxShadow: [
                       BoxShadow(
@@ -67,7 +72,7 @@ class _CinematicSectionState extends State<CinematicSection> {
               ),
 
               // 3D Floating Architectural Element (Cinematic Focal Point)
-              if (!mobile) ...[
+              if (!isMobile) ...[
                 Positioned(
                   right: -50,
                   bottom: -50,
@@ -82,11 +87,11 @@ class _CinematicSectionState extends State<CinematicSection> {
               
               // Interactive 3D Content Layer
               PerspectiveCard(
-                maxTilt: mobile ? 0.0 : 0.06,
+                maxTilt: isMobile ? 0.0 : 0.06,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    vertical: mobile ? 60 : 140, 
-                    horizontal: mobile ? 16 : 60,
+                    vertical: isMobile ? 40 : 100, 
+                    horizontal: isMobile ? 16 : 60,
                   ),
                   child: widget.child,
                 ),

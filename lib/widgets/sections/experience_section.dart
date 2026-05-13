@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/constants/portfolio_data.dart';
+import '../../core/responsive.dart';
 import '../../models/experience.dart';
 import '../common/section_title.dart';
 import '../common/reveal_on_scroll.dart';
@@ -17,7 +18,7 @@ class ExperienceSection extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1100),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 120),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -58,14 +59,14 @@ class _TimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool mobile = MediaQuery.sizeOf(context).width < 800;
+    final bool isMobile = Responsive.isMobile(context);
 
     return Stack(
       children: [
         // Cinematic Glowing Path
         if (!isLast)
           Positioned(
-            left: mobile ? 11 : 14,
+            left: isMobile ? 11 : 14,
             top: 40,
             bottom: 0,
             child: Container(
@@ -102,14 +103,14 @@ class _TimelineItem extends StatelessWidget {
               // Pulsing Timeline Marker
               Container(
                 margin: const EdgeInsets.only(top: 10),
-                width: mobile ? 24 : 30,
-                height: mobile ? 24 : 30,
+                width: isMobile ? 24 : 30,
+                height: isMobile ? 24 : 30,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: mobile ? 24 : 30,
-                      height: mobile ? 24 : 30,
+                      width: isMobile ? 24 : 30,
+                      height: isMobile ? 24 : 30,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
@@ -139,9 +140,9 @@ class _TimelineItem extends StatelessWidget {
                     children: [
                       GlassmorphicContainer(
                         width: double.infinity,
-                        height: mobile ? 700 : 320,
+                        height: isMobile ? 700 : 320,
                         borderRadius: 24,
-                        blur: 20,
+                        blur: 10,
                         alignment: Alignment.topLeft,
                         border: 1.5,
                         linearGradient: LinearGradient(
@@ -160,7 +161,7 @@ class _TimelineItem extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              mobile
+                              isMobile
                                   ? Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -218,7 +219,7 @@ class _TimelineItem extends StatelessWidget {
                                                 experience.organization
                                                     .toUpperCase(),
                                                 style: TextStyle(
-                                                  fontSize: mobile ? 18 : 24,
+                                                  fontSize: isMobile ? 18 : 24,
                                                   fontWeight: FontWeight.w900,
                                                   color: Colors.white,
                                                   letterSpacing: 1,
