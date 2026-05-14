@@ -370,4 +370,24 @@ const List<Certificate> certificates = <Certificate>[
     issuer: 'FIEM, Dept. of Computer Applications',
     imageUrl: 'assets/images/Samarpan_College_Certificate_photo.PNG',
   ),
+  Certificate(
+    title: 'Gurudaxina\'25 Participation',
+    issuer: 'FIEM',
+    imageUrl: 'assets/images/Gurudaxina\'25_Certificate_photo.jpeg',
+  ),
+  Certificate(
+    title: 'Impulz\'25 Participation',
+    issuer: 'FIEM',
+    imageUrl: 'assets/images/Impulz\'25_Certificate_photo.jpeg',
+  ),
+  Certificate(
+    title: 'Saampan 2025 Participation',
+    issuer: 'FIEM',
+    imageUrl: 'assets/images/Saampan2025_Certificate_photo.jpeg',
+  ),
+  Certificate(
+    title: 'Samarpan\'26 Participation',
+    issuer: 'FIEM',
+    imageUrl: 'assets/images/Samarpan\'26_Certificate_photo.jpeg',
+  ),
 ];
