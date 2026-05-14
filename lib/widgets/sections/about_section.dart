@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import '../../core/constants/portfolio_data.dart';
 import '../../core/responsive.dart';
@@ -100,6 +101,24 @@ class AboutSection extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if (!isMobile) ...[
+                              const SizedBox(width: 48),
+                              SizedBox(
+                                width: 250,
+                                height: 350,
+                                child: const RepaintBoundary(
+                                  child: ModelViewer(
+                                    src: 'https://modelviewer.dev/shared-assets/models/RobotExpressive.glb',
+                                    alt: 'Tech Model',
+                                    autoRotate: true,
+                                    cameraControls: false,
+                                    disableZoom: true,
+                                    shadowIntensity: 1,
+                                    environmentImage: 'neutral',
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),

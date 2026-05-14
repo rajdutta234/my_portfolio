@@ -30,14 +30,32 @@ class _PortfolioNavBarState extends ConsumerState<PortfolioNavBar> {
         alignment: Alignment.topCenter,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: GlassContainer(
-            borderRadius: 999,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: _MobileNav(
-              items: widget.items,
-              activeIndex: widget.activeIndex,
-              onTap: widget.onTap,
-            ),
+          child: Row(
+            children: [
+              // Menu Button to open Drawer
+              GlassContainer(
+                borderRadius: 999,
+                padding: const EdgeInsets.all(8),
+                child: IconButton(
+                  icon: const Icon(Icons.menu_rounded, color: Color(0xFF56F3D6)),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GlassContainer(
+                  borderRadius: 999,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: _MobileNav(
+                    items: widget.items,
+                    activeIndex: widget.activeIndex,
+                    onTap: widget.onTap,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -69,14 +87,46 @@ class _PortfolioNavBarState extends ConsumerState<PortfolioNavBar> {
               _buildHomeIcon(),
               const SizedBox(height: 40),
               // Nav Items
-              ...List.generate(widget.items.length, (index) {
-                return _VerticalNavItem(
-                  title: widget.items[index],
-                  isSelected: index == widget.activeIndex,
-                  onTap: () => widget.onTap(index),
-                  icon: _getIconForSection(widget.items[index]),
-                );
-              }),
+              Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  // Modern Sliding Indicator
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.elasticOut,
+                    top: widget.activeIndex * 72.0 + 12,
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF56F3D6).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF56F3D6).withValues(alpha: 0.2),
+                            blurRadius: 20,
+                          ),
+                        ],
+                        border: Border.all(
+                          color: const Color(0xFF56F3D6).withValues(alpha: 0.4),
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(widget.items.length, (index) {
+                      return _VerticalNavItem(
+                        title: widget.items[index],
+                        isSelected: index == widget.activeIndex,
+                        onTap: () => widget.onTap(index),
+                        icon: _getIconForSection(widget.items[index]),
+                      );
+                    }),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -154,7 +204,7 @@ class _VerticalNavItem extends ConsumerWidget {
             duration: const Duration(milliseconds: 300),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFF56F3D6).withValues(alpha: 0.1) : Colors.transparent,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(15),
             ),
             child: Icon(
@@ -182,43 +232,51 @@ class _MobileNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(items.length, (index) {
           final bool isSelected = index == activeIndex;
           return Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: EdgeInsets.symmetric(horizontal: isSelected ? 4 : 2),
             child: InkWell(
               onTap: () => onTap(index),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeOutCubic,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isSelected ? 12 : 10,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF56F3D6).withValues(alpha: 0.15) : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
+                  color: isSelected
+                      ? const Color(0xFF56F3D6).withValues(alpha: 0.12)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isSelected ? const Color(0xFF56F3D6).withValues(alpha: 0.3) : Colors.transparent,
+                    color: isSelected
+                        ? const Color(0xFF56F3D6).withValues(alpha: 0.2)
+                        : Colors.transparent,
                   ),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       _getIconForSection(items[index]),
-                      color: isSelected ? const Color(0xFF56F3D6) : Colors.white54,
-                      size: 16,
+                      color: isSelected ? const Color(0xFF56F3D6) : Colors.white38,
+                      size: 18,
                     ),
                     if (isSelected) ...[
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Text(
                         items[index].toUpperCase(),
                         style: const TextStyle(
                           color: Color(0xFF56F3D6),
                           fontWeight: FontWeight.w900,
-                          fontSize: 10,
-                          letterSpacing: 1,
+                          fontSize: 9,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ],

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import '../../core/constants/portfolio_data.dart';
 import '../../core/responsive.dart';
@@ -150,15 +151,21 @@ class _ContactSectionState extends ConsumerState<ContactSection> {
                 value: 'GitHub Workspace',
                 onTap: () => openExternalLink(context, githubUrl),
               ),
-              const SizedBox(height: 24),
-              _ContactAnchor(
-                icon: const FaIcon(
-                  FontAwesomeIcons.instagram,
-                  color: Colors.pinkAccent,
+              const SizedBox(height: 40),
+              // 3D Communication Model
+              const SizedBox(
+                height: 200,
+                child: RepaintBoundary(
+                  child: ModelViewer(
+                    src: 'https://modelviewer.dev/shared-assets/models/glTF-Sample-Models/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb',
+                    alt: 'Communication',
+                    autoRotate: true,
+                    cameraControls: false,
+                    disableZoom: true,
+                    shadowIntensity: 1,
+                    environmentImage: 'neutral',
+                  ),
                 ),
-                title: 'SOCIAL FREQUENCY',
-                value: '@_raj_dutta_',
-                onTap: () => openExternalLink(context, instagramUrl),
               ),
             ],
           ),

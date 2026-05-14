@@ -14,13 +14,12 @@ class ParallaxLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double dx = (mousePosition.dx - MediaQuery.sizeOf(context).width / 2) * speed;
-    final double dy = (mousePosition.dy - MediaQuery.sizeOf(context).height / 2) * speed;
+    final Size size = MediaQuery.sizeOf(context);
+    final double dx = (mousePosition.dx - size.width / 2) * speed;
+    final double dy = (mousePosition.dy - size.height / 2) * speed;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeOutCubic,
-      transform: Matrix4.translationValues(dx, dy, 0),
+    return Transform(
+      transform: Matrix4.identity()..setTranslationRaw(dx, dy, 0),
       child: child,
     );
   }

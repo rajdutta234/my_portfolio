@@ -45,15 +45,17 @@ class _HeroSectionState extends State<HeroSection> {
               width: isMobile ? size.width * 1.2 : size.width * 0.6,
               child: Opacity(
                 opacity: isMobile ? 0.4 : 0.6,
-                child: ModelViewer(
-                  src:
-                      'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
-                  alt: 'Developer Workspace',
-                  autoRotate: true,
-                  cameraControls: false,
-                  disableZoom: true,
-                  shadowIntensity: 1,
-                  environmentImage: 'neutral',
+                child: const RepaintBoundary(
+                  child: ModelViewer(
+                    src:
+                        'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                    alt: 'Developer Workspace',
+                    autoRotate: true,
+                    cameraControls: false,
+                    disableZoom: true,
+                    shadowIntensity: 1,
+                    environmentImage: 'neutral',
+                  ),
                 ),
               ),
             ).animate().fadeIn(duration: 2.seconds),
@@ -422,7 +424,7 @@ class _HeroSectionState extends State<HeroSection> {
         ),
         Magnetic(
           child: OutlinedButton(
-            onPressed: () => openExternalLink(context, resumeUrl),
+            onPressed: () => openAsset(context, resumeAsset),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
               side: BorderSide(

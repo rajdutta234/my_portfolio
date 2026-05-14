@@ -81,30 +81,42 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
       _scrollProgress.value =
           (_scrollController.offset /
                   _scrollController.position.maxScrollExtent)
-              .clamp(0, 1);
+               .clamp(0, 1);
     }
 
-    final activeIndex = ref.read(activeSectionProvider);
+    final int currentActiveIndex = ref.read(activeSectionProvider);
+    int bestMatchIndex = 0;
 
-    // Only check every few pixels to save CPU
-    if (_scrollController.offset % 5 > 2) return;
+    // Center-of-screen detection is the most "human" way to track focus
+    final double viewportCenter = MediaQuery.sizeOf(context).height / 2;
 
-    for (int i = 0; i < _sectionKeys.length; i++) {
-      final BuildContext? context = _sectionKeys[i].currentContext;
-      if (context == null) {
-        continue;
+    if (_scrollController.offset < 100) {
+      bestMatchIndex = 0;
+    } else if (_scrollController.offset >=
+        _scrollController.position.maxScrollExtent - 150) {
+      // At the very bottom, always show the last section (Contact)
+      bestMatchIndex = _sectionKeys.length - 1;
+    } else {
+      for (int i = 0; i < _sectionKeys.length; i++) {
+        final BuildContext? context = _sectionKeys[i].currentContext;
+        if (context == null) continue;
+
+        final RenderBox? box = context.findRenderObject() as RenderBox?;
+        if (box == null || !box.attached) continue;
+
+        final double top = box.localToGlobal(Offset.zero).dy;
+        final double height = box.size.height;
+
+        // If the center of the viewport is within this section's bounds
+        if (top <= viewportCenter && (top + height) > viewportCenter) {
+          bestMatchIndex = i;
+          break;
+        }
       }
+    }
 
-      final RenderObject? object = context.findRenderObject();
-      if (object is! RenderBox || !object.attached) {
-        continue;
-      }
-
-      final double top = object.localToGlobal(Offset.zero).dy;
-      if (top <= 200 && top > -400 && activeIndex != i) {
-        ref.read(activeSectionProvider.notifier).set(i);
-        break; // Found the active one, no need to check others
-      }
+    if (bestMatchIndex != currentActiveIndex) {
+      ref.read(activeSectionProvider.notifier).set(bestMatchIndex);
     }
   }
 
@@ -128,6 +140,109 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
     final bool isMobile = Responsive.isMobile(context);
 
     return Scaffold(
+      key: const ValueKey('portfolio_scaffold'),
+      drawer: isMobile
+          ? Drawer(
+              backgroundColor: const Color(0xFF0A0A0A),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    right: BorderSide(
+                      color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
+                    ),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    DrawerHeader(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFF56F3D6).withValues(alpha: 0.1),
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: const Color(0xFF56F3D6),
+                                  width: 2,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.code_rounded,
+                                color: Color(0xFF56F3D6),
+                                size: 32,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            const Text(
+                              'RAJ DUTTA',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 4,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: navItems.length,
+                        itemBuilder: (context, index) {
+                          final bool isSelected = activeIndex == index;
+                          return ListTile(
+                            selected: isSelected,
+                            selectedTileColor: const Color(0xFF56F3D6).withValues(alpha: 0.05),
+                            leading: Icon(
+                              _getIconForSection(navItems[index]),
+                              color: isSelected ? const Color(0xFF56F3D6) : Colors.white54,
+                            ),
+                            title: Text(
+                              navItems[index].toUpperCase(),
+                              style: TextStyle(
+                                color: isSelected ? const Color(0xFF56F3D6) : Colors.white70,
+                                fontWeight: isSelected ? FontWeight.w900 : FontWeight.w500,
+                                letterSpacing: 2,
+                                fontSize: 13,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _scrollToSection(index);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child: Text(
+                        '© 2026 RAJ DUTTA',
+                        style: TextStyle(
+                          color: Colors.white24,
+                          fontSize: 10,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : null,
       body: CyberCursor(
         child: Stack(
           children: <Widget>[
@@ -141,7 +256,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
               ),
             ),
 
-            // Optimized Ambient Glows (Moved to a single layer if possible, or kept as is but RepaintBoundary)
+            // Optimized Ambient Glows
             RepaintBoundary(
               child: Stack(
                 children: [
@@ -162,6 +277,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
             Positioned.fill(
               child: CustomScrollView(
                 controller: _scrollController,
+                cacheExtent: 3000, // Pre-build slivers so GlobalKeys are available for navigation
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
                 ),
@@ -261,6 +377,17 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
         ),
       ),
     );
+  }
+
+  IconData _getIconForSection(String title) {
+    switch (title.toLowerCase()) {
+      case 'home': return Icons.home_rounded;
+      case 'about': return Icons.person_rounded;
+      case 'experience': return Icons.work_history_rounded;
+      case 'work': return Icons.grid_view_rounded;
+      case 'contact': return Icons.alternate_email_rounded;
+      default: return Icons.circle;
+    }
   }
 }
 

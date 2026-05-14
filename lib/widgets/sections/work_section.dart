@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import '../../core/constants/portfolio_data.dart';
 import '../../core/responsive.dart';
@@ -221,13 +222,15 @@ class _ProjectsTab extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 20),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 6,
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMobile ? 14 : 16,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: isMobile ? 2 : 6,
+                ),
               ),
             ),
           ],
@@ -255,16 +258,33 @@ class _ProjectsTab extends StatelessWidget {
   Widget _buildProjectGrid(List<Project> projects) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final int crossAxisCount = isMobile ? 1 : 2;
+        final bool isMobile = Responsive.isMobile(context);
+        final bool isTablet = Responsive.isTablet(context);
+        final bool isLargeDesktop = constraints.maxWidth > 1400;
+
+        int crossAxisCount = 1;
+        if (isLargeDesktop) {
+          crossAxisCount = 3;
+        } else if (isTablet || !isMobile) {
+          crossAxisCount = 2;
+        }
+
+        double aspectRatio = 1.4;
+        if (isMobile) {
+          aspectRatio = 0.85;
+        } else if (isTablet) {
+          aspectRatio = 1.1;
+        }
+
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: projects.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 32,
-            mainAxisSpacing: 40,
-            childAspectRatio: isMobile ? 0.78 : 1.4,
+            crossAxisSpacing: isMobile ? 20 : 32,
+            mainAxisSpacing: isMobile ? 30 : 40,
+            childAspectRatio: aspectRatio,
           ),
           itemBuilder: (context, index) {
             return _ProjectCard(
@@ -291,15 +311,16 @@ class _ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return PerspectiveCard(
-          maxTilt: 0.08,
-          child: Magnetic(
-            strength: 0.1,
-            child: InkWell(
-              onTap: () => _showDetails(context),
-              borderRadius: BorderRadius.circular(32),
-              child: Stack(
-                children: [
+      maxTilt: 0.08,
+      child: Magnetic(
+        strength: 0.1,
+        child: InkWell(
+          onTap: () => _showDetails(context),
+          borderRadius: BorderRadius.circular(32),
+          child: Stack(
+            children: [
                   // Core Glass Container
                   GlassmorphicContainer(
                     width: double.infinity,
@@ -359,7 +380,12 @@ class _ProjectCard extends StatelessWidget {
                         Expanded(
                           flex: isMobile ? 5 : 4,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+                            padding: EdgeInsets.fromLTRB(
+                              isMobile ? 16 : 24,
+                              4,
+                              isMobile ? 16 : 24,
+                              isMobile ? 16 : 24,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -368,8 +394,10 @@ class _ProjectCard extends StatelessWidget {
                                     Expanded(
                                       child: Text(
                                         project.title,
-                                        style: const TextStyle(
-                                          fontSize: 22,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: isMobile ? 18 : 22,
                                           fontWeight: FontWeight.w900,
                                           color: Colors.white,
                                           letterSpacing: -0.5,
@@ -379,26 +407,27 @@ class _ProjectCard extends StatelessWidget {
                                     const Icon(
                                       Icons.arrow_outward_rounded,
                                       color: Color(0xFF56F3D6),
-                                      size: 22,
+                                      size: 20,
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 8),
                                 Text(
                                   project.description,
-                                  maxLines: isMobile ? 3 : 2,
+                                  maxLines: isMobile ? 2 : 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: Colors.white70,
-                                    fontSize: 13,
-                                    height: 1.5,
+                                    fontSize: isMobile ? 12 : 13,
+                                    height: 1.4,
                                   ),
                                 ),
                                 const Spacer(),
                                 Wrap(
                                   spacing: 8,
+                                  runSpacing: 4,
                                   children: project.stack
-                                      .take(3)
+                                      .take(isMobile ? 2 : 3)
                                       .map(
                                         (s) => Container(
                                           padding: const EdgeInsets.symmetric(
@@ -409,9 +438,7 @@ class _ProjectCard extends StatelessWidget {
                                             color: const Color(
                                               0xFF56F3D6,
                                             ).withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
+                                            borderRadius: BorderRadius.circular(8),
                                             border: Border.all(
                                               color: const Color(
                                                 0xFF56F3D6,
@@ -485,172 +512,247 @@ class _ProjectDetailDialog extends StatelessWidget {
 
     return Center(
       child: Container(
-        margin: const EdgeInsets.all(24),
-        constraints: const BoxConstraints(maxWidth: 1000),
+        margin: EdgeInsets.all(isMobile ? 0 : 24),
+        constraints: BoxConstraints(
+          maxWidth: 1000,
+          maxHeight: isMobile ? double.infinity : MediaQuery.sizeOf(context).height * 0.9,
+        ),
         child: Material(
           color: Colors.transparent,
           child: GlassmorphicContainer(
             width: double.infinity,
-            height: isMobile ? double.infinity : 700,
-            borderRadius: 32,
-            blur: 15,
+            height: isMobile ? double.infinity : 700, // Providing a concrete value to avoid double? issue
+            borderRadius: isMobile ? 0 : 32,
+            blur: 20,
             alignment: Alignment.center,
-            border: 2,
+            border: isMobile ? 0 : 2,
             linearGradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF0D1829).withValues(alpha: 0.9),
-                const Color(0xFF020C1B).withValues(alpha: 0.9),
+                const Color(0xFF0D1829).withValues(alpha: 0.98),
+                const Color(0xFF020C1B).withValues(alpha: 0.98),
               ],
             ),
             borderGradient: const LinearGradient(
               colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
             ),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(isMobile ? 20 : 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            child: Column(
+              children: [
+                // Sticky Header
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    isMobile ? 20 : 40,
+                    isMobile ? 50 : 20,
+                    isMobile ? 20 : 20,
+                    10,
+                  ),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         'PROJECT DEEP-DIVE',
                         style: TextStyle(
                           color: Color(0xFF56F3D6),
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 3,
+                          letterSpacing: 4,
                         ),
                       ),
                       IconButton(
                         onPressed: () => Navigator.pop(context),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white.withValues(alpha: 0.05),
+                        ),
                         icon: const Icon(
                           Icons.close_rounded,
-                          color: Colors.white54,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    project.title,
-                    style: TextStyle(
-                      fontSize: isMobile ? 32 : 48,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      letterSpacing: -1,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(
+                      isMobile ? 20 : 40,
+                      0,
+                      isMobile ? 20 : 40,
+                      40,
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.asset(project.imageUrl!, fit: BoxFit.cover),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Text(
-                    project.description,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                      height: 1.8,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  _buildSectionTitle('CORE CONTRIBUTIONS'),
-                  const SizedBox(height: 20),
-                  ...project.contributions.map(
-                    (c) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.check_circle_outline,
-                            color: Color(0xFF56F3D6),
-                            size: 18,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          project.title,
+                          style: TextStyle(
+                            fontSize: isMobile ? 32 : 44,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            height: 1.1,
+                            letterSpacing: -1,
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              c,
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  _buildSectionTitle('TECHNOLOGIES'),
-                  const SizedBox(height: 20),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: project.stack
-                        .map(
-                          (s) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.05),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.white10),
-                            ),
-                            child: Text(
-                              s,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 30),
+                        Hero(
+                          tag: 'project_image_${project.title}',
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+                                image: DecorationImage(
+                                  image: AssetImage(project.imageUrl!),
+                                  fit: BoxFit.cover,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF56F3D6).withValues(alpha: 0.1),
+                                    blurRadius: 30,
+                                    spreadRadius: -10,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        )
-                        .toList(),
-                  ),
-                  const SizedBox(height: 60),
-                  Row(
-                    children: [
-                      if (project.githubUrl.isNotEmpty)
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () =>
-                                openExternalLink(context, project.githubUrl),
-                            icon: const Icon(Icons.code_rounded),
-                            label: const Text('VIEW SOURCE'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white12,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.all(20),
+                        ),
+                        const SizedBox(height: 40),
+                        Text(
+                          project.description,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: isMobile ? 15 : 16,
+                            height: 1.8,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                        _buildSectionTitle('KEY CONTRIBUTIONS'),
+                        const SizedBox(height: 20),
+                        ...project.contributions.map(
+                          (c) => Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(top: 4),
+                                  width: 6,
+                                  height: 6,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF56F3D6),
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    c,
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(alpha: 0.9),
+                                      fontSize: 14,
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      if (project.demoUrl.isNotEmpty) ...[
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () =>
-                                openExternalLink(context, project.demoUrl),
-                            icon: const Icon(Icons.launch_rounded),
-                            label: const Text('LIVE DEMO'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF56F3D6),
-                              foregroundColor: Colors.black,
-                              padding: const EdgeInsets.all(20),
-                            ),
-                          ),
+                        const SizedBox(height: 40),
+                        _buildSectionTitle('TECH STACK'),
+                        const SizedBox(height: 20),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: project.stack
+                              .map(
+                                (s) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.05),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    s,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                        const SizedBox(height: 60),
+                        Row(
+                          children: [
+                            if (project.githubUrl.isNotEmpty)
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: () =>
+                                      openExternalLink(context, project.githubUrl),
+                                  icon: const Icon(Icons.code_rounded),
+                                  label: const Text('SOURCE'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    side: const BorderSide(color: Colors.white10),
+                                    padding: const EdgeInsets.symmetric(vertical: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (project.demoUrl.isNotEmpty) ...[
+                              if (project.githubUrl.isNotEmpty)
+                                const SizedBox(width: 16),
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF56F3D6)
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 8),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ElevatedButton.icon(
+                                    onPressed: () =>
+                                        openExternalLink(context, project.demoUrl),
+                                    icon: const Icon(Icons.rocket_launch_rounded),
+                                    label: const Text('LIVE DEMO'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF56F3D6),
+                                      foregroundColor: Colors.black,
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ],
-                    ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -677,19 +779,40 @@ class _CertificatesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: certificates.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isMobile ? 2 : 4,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-        childAspectRatio: 0.8,
-      ),
-      itemBuilder: (context, index) {
-        return _CertificateCard(certificate: certificates[index], index: index);
-      },
+    return Column(
+      children: [
+        if (!isMobile) ...[
+          const SizedBox(
+            height: 250,
+            child: RepaintBoundary(
+              child: ModelViewer(
+                src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', // Placeholder
+                alt: 'Certificates',
+                autoRotate: true,
+                cameraControls: false,
+                disableZoom: true,
+                shadowIntensity: 1,
+                environmentImage: 'neutral',
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: certificates.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: isMobile ? 2 : 4,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            childAspectRatio: 0.8,
+          ),
+          itemBuilder: (context, index) {
+            return _CertificateCard(certificate: certificates[index], index: index);
+          },
+        ),
+      ],
     );
   }
 }
@@ -767,20 +890,42 @@ class _TechStackTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final int crossAxisCount = isMobile ? 1 : 2;
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: skills.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 32,
-            mainAxisSpacing: 32,
-            childAspectRatio: isMobile ? 1.0 : 1.5,
-          ),
-          itemBuilder: (context, index) {
-            return _SkillCategoryCard(category: skills[index], index: index);
-          },
+        final bool isMobile = Responsive.isMobile(context);
+        
+        return Column(
+          children: [
+            if (!isMobile) ...[
+              const SizedBox(
+                height: 300,
+                child: RepaintBoundary(
+                  child: ModelViewer(
+                    src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', // Placeholder, will use tech model
+                    alt: 'Tech Stack',
+                    autoRotate: true,
+                    cameraControls: false,
+                    disableZoom: true,
+                    shadowIntensity: 1,
+                    environmentImage: 'neutral',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+            ],
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: skills.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isMobile ? 1 : 2,
+                crossAxisSpacing: 32,
+                mainAxisSpacing: 32,
+                childAspectRatio: isMobile ? 1.0 : 1.5,
+              ),
+              itemBuilder: (context, index) {
+                return _SkillCategoryCard(category: skills[index], index: index);
+              },
+            ),
+          ],
         );
       },
     );

@@ -13,6 +13,7 @@ const String aboutText =
     'I am a results-driven Systems Engineer and Full Stack Developer dedicated to architecting production-grade solutions across the entire digital spectrum. With a foundation in Computer Applications (BCA) and a specialization in Flutter and Python ecosystems (FastAPI/Flask), I build scalable, high-performance applications anchored in clean architecture and intuitive UX design. My engineering philosophy revolves around translating complex business logic into maintainable, robust, and elegant digital products. Beyond development, I am deeply invested in the intersection of Artificial Intelligence and Software Engineering, constantly exploring emerging technologies to solve real-world problems and deliver high-impact value through code.';
 
 const String resumeUrl = 'https://example.com/raj-dutta-resume.pdf';
+const String resumeAsset = 'assets/resume.pdf';
 const String email = 'rajdutta372@gmail.com';
 const String linkedinUrl = 'https://www.facebook.com/share/1BXp5zTrpN/';
 const String githubUrl = 'https://github.com/rajdutta234';
