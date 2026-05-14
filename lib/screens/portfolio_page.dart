@@ -11,7 +11,7 @@ import '../widgets/sections/footer_section.dart';
 import '../widgets/sections/hero_section.dart';
 import '../widgets/sections/work_section.dart';
 import '../widgets/common/animated_background.dart';
-import '../widgets/common/nav_bar.dart';
+import '../widgets/common/app_bar.dart';
 import '../widgets/common/cyber_cursor.dart';
 import '../widgets/common/noise_overlay.dart';
 import '../widgets/common/cinematic_section.dart';
@@ -46,8 +46,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
         return;
       }
       _initialJumpHandled = true;
-      ref.read(activeSectionProvider.notifier).set(
-          widget.initialSectionIndex!);
+      ref.read(activeSectionProvider.notifier).set(widget.initialSectionIndex!);
       _scrollToSection(widget.initialSectionIndex!);
     });
   }
@@ -68,9 +67,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, Colors.transparent],
-          ),
+          gradient: RadialGradient(colors: [color, Colors.transparent]),
         ),
       ),
     );
@@ -81,40 +78,53 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
       _scrollProgress.value =
           (_scrollController.offset /
                   _scrollController.position.maxScrollExtent)
-               .clamp(0, 1);
+              .clamp(0, 1);
     }
 
-    final int currentActiveIndex = ref.read(activeSectionProvider);
-    int bestMatchIndex = 0;
+    // ULTIMATE FOOLPROOF SCROLLSPY ALGORITHM
+    // 1. We determine what section the user is actually looking at by checking if it contains the "Focus Line"
+    // 2. We handle the bottom of the page independently of maxScrollExtent to prevent jitter.
+    
+    final double viewportHeight = MediaQuery.sizeOf(context).height;
+    final double focusLine = viewportHeight * 0.4; // 40% down the screen
+    
+    int bestMatchIndex = ref.read(activeSectionProvider);
 
-    // Center-of-screen detection is the most "human" way to track focus
-    final double viewportCenter = MediaQuery.sizeOf(context).height / 2;
+    for (int i = 0; i < _sectionKeys.length; i++) {
+      final BuildContext? sectionContext = _sectionKeys[i].currentContext;
+      if (sectionContext == null) continue;
 
-    if (_scrollController.offset < 100) {
-      bestMatchIndex = 0;
-    } else if (_scrollController.offset >=
-        _scrollController.position.maxScrollExtent - 150) {
-      // At the very bottom, always show the last section (Contact)
-      bestMatchIndex = _sectionKeys.length - 1;
-    } else {
-      for (int i = 0; i < _sectionKeys.length; i++) {
-        final BuildContext? context = _sectionKeys[i].currentContext;
-        if (context == null) continue;
+      final RenderBox? box = sectionContext.findRenderObject() as RenderBox?;
+      if (box == null || !box.attached) continue;
 
-        final RenderBox? box = context.findRenderObject() as RenderBox?;
-        if (box == null || !box.attached) continue;
+      final Offset position = box.localToGlobal(Offset.zero);
+      final double sectionTop = position.dy;
+      final double sectionBottom = sectionTop + box.size.height;
 
-        final double top = box.localToGlobal(Offset.zero).dy;
-        final double height = box.size.height;
-
-        // If the center of the viewport is within this section's bounds
-        if (top <= viewportCenter && (top + height) > viewportCenter) {
+      // --- SPECIAL BOTTOM SECTION RULE ---
+      // If we are evaluating the very last section (Contact), we check if it is fully resting
+      // at the bottom of the screen. This bypasses the need for it to stretch up to the focus line.
+      if (i == _sectionKeys.length - 1) {
+        if (sectionTop < viewportHeight && sectionBottom <= viewportHeight + 150) {
           bestMatchIndex = i;
-          break;
+          break; // The user has reached the bottom of the page
         }
+      }
+
+      // --- STANDARD RULE ---
+      // Does this section contain the focus line?
+      if (sectionTop <= focusLine && sectionBottom > focusLine) {
+        bestMatchIndex = i;
+        break; // We found the section! Stop searching.
       }
     }
 
+    // Fallback safety for absolute top
+    if (_scrollController.offset <= 50) {
+      bestMatchIndex = 0;
+    }
+
+    final int currentActiveIndex = ref.read(activeSectionProvider);
     if (bestMatchIndex != currentActiveIndex) {
       ref.read(activeSectionProvider.notifier).set(bestMatchIndex);
     }
@@ -205,16 +215,24 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
                           final bool isSelected = activeIndex == index;
                           return ListTile(
                             selected: isSelected,
-                            selectedTileColor: const Color(0xFF56F3D6).withValues(alpha: 0.05),
+                            selectedTileColor: const Color(
+                              0xFF56F3D6,
+                            ).withValues(alpha: 0.05),
                             leading: Icon(
                               _getIconForSection(navItems[index]),
-                              color: isSelected ? const Color(0xFF56F3D6) : Colors.white54,
+                              color: isSelected
+                                  ? const Color(0xFF56F3D6)
+                                  : Colors.white54,
                             ),
                             title: Text(
                               navItems[index].toUpperCase(),
                               style: TextStyle(
-                                color: isSelected ? const Color(0xFF56F3D6) : Colors.white70,
-                                fontWeight: isSelected ? FontWeight.w900 : FontWeight.w500,
+                                color: isSelected
+                                    ? const Color(0xFF56F3D6)
+                                    : Colors.white70,
+                                fontWeight: isSelected
+                                    ? FontWeight.w900
+                                    : FontWeight.w500,
                                 letterSpacing: 2,
                                 fontSize: 13,
                               ),
@@ -263,12 +281,18 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
                   Positioned(
                     top: -130,
                     right: -80,
-                    child: _buildAmbientGlow(380, const Color(0xFF00C2FF).withValues(alpha: 0.1)),
+                    child: _buildAmbientGlow(
+                      380,
+                      const Color(0xFF00C2FF).withValues(alpha: 0.1),
+                    ),
                   ),
                   Positioned(
                     bottom: 200,
                     left: -100,
-                    child: _buildAmbientGlow(450, const Color(0xFF56F3D6).withValues(alpha: 0.06)),
+                    child: _buildAmbientGlow(
+                      450,
+                      const Color(0xFF56F3D6).withValues(alpha: 0.06),
+                    ),
                   ),
                 ],
               ),
@@ -277,7 +301,8 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
             Positioned.fill(
               child: CustomScrollView(
                 controller: _scrollController,
-                cacheExtent: 3000, // Pre-build slivers so GlobalKeys are available for navigation
+                cacheExtent:
+                    3000, // Pre-build slivers so GlobalKeys are available for navigation
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
                 ),
@@ -367,8 +392,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
                 },
               ),
             ),
-
-            PortfolioNavBar(
+            PortfolioAppBar(
               items: navItems,
               activeIndex: activeIndex,
               onTap: _scrollToSection,
@@ -381,13 +405,18 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
 
   IconData _getIconForSection(String title) {
     switch (title.toLowerCase()) {
-      case 'home': return Icons.home_rounded;
-      case 'about': return Icons.person_rounded;
-      case 'experience': return Icons.work_history_rounded;
-      case 'work': return Icons.grid_view_rounded;
-      case 'contact': return Icons.alternate_email_rounded;
-      default: return Icons.circle;
+      case 'home':
+        return Icons.home_rounded;
+      case 'about':
+        return Icons.person_rounded;
+      case 'experience':
+        return Icons.work_history_rounded;
+      case 'work':
+        return Icons.grid_view_rounded;
+      case 'contact':
+        return Icons.alternate_email_rounded;
+      default:
+        return Icons.circle;
     }
   }
 }
-

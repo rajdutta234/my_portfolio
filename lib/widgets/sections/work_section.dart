@@ -104,7 +104,8 @@ class _WorkSectionState extends State<WorkSection>
       ),
       child: TabBar(
         controller: _tabController,
-        isScrollable: false,
+        isScrollable: true,
+        tabAlignment: TabAlignment.start,
         indicator: BoxDecoration(
           gradient: const LinearGradient(
             colors: [Color(0xFF56F3D6), Color(0xFF00C2FF)],
@@ -386,48 +387,50 @@ class _ProjectCard extends StatelessWidget {
                               isMobile ? 16 : 24,
                               isMobile ? 16 : 24,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        project.title,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: isMobile ? 18 : 22,
-                                          fontWeight: FontWeight.w900,
-                                          color: Colors.white,
-                                          letterSpacing: -0.5,
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          project.title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: isMobile ? 18 : 22,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                            letterSpacing: -0.5,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_outward_rounded,
-                                      color: Color(0xFF56F3D6),
-                                      size: 20,
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  project.description,
-                                  maxLines: isMobile ? 2 : 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: isMobile ? 12 : 13,
-                                    height: 1.4,
+                                      const Icon(
+                                        Icons.arrow_outward_rounded,
+                                        color: Color(0xFF56F3D6),
+                                        size: 20,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                const Spacer(),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 4,
-                                  children: project.stack
-                                      .take(isMobile ? 2 : 3)
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    project.description,
+                                    maxLines: isMobile ? 2 : 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: isMobile ? 12 : 13,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: project.stack
+                                        .take(isMobile ? 2 : 3)
                                       .map(
                                         (s) => Container(
                                           padding: const EdgeInsets.symmetric(
@@ -462,9 +465,10 @@ class _ProjectCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
 
                   // Lighting Sweep Effect
                   Positioned.fill(
