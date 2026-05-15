@@ -64,7 +64,7 @@ class _WorkSectionState extends State<WorkSection>
               // Premium Cinematic Tab Bar
               _buildPremiumTabBar(isMobile),
 
-              const SizedBox(height: 80),
+              const SizedBox(height: 24),
 
               // Animated Content Transition
               AnimatedSwitcher(
@@ -898,36 +898,52 @@ class _TechStackTab extends StatelessWidget {
         
         return Column(
           children: [
-            if (!isMobile) ...[
-              const SizedBox(
-                height: 300,
-                child: RepaintBoundary(
-                  child: ModelViewer(
-                    src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', // Placeholder, will use tech model
-                    alt: 'Tech Stack',
-                    autoRotate: true,
-                    cameraControls: false,
-                    disableZoom: true,
-                    shadowIntensity: 1,
-                    environmentImage: 'neutral',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-            ],
-            GridView.builder(
+            GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: skills.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: isMobile ? 1 : 2,
-                crossAxisSpacing: 32,
-                mainAxisSpacing: 32,
-                childAspectRatio: isMobile ? 1.0 : 1.5,
-              ),
-              itemBuilder: (context, index) {
-                return _SkillCategoryCard(category: skills[index], index: index);
-              },
+              crossAxisCount: isMobile ? 1 : 3,
+              crossAxisSpacing: 24,
+              mainAxisSpacing: 24,
+              childAspectRatio: isMobile ? 1.0 : 0.85,
+              children: [
+                _SkillCategoryCard(category: skills[0], index: 0),
+                _SkillCategoryCard(category: skills[1], index: 1),
+                if (!isMobile)
+                  const PerspectiveCard(
+                    child: SizedBox(
+                      height: double.infinity,
+                      child: RepaintBoundary(
+                        child: ModelViewer(
+                          src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                          alt: 'Tech Stack',
+                          autoRotate: true,
+                          cameraControls: false,
+                          disableZoom: true,
+                          shadowIntensity: 1,
+                          environmentImage: 'neutral',
+                        ),
+                      ),
+                    ),
+                  ),
+                _SkillCategoryCard(category: skills[2], index: 2),
+                _SkillCategoryCard(category: skills[3], index: 3),
+                _SkillCategoryCard(category: skills[4], index: 4),
+                if (isMobile)
+                  const SizedBox(
+                    height: 300,
+                    child: RepaintBoundary(
+                      child: ModelViewer(
+                        src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                        alt: 'Tech Stack',
+                        autoRotate: true,
+                        cameraControls: false,
+                        disableZoom: true,
+                        shadowIntensity: 1,
+                        environmentImage: 'neutral',
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ],
         );
@@ -943,29 +959,30 @@ class _SkillCategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassmorphicContainer(
-      width: double.infinity,
-      height: double.infinity,
-      borderRadius: 24,
-      blur: 10,
-      alignment: Alignment.center,
-      border: 1.5,
-      linearGradient: LinearGradient(
-        colors: [
-          Colors.white.withValues(alpha: 0.05),
-          Colors.white.withValues(alpha: 0.02),
-        ],
-      ),
-      borderGradient: LinearGradient(
-        colors: [
-          const Color(0xFF56F3D6).withValues(alpha: 0.3),
-          Colors.transparent,
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return PerspectiveCard(
+      child: GlassmorphicContainer(
+        width: double.infinity,
+        height: double.infinity,
+        borderRadius: 24,
+        blur: 10,
+        alignment: Alignment.center,
+        border: 1.5,
+        linearGradient: LinearGradient(
+          colors: [
+            Colors.white.withValues(alpha: 0.05),
+            Colors.white.withValues(alpha: 0.02),
+          ],
+        ),
+        borderGradient: LinearGradient(
+          colors: [
+            const Color(0xFF56F3D6).withValues(alpha: 0.3),
+            Colors.transparent,
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -996,14 +1013,18 @@ class _SkillCategoryCard extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    s.name,
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                                  Flexible(
+                                    child: Text(
+                                      s.name,
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
+                                  const SizedBox(width: 8),
                                   Text(
                                     '${(s.proficiency * 100).toInt()}%',
                                     style: const TextStyle(
@@ -1060,6 +1081,6 @@ class _SkillCategoryCard extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(delay: (index * 150).ms).moveY(begin: 20);
+    )).animate().fadeIn(delay: (index * 150).ms).moveY(begin: 20);
   }
 }

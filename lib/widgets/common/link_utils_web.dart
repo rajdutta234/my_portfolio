@@ -35,7 +35,7 @@ Future<void> openAsset(BuildContext context, String assetPath) async {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Preparing resume for download...'),
+          content: Text('Opening resume...'),
           duration: Duration(seconds: 1),
           backgroundColor: Color(0xFF1A1A1A),
         ),
@@ -50,9 +50,9 @@ Future<void> openAsset(BuildContext context, String assetPath) async {
     final blob = html.Blob([bytes], 'application/pdf');
     final url = html.Url.createObjectUrlFromBlob(blob);
     
-    // Create an anchor element and trigger download
+    // Create an anchor element and trigger open in new tab
     html.AnchorElement(href: url)
-      ..setAttribute("download", "Raj_Dutta_Resume.pdf")
+      ..setAttribute("target", "_blank")
       ..click();
     
     // Clean up the URL object after a short delay
@@ -67,7 +67,7 @@ Future<void> openAsset(BuildContext context, String assetPath) async {
             children: [
               Icon(Icons.check_circle, color: Color(0xFF56F3D6), size: 20),
               SizedBox(width: 12),
-              Text('Resume download started!'),
+              Expanded(child: Text('Resume opened in a new tab!')),
             ],
           ),
           behavior: SnackBarBehavior.floating,

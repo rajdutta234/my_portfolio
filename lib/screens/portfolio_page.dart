@@ -84,10 +84,10 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
     // ULTIMATE FOOLPROOF SCROLLSPY ALGORITHM
     // 1. We determine what section the user is actually looking at by checking if it contains the "Focus Line"
     // 2. We handle the bottom of the page independently of maxScrollExtent to prevent jitter.
-    
+
     final double viewportHeight = MediaQuery.sizeOf(context).height;
     final double focusLine = viewportHeight * 0.4; // 40% down the screen
-    
+
     int bestMatchIndex = ref.read(activeSectionProvider);
 
     for (int i = 0; i < _sectionKeys.length; i++) {
@@ -105,7 +105,8 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
       // If we are evaluating the very last section (Contact), we check if it is fully resting
       // at the bottom of the screen. This bypasses the need for it to stretch up to the focus line.
       if (i == _sectionKeys.length - 1) {
-        if (sectionTop < viewportHeight && sectionBottom <= viewportHeight + 150) {
+        if (sectionTop < viewportHeight &&
+            sectionBottom <= viewportHeight + 150) {
           bestMatchIndex = i;
           break; // The user has reached the bottom of the page
         }

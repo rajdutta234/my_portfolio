@@ -12,11 +12,10 @@ class CinematicSection extends StatefulWidget {
 }
 
 class _CinematicSectionState extends State<CinematicSection> {
-  
   @override
   Widget build(BuildContext context) {
     final bool isMobile = Responsive.isMobile(context);
-    
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return AnimatedBuilder(
@@ -24,14 +23,17 @@ class _CinematicSectionState extends State<CinematicSection> {
           builder: (context, child) {
             final RenderBox? box = context.findRenderObject() as RenderBox?;
             double scrollSkew = 0.0;
-            
+
             if (box != null && box.hasSize && box.attached) {
               final double viewportHeight = MediaQuery.sizeOf(context).height;
               final double widgetY = box.localToGlobal(Offset.zero).dy;
-              
+
               // Only calculate transformation if the section is near the viewport
               if (widgetY > -viewportHeight && widgetY < viewportHeight * 2) {
-                final double progress = (widgetY / viewportHeight).clamp(-0.2, 1.2);
+                final double progress = (widgetY / viewportHeight).clamp(
+                  -0.2,
+                  1.2,
+                );
                 scrollSkew = isMobile ? 0.0 : (progress - 0.4) * 0.12;
               }
             }
@@ -54,7 +56,9 @@ class _CinematicSectionState extends State<CinematicSection> {
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.01),
                     borderRadius: BorderRadius.circular(isMobile ? 20 : 40),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.05),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.2),
@@ -67,9 +71,7 @@ class _CinematicSectionState extends State<CinematicSection> {
               ),
 
               // Holographic Lighting Sweep Effect
-              Positioned.fill(
-                child: _HolographicSweep(skew: 0.1),
-              ),
+              Positioned.fill(child: _HolographicSweep(skew: 0.1)),
 
               // 3D Floating Architectural Element (Cinematic Focal Point)
               if (!isMobile) ...[
@@ -84,13 +86,13 @@ class _CinematicSectionState extends State<CinematicSection> {
                   child: _Floating3DWireframe(index: 1),
                 ),
               ],
-              
+
               // Interactive 3D Content Layer
               PerspectiveCard(
                 maxTilt: isMobile ? 0.0 : 0.06,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    vertical: isMobile ? 40 : 100, 
+                    vertical: isMobile ? 40 : 100,
                     horizontal: isMobile ? 16 : 60,
                   ),
                   child: widget.child,
@@ -149,7 +151,12 @@ class _Floating3DWireframe extends StatelessWidget {
       onPlay: (c) => c.repeat(),
       effects: [
         RotateEffect(duration: 20.seconds, begin: 0, end: 1),
-        MoveEffect(duration: 4.seconds, begin: const Offset(0, -20), end: const Offset(0, 20), curve: Curves.easeInOut),
+        MoveEffect(
+          duration: 4.seconds,
+          begin: const Offset(0, -20),
+          end: const Offset(0, 20),
+          curve: Curves.easeInOut,
+        ),
       ],
       child: Transform(
         transform: Matrix4.identity()
@@ -161,7 +168,11 @@ class _Floating3DWireframe extends StatelessWidget {
           height: index == 0 ? 300 : 150,
           decoration: BoxDecoration(
             border: Border.all(
-              color: (index == 0 ? const Color(0xFF56F3D6) : const Color(0xFF00C2FF)).withValues(alpha: 0.1),
+              color:
+                  (index == 0
+                          ? const Color(0xFF56F3D6)
+                          : const Color(0xFF00C2FF))
+                      .withValues(alpha: 0.1),
               width: 1,
             ),
             borderRadius: BorderRadius.circular(20),
@@ -173,7 +184,11 @@ class _Floating3DWireframe extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: (index == 0 ? const Color(0xFF56F3D6) : const Color(0xFF00C2FF)).withValues(alpha: 0.05),
+                    color:
+                        (index == 0
+                                ? const Color(0xFF56F3D6)
+                                : const Color(0xFF00C2FF))
+                            .withValues(alpha: 0.05),
                     shape: BoxShape.circle,
                   ),
                 ),

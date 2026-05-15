@@ -8,7 +8,8 @@ class Floating3DElements extends StatefulWidget {
   State<Floating3DElements> createState() => _Floating3DElementsState();
 }
 
-class _Floating3DElementsState extends State<Floating3DElements> with SingleTickerProviderStateMixin {
+class _Floating3DElementsState extends State<Floating3DElements>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -41,10 +42,11 @@ class _Floating3DElementsState extends State<Floating3DElements> with SingleTick
   Widget _buildFloatingShape(int index) {
     final double t = (_controller.value + index / 8) % 1.0;
     final double opacity = 0.05 + math.sin(t * math.pi) * 0.05;
-    
+
     // 3D Path
     final double x = math.sin(t * math.pi * 2 + index) * 200 + (index * 150);
-    final double y = math.cos(t * math.pi * 2 + index * 0.5) * 300 + (index * 100);
+    final double y =
+        math.cos(t * math.pi * 2 + index * 0.5) * 300 + (index * 100);
     final double z = math.sin(t * math.pi) * 100;
 
     return Positioned(
@@ -62,10 +64,16 @@ class _Floating3DElementsState extends State<Floating3DElements> with SingleTick
           height: 60 + index * 10,
           decoration: BoxDecoration(
             border: Border.all(
-              color: index % 2 == 0 ? const Color(0xFF56F3D6) : const Color(0xFF00C2FF),
+              color: index % 2 == 0
+                  ? const Color(0xFF56F3D6)
+                  : const Color(0xFF00C2FF),
               width: 0.5,
             ),
-            color: (index % 2 == 0 ? const Color(0xFF56F3D6) : const Color(0xFF00C2FF)).withValues(alpha: opacity),
+            color:
+                (index % 2 == 0
+                        ? const Color(0xFF56F3D6)
+                        : const Color(0xFF00C2FF))
+                    .withValues(alpha: opacity),
           ),
         ),
       ),

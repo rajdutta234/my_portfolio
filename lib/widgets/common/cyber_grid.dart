@@ -7,7 +7,8 @@ class CyberGrid extends StatefulWidget {
   State<CyberGrid> createState() => _CyberGridState();
 }
 
-class _CyberGridState extends State<CyberGrid> with SingleTickerProviderStateMixin {
+class _CyberGridState extends State<CyberGrid>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -49,22 +50,24 @@ class _CyberGridPainter extends CustomPainter {
       ..color = const Color(0xFF56F3D6).withValues(alpha: 0.15)
       ..strokeWidth = 1.0;
 
-
     const double gridSpacing = 60.0;
     final double verticalOffset = (progress * gridSpacing) % gridSpacing;
 
     // Perspective transformation parameters
     final double horizon = size.height * 0.4;
-    
+
     // Draw horizontal lines (with perspective)
     for (double y = 0; y <= size.height - horizon; y += gridSpacing) {
       final double actualY = size.height - y + verticalOffset;
       if (actualY < horizon) continue;
-      
+
       // Calculate opacity based on distance from bottom
-      final double distanceFactor = (actualY - horizon) / (size.height - horizon);
-      linePaint.color = const Color(0xFF56F3D6).withValues(alpha: 0.2 * distanceFactor);
-      
+      final double distanceFactor =
+          (actualY - horizon) / (size.height - horizon);
+      linePaint.color = const Color(
+        0xFF56F3D6,
+      ).withValues(alpha: 0.2 * distanceFactor);
+
       canvas.drawLine(
         Offset(0, actualY),
         Offset(size.width, actualY),
@@ -77,7 +80,7 @@ class _CyberGridPainter extends CustomPainter {
     final double centerX = size.width / 2;
     for (int i = -verticalLines; i <= verticalLines; i++) {
       final double xOffset = i * gridSpacing * 2;
-      
+
       // Lines converge at (centerX, horizon)
       canvas.drawLine(
         Offset(centerX + xOffset, size.height),
@@ -95,11 +98,14 @@ class _CyberGridPainter extends CustomPainter {
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTRB(0, horizon - 2, size.width, horizon + 2));
-    
-    canvas.drawRect(Rect.fromLTRB(0, horizon - 1, size.width, horizon + 1), horizonPaint);
+
+    canvas.drawRect(
+      Rect.fromLTRB(0, horizon - 1, size.width, horizon + 1),
+      horizonPaint,
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _CyberGridPainter oldDelegate) => 
+  bool shouldRepaint(covariant _CyberGridPainter oldDelegate) =>
       oldDelegate.progress != progress;
 }
